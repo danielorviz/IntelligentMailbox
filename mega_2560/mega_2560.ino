@@ -1,3 +1,11 @@
+#include <Keypad.h>
+#include <Servo.h>
+#include "AuthorizedKey.h"
+#include "Notification.h"
+#include "Constantes.h"
+
+
+Keypad teclado = Keypad( makeKeymap(teclas), pfilas, pcolumnas, nfilas, ncolumnas );
 
 const int BUFFER_SIZE = 128; // Tamaño del buffer
 char serialBuffer[BUFFER_SIZE]; // Buffer para almacenar datos
@@ -52,8 +60,13 @@ void readSerial(){
 }
 
 void loop() {
-    readSerial();
-    delay(3000); // Intervalo para enviar y leer
+    //readSerial();
+    //delay(1000); 
+    
+    char tecla = teclado.getKey();
+    if (tecla != '\0'){
+        Serial.println("tecla pulsada: "+String(tecla));
+    }
 
   }
 
