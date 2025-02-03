@@ -25,3 +25,4 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+esp_8266/config.h
