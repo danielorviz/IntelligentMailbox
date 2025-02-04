@@ -5,13 +5,6 @@
 #define NOTIFICACION_PUERTA_ABIERTA "La puerta está abierta"
 
 
-String ARDUINO_ID ="ardboxmail-7854";
-String MAILBOX_PATH="/mailbox/"+ARDUINO_ID;
-String NOTIFICATION_PATH = "notifications/";
-
-const char* WIFI_MANAGER_SSID ="ardboxmail-7854_1";
-const char* WIFI_MANAGER_PASSW ="123456789";
-
 // VARIABLES RELACIONADAS CON EL TECLADO
 const byte nfilas = 4;
 const byte ncolumnas = 4;

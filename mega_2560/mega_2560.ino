@@ -7,7 +7,7 @@
 
 Keypad teclado = Keypad( makeKeymap(teclas), pfilas, pcolumnas, nfilas, ncolumnas );
 
-const int BUFFER_SIZE = 128; // Tamaño del buffer
+const int BUFFER_SIZE = 1024; // Tamaño del buffer
 char serialBuffer[BUFFER_SIZE]; // Buffer para almacenar datos
 int bufferIndex = 0; 
 
@@ -59,8 +59,9 @@ void readSerial(){
   }
 }
 
+
 void loop() {
-    //readSerial();
+    readSerial();
     //delay(1000); 
     
     char tecla = teclado.getKey();
