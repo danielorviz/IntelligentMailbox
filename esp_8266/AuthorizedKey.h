@@ -40,6 +40,7 @@ class AuthorizedKey {
 			(id) = json["id"].as<String>();
 			(name) = json["name"].as<String>();
 			(value) = json["value"].as<String>();
+      (value).trim();
 			(initDate) = json["initDate"].as<unsigned long>();
 			(permanent) = json["permanent"].as<bool>();
 			(finishDate) = json["finishDate"].as<unsigned long>();

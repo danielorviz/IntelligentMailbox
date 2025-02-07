@@ -11,5 +11,6 @@ String NOTIFICATION_PATH = "notifications/";
 String TASK_OFFSET="offsetTask";
 String TASK_AUTH_KEYS="authKeysTask";
 
+String TASK_INS_OPEN="insOpenTask";
 const char* WIFI_MANAGER_SSID ="ardboxmail-7854_1";
 const char* WIFI_MANAGER_PASSW ="123456789";
