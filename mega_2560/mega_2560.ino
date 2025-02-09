@@ -13,8 +13,11 @@ int bufferIndex = 0;
 
 int contador = 1;
 
-// BUZZER
+// PINES
 int buzzer = 32;
+int colision = A0;
+// servo
+Servo servo1;
 
 //VARIABLES TECLADO
 int PUERTA_ABIERTA = 0;
@@ -24,20 +27,23 @@ int TECLADO_MAX_MILLIS = 3000;
 String keypadKey = "";
 
 //ACTIONS
-bool actionAbrirPuerta= false;
+bool actionAbrirPuerta = false;
 
 void setup() {
   Serial.begin(115200);  // Comunicación con la PC para depuración
   Serial3.begin(9600);   // Comunicación con el ESP8266
 
+  servo1.attach(33);
+  servo1.write(50);
+
   Serial.println("ATmega2560 listo para comunicarse con ESP8266.");
 }
 void abrirPuerta() {
-  if(actionAbrirPuerta){
+  if (actionAbrirPuerta) {
     Serial.println("AUTORIZADO");
     PUERTA_ABIERTA = 1;
-    //servo1.write(0);
-    tone(buzzer,1000);
+    servo1.write(0);
+    tone(buzzer, 1000);
     delay(1000);
     noTone(buzzer);
     actionAbrirPuerta = false;
@@ -45,7 +51,7 @@ void abrirPuerta() {
 }
 void cerrarPuerta() {
   PUERTA_ABIERTA = 0;
-  //servo1.write(50);
+  servo1.write(50);
 }
 
 void resetKeypad() {
@@ -60,7 +66,11 @@ void processMessage(char* message) {
     String action = dataFromESP.substring(5);
     action.trim();
     actionAbrirPuerta = (action == "OK");
-    
+
+    if(!actionAbrirPuerta){
+      keySoundWrong();
+    }
+
   } else {
     // Si no comienza con "TO_", es un mensaje de debug
     Serial.println("DEBUG: " + dataFromESP);
@@ -74,9 +84,10 @@ void readSerial() {
 
     // Si el carácter es un salto de línea, procesamos el mensaje completo
     if (incomingChar == '\n') {
-      serialBuffer[bufferIndex] = '\0';     // Termina la cadena
-      processMessage(serialBuffer);  // Procesa el mensaje
-      bufferIndex = 0;                      // Resetea el índice del buffer
+      serialBuffer[bufferIndex] = '\0';  // Termina la cadena
+      processMessage(serialBuffer);      // Procesa el mensaje
+      memset(serialBuffer, '\0', BUFFER_SIZE);
+      bufferIndex = 0;                   // Resetea el índice del buffer
 
 
     } else {
@@ -86,6 +97,7 @@ void readSerial() {
       } else {
         // Si el buffer se llena, resetea para evitar desbordamiento
         Serial.println("ERROR: Buffer overflow");
+        memset(serialBuffer, '\0', BUFFER_SIZE);
         bufferIndex = 0;
       }
     }
@@ -93,12 +105,12 @@ void readSerial() {
 }
 void controlarTeclado() {
   char tecla = teclado.getKey();
-  if (tecla != '\0') {
+  if (!PUERTA_ABIERTA && tecla != '\0') {
     delay(100);
     Serial.println("tecla pulsada: " + String(tecla));
 
     if (tecla != '#') {
-      
+
       TECLADO_START_COUNT = 1;
       TECLADO_START_MILLIS = millis();
       if (!PUERTA_ABIERTA) {
@@ -108,7 +120,7 @@ void controlarTeclado() {
       keypadKey += tecla;
     } else if (tecla == '#' && !PUERTA_ABIERTA) {
       Serial3.println("DOOR_" + keypadKey);
-  
+
       resetKeypad();
     }
   }
@@ -122,31 +134,44 @@ void controlarTeclado() {
 
   if (PUERTA_ABIERTA) {
     delay(300);
-    //int colisionado = analogRead(colision);
+    int colisionado = analogRead(colision);
     //Serial.println(colisionado);
-    //if (colisionado < 500) {
-    cerrarPuerta();
-    resetKeypad();
+    if (colisionado < 500) {
+      cerrarPuerta();
+      resetKeypad();
+    }
+    delay(50);
+    if (!PUERTA_ABIERTA && !isSensorPuertaColisionado()) {
+      abrirPuerta();
+      //enviarNotificacion(NOTIFICACION_PUERTA_ABIERTA,"Se ha detectado que la puerta está abierta");
+    }
   }
 }
-void keySound(){
-    tone(buzzer,1000);
-    delay(300);
-    noTone(buzzer);
+int isSensorPuertaColisionado() {
+  int colisionado = analogRead(colision);
+  if (colisionado < 500) {
+    return 1;
+  }
+  return 0;
+}
+void keySound() {
+  tone(buzzer, 1000);
+  delay(300);
+  noTone(buzzer);
 }
 
-void keySoundWrong(){
-    tone(buzzer,1000);
-    delay(300);
-    noTone(buzzer);
-    delay(100);
-    tone(buzzer,1000);
-    delay(300);
-    noTone(buzzer);
-    delay(100);
-    tone(buzzer,1000);
-    delay(300);
-    noTone(buzzer);
+void keySoundWrong() {
+  tone(buzzer, 1000);
+  delay(300);
+  noTone(buzzer);
+  delay(100);
+  tone(buzzer, 1000);
+  delay(300);
+  noTone(buzzer);
+  delay(100);
+  tone(buzzer, 1000);
+  delay(300);
+  noTone(buzzer);
 }
 void loop() {
   readSerial();
