@@ -3,7 +3,6 @@
 #include <FirebaseClient.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-#include "AuthorizedKey.h"
 #include "Notification.h"
 #include <WiFiUdp.h>
 #include <NTPClient.h>
@@ -36,10 +35,9 @@ bool resetOpen = false;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 
-// variables teclado
-const int MAX_KEYS_SIZE = 10;
-AuthorizedKey authorizedKeys[MAX_KEYS_SIZE];
-int NUMBER_OF_KEYS = 10;
+
+
+int contador = 0;
 
 void setup() {
   Serial.begin(9600);  // Comunicación con ATmega2560
@@ -69,11 +67,7 @@ void setup() {
 
   timeClient.begin();
 }
-void clearAuthorizedKeys() {
-  for (int i = 0; i < MAX_KEYS_SIZE; i++) {
-    authorizedKeys[i] = AuthorizedKey();
-  }
-}
+
 
 DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
   DynamicJsonDocument doc(1024);
@@ -85,33 +79,6 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
   }
   return doc;
 }
-void initAuthorizedKeys(JsonObject data) {
-  NUMBER_OF_KEYS = data.size();
-  int posicion = 0;
-  for (JsonPair kv : data) {
-    JsonObject keyData = kv.value().as<JsonObject>();
-
-    AuthorizedKey k = AuthorizedKey(keyData);
-    Serial.println(k.getValue());
-    authorizedKeys[posicion] = k;
-    posicion++;
-  }
-}
-
-int checkAccess(String clave) {
-  for (int i = 0; i < NUMBER_OF_KEYS; i++) {
-    AuthorizedKey key = authorizedKeys[i];
-
-    if (key.isPermanent() && key.getValue().equals(clave)) {
-      Serial.println("key valida:" + key.getValue());
-      return i;
-    } else if (!key.isPermanent() && key.getValue() == clave && key.checkDateInRange(timeClient.getEpochTime())) {
-      Serial.println("key invalida:" + key.getValue());
-      return i;
-    }
-  }
-  return -1;
-}
 
 void updateTimeOffset(int offset) {
   timeClient.setTimeOffset(offset);
@@ -119,21 +86,12 @@ void updateTimeOffset(int offset) {
 }
 
 void loop() {
-  // Lee un nodo en Firebase para verificar si debe abrir la puerta
-
-
-  // Step 13
   app.loop();
-
-  // Step 14
   Database.loop();
-
-  // Step 15
   if (app.ready()) {
 
     if (!onetimeTest) {
       Database.get(aClientStreamKeys, "mailbox/" + ARDUINO_ID, asyncCB, true, TASK_AUTH_KEYS);
-
       onetimeTest = true;
     }
     if (Serial.available()) {
@@ -149,7 +107,6 @@ void loop() {
         }
       }
     }
-
     if (resetOpen) {
       Serial.print("resetResult: ");
       bool result = Database.set<bool>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/instructions/open", false);
@@ -157,8 +114,6 @@ void loop() {
       resetOpen = !result;
     }
   }
-
-
   delay(1000);  // Intervalo para verificar Firebase
 }
 
@@ -168,11 +123,13 @@ void asyncCB(AsyncResult &aResult) {
 
 void printResult(AsyncResult &aResult) {
   if (aResult.isEvent()) {
-    Firebase.printf("Event task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.appEvent().message().c_str(), aResult.appEvent().code());Serial.println();
+    Firebase.printf("Event task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.appEvent().message().c_str(), aResult.appEvent().code());
+    Serial.println();
   }
 
   if (aResult.isDebug()) {
-    Firebase.printf("Debug task: %s, msg: %s\n", aResult.uid().c_str(), aResult.debug().c_str());Serial.println();
+    Firebase.printf("Debug task: %s, msg: %s\n", aResult.uid().c_str(), aResult.debug().c_str());
+    Serial.println();
   }
 
   if (aResult.isError()) {
@@ -181,13 +138,18 @@ void printResult(AsyncResult &aResult) {
     } else if (TASK_OFFSET == aResult.uid().c_str()) {
       //Database.get(aClient, "mailbox/" + ARDUINO_ID + "/instructions/offset", asyncCB, true, TASK_OFFSET);
     }
-    Firebase.printf("Error task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.error().message().c_str(), aResult.error().code());Serial.println();
+    Firebase.printf("Error task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.error().message().c_str(), aResult.error().code());
+    Serial.println();
   }
 
   if (aResult.available()) {
     RealtimeDatabaseResult &RTDB = aResult.to<RealtimeDatabaseResult>();
+    Firebase.printf("task: %s, payload5: %s\n", aResult.uid().c_str(), aResult.c_str());
+    Serial.println();
+
     if (RTDB.isStream()) {
       String eventType = RTDB.event();  // "put", "patch", o "keep-alive"
+      Serial.println(eventType);
       if (eventType != "put" && eventType != "patch") {
         // Ignora eventos de keep-alive
         return;
@@ -199,6 +161,8 @@ void printResult(AsyncResult &aResult) {
         if (path == "/") {
           initAuthorizedKeys(doc["authorizedkeys"]);
 
+          initAuthorizedPackages(doc["authorizedPackages"]);
+
           JsonObject instructions = doc["instructions"];
           onInstructionOpen(instructions["open"].as<bool>());
 
@@ -208,13 +172,14 @@ void printResult(AsyncResult &aResult) {
           onInstructionOpen(RTDB.to<bool>());
         } else if (path == "/instructions/offset") {
           onInstructionOffset(RTDB.to<int>());
+        } else if (path.startsWith("/authorizedkeys/")) {
+          JsonObject root = doc.as<JsonObject>();
+          updateKey(path.substring(strlen("/authorizedkeys/")), root);
         }
 
       } else if (TASK_OFFSET == aResult.uid().c_str()) {
       }
     }
-
-    Firebase.printf("task: %s, payload5: %s\n", aResult.uid().c_str(), aResult.c_str());Serial.println();
   }
 }
 
