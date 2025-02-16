@@ -13,32 +13,72 @@ void initAuthorizedPackages(JsonObject data) {
 
   for (JsonPair kv : data) {
     JsonObject keyData = kv.value().as<JsonObject>();
-
-    AuthorizedPackage k = AuthorizedPackage(keyData);
+    String id = String(kv.key().c_str());
+    AuthorizedPackage k = AuthorizedPackage(id, keyData);
     authorizedPackages.push_back(k);
     Serial.println(k.getValue());
   }
 }
+void handlePackageEvent(String id, JsonObject data) {
+  bool exists = existsPackageById(id);
+  Serial.println(exists);
+  if (exists && data.isNull()) {
+    Serial.println("eliminando paquete");
+    removePackageById(id);
+  } else if (exists && !data.isNull()) {
+    Serial.println("actualizando paquete");
+    updatePackage(id, data);
+  } else if (!exists && !data.isNull()) {
+    Serial.println("creando paquete");
+    createPackage(id, data);
+  }
+}
+
+bool existsPackageById(String id) {
+  for (auto& package : authorizedPackages) {
+    if (package.getId() == id) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void updatePackage(String id, JsonObject data) {
-  for (int i = 0; i < authorizedPackages.size(); i++) { 
-    AuthorizedPackage& key = authorizedPackages[i];
-    if (key.getId() == id) {
+  for (int i = 0; i < authorizedPackages.size(); i++) {
+    AuthorizedPackage& package = authorizedPackages[i];
+    if (package.getId() == id) {
       if (data.containsKey("value")) {
-        key.setValue(data["value"].as<String>());
+        package.setValue(data["value"].as<String>());
       }
       if (data.containsKey("finishDate")) {
-        key.setFinishDate(data["finishDate"].as<unsigned long>());
+        package.setFinishDate(data["finishDate"].as<unsigned long>());
       }
       if (data.containsKey("initDate")) {
-        key.setInitDate(data["initDate"].as<unsigned long>());
+        package.setInitDate(data["initDate"].as<unsigned long>());
       }
       if (data.containsKey("permanent")) {
-        key.setPermanent(data["permanent"].as<bool>());
+        package.setPermanent(data["permanent"].as<bool>());
       }
       if (data.containsKey("name")) {
-        key.setName(data["name"].as<String>());
+        package.setName(data["name"].as<String>());
       }
       return;
+    }
+  }
+}
+void createPackage(String& id, JsonObject& data) {
+  AuthorizedPackage k = AuthorizedPackage(id, data);
+  Serial.println(k.getValue());
+  authorizedPackages.push_back(k);
+}
+void removePackageById(String id) {
+  for (auto it = authorizedPackages.begin(); it != authorizedPackages.end();) {
+    if (it->getId() == id) {
+      it = authorizedPackages.erase(it);
+      Serial.println("Paquete eliminado: " + id);
+      return;
+    } else {
+      ++it;
     }
   }
 }

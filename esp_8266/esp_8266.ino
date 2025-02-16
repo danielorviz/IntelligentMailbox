@@ -3,7 +3,6 @@
 #include <FirebaseClient.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-#include "Notification.h"
 #include <WiFiUdp.h>
 #include <NTPClient.h>
 // Step 2
@@ -36,7 +35,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 
 
-
+bool conectado =false;
 int contador = 0;
 
 void setup() {
@@ -52,7 +51,7 @@ void setup() {
 
   // SETUP FIREBASE
   ssl_clientGeneral.setInsecure();
-  ssl_clientGeneral.setBufferSizes(1024, 512);
+  ssl_clientGeneral.setBufferSizes(1024, 1024);
   ssl_clientGeneral.setTimeout(150);
 
   ssl_clientKeys.setInsecure();
@@ -82,7 +81,6 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
 
 void updateTimeOffset(int offset) {
   timeClient.setTimeOffset(offset);
-  timeClient.update();
 }
 
 void loop() {
@@ -92,6 +90,7 @@ void loop() {
 
     if (!onetimeTest) {
       Database.get(aClientStreamKeys, "mailbox/" + ARDUINO_ID, asyncCB, true, TASK_AUTH_KEYS);
+
       onetimeTest = true;
     }
     if (Serial.available()) {
@@ -102,8 +101,10 @@ void loop() {
         key.trim();
         if (checkAccess(key) >= 0) {
           Serial.println("DOOR_OK");
+          enviarNotificacion(NOTIFICACION_APERTURA_CORRECTA,"Puerta abierta con la clave: ");
         } else {
           Serial.println("DOOR_KO");
+          enviarNotificacion(NOTIFICACION_APERTURA_INCORRECTA,"Se ha intentado abrir la puerta");
         }
       }
     }
@@ -112,6 +113,10 @@ void loop() {
       bool result = Database.set<bool>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/instructions/open", false);
       Serial.println(result);
       resetOpen = !result;
+    }
+    if(conectado){
+      enviarNotificacion("Prueba", "Buzon conectado");
+      conectado = false;
     }
   }
   delay(1000);  // Intervalo para verificar Firebase
@@ -168,13 +173,30 @@ void printResult(AsyncResult &aResult) {
 
           onInstructionOffset(instructions["offset"].as<int>());
 
+          conectado = true;
+
         } else if (path == "/instructions/open") {
           onInstructionOpen(RTDB.to<bool>());
         } else if (path == "/instructions/offset") {
           onInstructionOffset(RTDB.to<int>());
         } else if (path.startsWith("/authorizedkeys/")) {
           JsonObject root = doc.as<JsonObject>();
-          updateKey(path.substring(strlen("/authorizedkeys/")), root);
+          String id = path.substring(strlen("/authorizedkeys/"));
+          Serial.println(id);
+          if (id.indexOf('/') != -1) {
+            return;
+          }
+          Serial.println("registrando");
+          handleKeyEvent(id, root);
+        }else if (path.startsWith("/authorizedPackages/")) {
+          JsonObject root = doc.as<JsonObject>();
+          String id = path.substring(strlen("/authorizedPackages/"));
+          Serial.println(id);
+          if (id.indexOf('/') != -1) {
+            return;
+          }
+          Serial.println("registrando paquete");
+          handlePackageEvent(id, root);
         }
 
       } else if (TASK_OFFSET == aResult.uid().c_str()) {
@@ -195,3 +217,4 @@ void onInstructionOpen(bool open) {
     resetOpen = true;
   }
 }
+

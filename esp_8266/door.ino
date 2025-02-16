@@ -2,23 +2,32 @@
 #include <vector>
 
 // Variables de teclado
-std::vector<AuthorizedKey> authorizedKeys; 
+std::vector<AuthorizedKey> authorizedKeys;
 
 void initAuthorizedKeys(JsonObject data) {
-  clearAuthorizedKeys(); 
+  clearAuthorizedKeys();
   for (JsonPair kv : data) {
+    String id = String(kv.key().c_str());
     JsonObject keyData = kv.value().as<JsonObject>();
 
-    AuthorizedKey k = AuthorizedKey(keyData);
+    AuthorizedKey k = AuthorizedKey(id, keyData);
+    Serial.println(id);
     Serial.println(k.getValue());
-    authorizedKeys.push_back(k); 
+    authorizedKeys.push_back(k);
   }
 }
 
 void clearAuthorizedKeys() {
   authorizedKeys.clear();
 }
-
+bool existsById(String id) {
+  for (auto& key : authorizedKeys) {
+    if (key.getId() == id) {
+      return true;
+    }
+  }
+  return false;
+}
 int checkAccess(String clave) {
   for (int i = 0; i < authorizedKeys.size(); i++) {
     AuthorizedKey& key = authorizedKeys[i];
@@ -33,7 +42,20 @@ int checkAccess(String clave) {
   }
   return -1;
 }
-
+void handleKeyEvent(String id, JsonObject data) {
+  bool exists = existsById(id);
+  Serial.println(exists);
+  if (exists && data.isNull()) {
+    Serial.println("eliminando");
+    removeKeyById(id);
+  }else if(exists && !data.isNull()){
+    Serial.println("actualizando");
+    updateKey(id,data);
+  }else if (!exists && !data.isNull()){
+    Serial.println("creando");
+    createKey(id, data);
+  }
+}
 void updateKey(String id, JsonObject data) {
   for (int i = 0; i < authorizedKeys.size(); i++) {
     AuthorizedKey& key = authorizedKeys[i];
@@ -54,6 +76,22 @@ void updateKey(String id, JsonObject data) {
         key.setName(data["name"].as<String>());
       }
       return;
+    }
+  }
+}
+void createKey(String& id, JsonObject& data) {
+    AuthorizedKey k = AuthorizedKey(id, data);
+    Serial.println(k.getValue());
+    authorizedKeys.push_back(k);
+}
+void removeKeyById(String id) {
+  for (auto it = authorizedKeys.begin(); it != authorizedKeys.end(); ) {
+    if (it->getId() == id) {
+      it = authorizedKeys.erase(it);
+      Serial.println("Clave eliminada: " + id);
+      return;
+    } else {
+      ++it;
     }
   }
 }

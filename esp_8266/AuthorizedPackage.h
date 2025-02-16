@@ -16,7 +16,7 @@ public:
 
   AuthorizedPackage();
 
-  AuthorizedPackage(JsonObject& json);
+  AuthorizedPackage(String& idSt, JsonObject& json);
 
   String getId();
 
@@ -42,8 +42,8 @@ public:
 };
 
 AuthorizedPackage::AuthorizedPackage() {}
-AuthorizedPackage::AuthorizedPackage(JsonObject& json) {
-  id_ = json["id"].as<String>();
+AuthorizedPackage::AuthorizedPackage(String& idSt, JsonObject& json) {
+  id_ = idSt;
   name_ = json["name"].as<String>();
   value_ = json["value"].as<String>();
   initDate_ = json["initDate"].as<unsigned long>();

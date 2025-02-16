@@ -17,7 +17,7 @@ public:
   //AuthorizedKey (AuthorizedKey*& key);
   AuthorizedKey();
 
-  AuthorizedKey(JsonObject& json);
+  AuthorizedKey(String& idSt, JsonObject& json);
 
   String getId();
 
@@ -30,6 +30,8 @@ public:
   unsigned long getFinishDate();
 
   bool isPermanent();
+
+  bool isValidObject();
 
   bool checkDateInRange(unsigned long date);
 
@@ -45,8 +47,8 @@ public:
 };
 
 AuthorizedKey::AuthorizedKey() {}
-AuthorizedKey::AuthorizedKey(JsonObject& json) {
-  (id) = json["id"].as<String>();
+AuthorizedKey::AuthorizedKey(String& idSt, JsonObject& json) {
+  (id) = idSt;
   (name) = json["name"].as<String>();
   (value) = json["value"].as<String>();
   (value).trim();
@@ -74,6 +76,11 @@ unsigned long AuthorizedKey::getInitDate() {
 unsigned long AuthorizedKey::getFinishDate() {
   return (finishDate);
 }
+
+bool AuthorizedKey::isValidObject() {
+  return !(id).isEmpty();
+}
+
 void AuthorizedKey::setName(const String& newName) {
   name = newName;
 }
