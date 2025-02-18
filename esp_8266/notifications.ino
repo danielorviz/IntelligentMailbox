@@ -1,21 +1,26 @@
 #include "Notification.h"
 
 
+const bool notificationsActive= true;
 
+void sendNotification(String titulo,String mensaje){
+  if(!notificationsActive){return;}
 
-void enviarNotificacion(String titulo,String mensaje){
   unsigned long currentTime = timeClient.getEpochTime();
   int intentos = 5;
   Serial.println("Enviando notificacion");
   Notification notificacion(ARDUINO_ID,titulo,mensaje,currentTime);
   String jsonMensaje = notificacion.toJsonObject();
   String result = "";
-  delay(1000);
+  delay(200);
   while (result == "" && intentos >0) {
     result = Database.push<object_t>(aClientGeneral, NOTIFICATION_PATH , object_t(jsonMensaje.c_str()));
-    delay(100);
+    delay(1000);
     intentos--;
 
   }
-  //Serial.println(notificacion.toJsonObject().get<String>(fid));
+}
+
+void sendNotificationDoorOpenKO(){
+  sendNotification(NOTIFICACION_APERTURA_INCORRECTA,"Se ha intentado abrir la puerta");
 }

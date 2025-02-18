@@ -11,6 +11,8 @@ char teclas[nfilas][ncolumnas] = {
 byte pcolumnas[nfilas] = {22,23,24,25};  // Filas
 byte pfilas[ncolumnas] = {26,27,28,29};
 
+const String notification_open_ko ="OPENKO";
+
 //VARIABLES TECLADO
 int TECLADO_START_COUNT = 0;
 unsigned long TECLADO_START_MILLIS = 0;
@@ -57,6 +59,7 @@ void controlarTeclado() {
     resetKeypad();
     keySoundWrong();
     Serial.println("wrong");
+    sendNotification(notification_open_ko);
   }
   comprobarPuerta();
   

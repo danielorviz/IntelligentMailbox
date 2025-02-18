@@ -35,7 +35,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 
 
-bool conectado =false;
+bool conectado = false;
 int contador = 0;
 
 void setup() {
@@ -81,9 +81,11 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
 
 void updateTimeOffset(int offset) {
   timeClient.setTimeOffset(offset);
+  timeClient.update();
 }
 
 void loop() {
+  timeClient.update();
   app.loop();
   Database.loop();
   if (app.ready()) {
@@ -101,10 +103,16 @@ void loop() {
         key.trim();
         if (checkAccess(key) >= 0) {
           Serial.println("DOOR_OK");
-          enviarNotificacion(NOTIFICACION_APERTURA_CORRECTA,"Puerta abierta con la clave: ");
+          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con la clave: ");
         } else {
           Serial.println("DOOR_KO");
-          enviarNotificacion(NOTIFICACION_APERTURA_INCORRECTA,"Se ha intentado abrir la puerta");
+          sendNotificationDoorOpenKO();
+        }
+      }else if(instructions.startsWith("NOTIF_")){
+        String notification = instructions.substring(6);
+        notification.trim();
+        if (notification == "OPENKO") {
+          sendNotificationDoorOpenKO();
         }
       }
     }
@@ -114,8 +122,8 @@ void loop() {
       Serial.println(result);
       resetOpen = !result;
     }
-    if(conectado){
-      enviarNotificacion("Prueba", "Buzon conectado");
+    if (conectado) {
+      sendNotification(NOTIFICACION_CONEXION_CORRECTA, "Buzon conectado");
       conectado = false;
     }
   }
@@ -188,7 +196,7 @@ void printResult(AsyncResult &aResult) {
           }
           Serial.println("registrando");
           handleKeyEvent(id, root);
-        }else if (path.startsWith("/authorizedPackages/")) {
+        } else if (path.startsWith("/authorizedPackages/")) {
           JsonObject root = doc.as<JsonObject>();
           String id = path.substring(strlen("/authorizedPackages/"));
           Serial.println(id);
@@ -217,4 +225,3 @@ void onInstructionOpen(bool open) {
     resetOpen = true;
   }
 }
-

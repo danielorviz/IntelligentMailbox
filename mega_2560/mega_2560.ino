@@ -14,6 +14,12 @@ void setup() {
   Serial.println("ATmega2560 listo para comunicarse con ESP8266.");
 }
 
+void sendNotification(String notification) {
+  Serial.println("Enviando notificacion");
+    Serial.println(notification);
+
+  Serial3.println("NOTIF_" + notification);
+}
 
 
 void loop() {
