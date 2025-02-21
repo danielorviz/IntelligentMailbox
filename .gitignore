@@ -26,3 +26,4 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 esp_8266/config.h
+mega_2560/conf.h

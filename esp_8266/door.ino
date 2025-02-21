@@ -28,7 +28,7 @@ bool existsById(String id) {
   }
   return false;
 }
-int checkAccess(String clave) {
+int checkKeyboardAccess(String clave) {
   for (int i = 0; i < authorizedKeys.size(); i++) {
     AuthorizedKey& key = authorizedKeys[i];
 
@@ -94,4 +94,10 @@ void removeKeyById(String id) {
       ++it;
     }
   }
+}
+String getAuthKeyName(int validKeyIndex){
+  if(validKeyIndex>= 0 && validKeyIndex < authorizedKeys.size()){
+    return authorizedKeys[validKeyIndex].getName();
+  }
+  return "";
 }

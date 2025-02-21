@@ -43,6 +43,18 @@ bool existsPackageById(String id) {
   return false;
 }
 
+int checkPackageAccess(String code) {
+  for (int i = 0; i < authorizedPackages.size(); i++) {
+    AuthorizedPackage& key = authorizedPackages[i];
+
+    if (key.isPermanent() && key.getValue().equals(code)) {
+      Serial.println("Package valida:" + key.getValue());
+      return i;
+    } 
+  }
+  return -1;
+}
+
 void updatePackage(String id, JsonObject data) {
   for (int i = 0; i < authorizedPackages.size(); i++) {
     AuthorizedPackage& package = authorizedPackages[i];
@@ -81,4 +93,11 @@ void removePackageById(String id) {
       ++it;
     }
   }
+}
+
+String getPackageKeyName(int validPackageIndex){
+  if(validPackageIndex>= 0 && validPackageIndex < authorizedPackages.size()){
+    return authorizedPackages[validPackageIndex].getName();
+  }
+  return "";
 }

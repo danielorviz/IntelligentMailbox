@@ -1,4 +1,5 @@
-//
+#include "conf.h";
+
 extern int PUERTA_ABIERTA = 0;
 
 //ACTIONS
@@ -8,6 +9,7 @@ void setup() {
   Serial.begin(115200);  // Comunicación con la PC para depuración
   Serial3.begin(9600);   // Comunicación con el ESP8266
 
+  setupRFID();
   setupTeclado();
   setupPuerta();
 
@@ -16,7 +18,7 @@ void setup() {
 
 void sendNotification(String notification) {
   Serial.println("Enviando notificacion");
-    Serial.println(notification);
+  Serial.println(notification);
 
   Serial3.println("NOTIF_" + notification);
 }
@@ -24,5 +26,15 @@ void sendNotification(String notification) {
 
 void loop() {
   readSerial();
+
+  comprobarCartaRecibida();
+
   controlarTeclado();
+
+
+  checkPackageToScan();
+
+  checkOpenDoor();
+
+  checkCloseDoor();
 }

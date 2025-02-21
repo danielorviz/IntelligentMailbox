@@ -14,7 +14,7 @@ void sendNotification(String titulo,String mensaje){
   String result = "";
   delay(200);
   while (result == "" && intentos >0) {
-    result = Database.push<object_t>(aClientGeneral, NOTIFICATION_PATH , object_t(jsonMensaje.c_str()));
+    result = Database.push<object_t>(aClientGeneral, NOTIFICATION_PATH + ARDUINO_ID + "/" , object_t(jsonMensaje.c_str()));
     delay(1000);
     intentos--;
 

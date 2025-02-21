@@ -11,7 +11,7 @@ void setupPuerta(){
   servo1.attach(33);
   servo1.write(50);
 }
-void abrirPuerta() {
+void checkOpenDoor() {
   if (actionAbrirPuerta) {
     Serial.println("AUTORIZADO");
     PUERTA_ABIERTA = 1;
@@ -20,18 +20,18 @@ void abrirPuerta() {
     actionAbrirPuerta = false;
   } 
 }
-void comprobarPuerta(){
+void checkCloseDoor(){
   if (PUERTA_ABIERTA) {
     delay(300);
     int colisionado = analogRead(colision);
-    //Serial.println(colisionado);
-    if (colisionado < 500) {
+    Serial.println(colisionado);
+    if (colisionado < 100) {
       cerrarPuerta();
       resetKeypad();
     }
     delay(50);
     if (!PUERTA_ABIERTA && !isSensorPuertaColisionado()) {
-      abrirPuerta();
+      checkOpenDoor();
     }
   }
 }

@@ -22,7 +22,7 @@ LegacyToken dbSecret(FIREBASE_DATABASE_SECRET);
 
 // END FIREBASE CONFIGURATION
 
-const int BUFFER_SIZE = 128;     // Tamaño del buffer
+const int BUFFER_SIZE = 74;      // Tamaño del buffer
 char serialBuffer[BUFFER_SIZE];  // Buffer para almacenar datos
 int bufferIndex = 0;
 
@@ -51,11 +51,11 @@ void setup() {
 
   // SETUP FIREBASE
   ssl_clientGeneral.setInsecure();
-  ssl_clientGeneral.setBufferSizes(1024, 1024);
+  ssl_clientGeneral.setBufferSizes(1024, 512);
   ssl_clientGeneral.setTimeout(150);
 
   ssl_clientKeys.setInsecure();
-  ssl_clientKeys.setBufferSizes(4096, 1024);
+  ssl_clientKeys.setBufferSizes(3072, 1024);
   ssl_clientKeys.setTimeout(150);
 
 
@@ -101,17 +101,35 @@ void loop() {
       if (instructions.startsWith("DOOR_")) {
         String key = instructions.substring(5);
         key.trim();
-        if (checkAccess(key) >= 0) {
+        int validKeyIndex = checkKeyboardAccess(key);
+        if (validKeyIndex >= 0) {
           Serial.println("DOOR_OK");
-          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con la clave: ");
+          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con la clave: " + getAuthKeyName(validKeyIndex));
         } else {
           Serial.println("DOOR_KO");
           sendNotificationDoorOpenKO();
         }
-      }else if(instructions.startsWith("NOTIF_")){
+      } else if (instructions.startsWith("NOTIF_")) {
         String notification = instructions.substring(6);
         notification.trim();
         if (notification == "OPENKO") {
+          sendNotificationDoorOpenKO();
+        } else if (notification == "PACKAGE_PERM") {
+          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con su llave de acceso");
+        } else if (notification == "LETTER") {
+          sendNotification(NOTIFICACION_CARTA_RECIBIDA, "Ha recibido un nuevo correo");
+        } else if (notification == "FULL") {
+          sendNotification(NOTIFICACION_BUZON_LLENO, "Es posible que el buzón esté lleno o se haya atascado un correo");
+        }
+      } else if (instructions.startsWith("PACKAGE_")) {
+        String package = instructions.substring(8);
+        package.trim();
+        int validPackageIndex = checkPackageAccess(package);
+        if (validPackageIndex >= 0) {
+          Serial.println("DOOR_OK");
+          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con el paquete: " + getPackageKeyName(validPackageIndex));
+        } else {
+          Serial.println("DOOR_KO");
           sendNotificationDoorOpenKO();
         }
       }

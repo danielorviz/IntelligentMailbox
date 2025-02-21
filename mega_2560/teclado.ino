@@ -53,7 +53,7 @@ void controlarTeclado() {
       resetKeypad();
     }
   }
-  abrirPuerta();
+  
   if (TECLADO_START_COUNT && (millis() - TECLADO_START_MILLIS) >= TECLADO_MAX_MILLIS) {
     Serial.println("Teclado reseteado");
     resetKeypad();
@@ -61,7 +61,6 @@ void controlarTeclado() {
     Serial.println("wrong");
     sendNotification(notification_open_ko);
   }
-  comprobarPuerta();
   
 }
 
