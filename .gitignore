@@ -27,3 +27,4 @@ doc/api/
 .flutter-plugins-dependencies
 esp_8266/config.h
 mega_2560/conf.h
+intelligent_mailbox_app/android/app/google-services.json
