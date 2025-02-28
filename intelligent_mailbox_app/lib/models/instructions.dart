@@ -9,8 +9,7 @@ class Instructions {
     required this.open,
   });
 
-  factory Instructions.fromMap(Map<String, dynamic> data) {
-    print(data);
+  factory Instructions.fromMap(Map<dynamic, dynamic> data) {
     return Instructions(
       beep: data['beep'] ?? false,
       offset: data['offset'] ?? 0,

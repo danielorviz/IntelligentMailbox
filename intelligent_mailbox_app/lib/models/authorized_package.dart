@@ -11,7 +11,7 @@ class AuthorizedPackage {
     required this.value,
   });
 
-  factory AuthorizedPackage.fromMap(Map<String, dynamic> data) {
+  factory AuthorizedPackage.fromMap(Map<dynamic, dynamic> data) {
     return AuthorizedPackage(
       permanent: data['permanent'] ?? false,
       name: data['name'] ?? '',

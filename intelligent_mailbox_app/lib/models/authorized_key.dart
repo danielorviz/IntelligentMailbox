@@ -15,7 +15,7 @@ class AuthorizedKey {
     required this.value,
   });
 
-  factory AuthorizedKey.fromMap(Map<String, dynamic> data) {
+  factory AuthorizedKey.fromMap(Map<dynamic, dynamic> data) {
     return AuthorizedKey(
       initDate: data['initDate'] ?? 0,
       permanent: data['permanent'] ?? false,
