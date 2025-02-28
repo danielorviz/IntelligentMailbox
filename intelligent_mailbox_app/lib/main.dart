@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
 import 'package:intelligent_mailbox_app/pages/login_page.dart';
 
@@ -17,12 +18,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Intelligent Mailbox',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProxyProvider<UserProvider, MailboxProvider>(
+          create: (context) => MailboxProvider(Provider.of<UserProvider>(context, listen: false)),
+          update: (context, userProvider, mailboxProvider) => MailboxProvider(userProvider),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Intelligent Mailbox',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        ),
+        home: const AuthCheck(),
       ),
-      home: AuthCheck(),
     );
   }
 }
@@ -31,13 +41,16 @@ class AuthCheck extends StatelessWidget {
   const AuthCheck({super.key});
 
   @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return FutureBuilder<User?>(
       future: FirebaseAuth.instance.authStateChanges().first,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData && snapshot.data != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Provider.of<UserProvider>(context, listen: false).setUser(snapshot.data);
+          });
           return const MyHomePage(title: "Intelligent Mailbox");
         } else {
           return const LoginScreen();
@@ -46,4 +59,3 @@ class AuthCheck extends StatelessWidget {
     );
   }
 }
-

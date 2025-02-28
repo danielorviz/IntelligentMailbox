@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intelligent_mailbox_app/pages/home_page.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
+import 'package:intelligent_mailbox_app/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,60 +15,30 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseDatabase _database = FirebaseDatabase.instance;
+  final AuthService _authService = AuthService();
 
   Future<void> _signInWithGoogle(BuildContext context) async {
-    try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    final user = await _authService.signInWithGoogle();
 
-      if (googleUser == null) {
-        // El usuario canceló el inicio de sesión
-        return;
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
-
-      final User? user = userCredential.user;
-
-      if (user != null) {
-        // Verificar si el usuario ya existe en Realtime Database
-        final DatabaseReference userRef = _database
-            .ref()
-            .child('users')
-            .child(user.uid);
-
-        final DataSnapshot snapshot = await userRef.get();
-
-        if (!snapshot.exists) {
-          // Registrar al usuario si no existe
-          await userRef.set({
-            'uid': user.uid,
-            'name': user.displayName,
-            'email': user.email,
-            'photoURL': user.photoURL,
-          });
-        }
-
+    if (user != null) {
+      if (context.mounted) {
+        Provider.of<UserProvider>(context, listen: false).setUser(user);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder:
+                (context) => const MyHomePage(title: "Intelligent Mailbox"),
+          ),
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Bienvenido, ${user.displayName}!')),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error en la autenticación')),
+        );
+      }
     }
   }
 

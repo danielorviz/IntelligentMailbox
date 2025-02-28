@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/models/mailbox.dart';
+import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:provider/provider.dart';
 
 class DrawerMenu extends StatelessWidget {
   final VoidCallback onSignOut;
-  final String selectedMailbox;
-  final List<String> mailboxes;
-  //final ValueChanged<String?> onMailboxChanged;
 
-  const DrawerMenu({
+  DrawerMenu({
     super.key,
     required this.onSignOut,
-    required this.selectedMailbox,
-    required this.mailboxes,
-    //required this.onMailboxChanged,
   });
-
-  _onChange(String? newValue){
-    print(newValue);
-  }
 
   @override
   Widget build(BuildContext context) {
+    final mailboxProvider = Provider.of<MailboxProvider>(context);
+    final selectedMailbox = mailboxProvider.selectedMailbox;
+    final mailboxes = mailboxProvider.mailboxes;
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -38,9 +35,9 @@ class DrawerMenu extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.mail),
-            title: const Text('Seleccionar Buzón'),
+            title: const Text('Buzones'),
             trailing: DropdownButton<String>(
-              value: selectedMailbox,
+              value: selectedMailbox?.id,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
               style: const TextStyle(color: Colors.black),
@@ -48,11 +45,16 @@ class DrawerMenu extends StatelessWidget {
                 height: 2,
                 color: Colors.blue,
               ),
-              onChanged: _onChange,
-              items: mailboxes.map<DropdownMenuItem<String>>((String value) {
+              onChanged:(String? newValue) {
+                if (newValue != null) {
+                  final newMailbox = mailboxes.firstWhere((mailbox) => mailbox.id == newValue);
+                  mailboxProvider.selectMailbox(newMailbox);
+                }
+              },
+              items: mailboxes.map<DropdownMenuItem<String>>((Mailbox mailbox) {
                 return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+                  value: mailbox.id,
+                  child: Text(mailbox.name),
                 );
               }).toList(),
             ),
