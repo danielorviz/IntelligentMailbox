@@ -36,7 +36,7 @@ class DrawerMenu extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.mail),
             title: const Text('Buzones'),
-            trailing: DropdownButton<String>(
+            trailing: mailboxes.isNotEmpty ?  DropdownButton<String>(
               value: selectedMailbox?.id,
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
@@ -57,7 +57,11 @@ class DrawerMenu extends StatelessWidget {
                   child: Text(mailbox.name),
                 );
               }).toList(),
-            ),
+            ) : TextButton.icon(
+                onPressed: () => {print("pressed")},
+                icon: const Icon(Icons.add),
+                label: const Text('Añadir buzón'),
+              ), // Función para añadir un b6uzón
           ),
           ListTile(
             leading: const Icon(Icons.logout),

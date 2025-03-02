@@ -23,11 +23,20 @@ class MailboxProvider with ChangeNotifier {
     if (user != null) {
       try {
         _mailboxService.getUserMailboxKeys(user.uid).listen((mailboxKeys) {
+          if (mailboxKeys.isEmpty && _mailboxes.isNotEmpty) {
+            _mailboxes = [];
+            _selectedMailbox = null;
+            notifyListeners();
+            return;
+          }
           final mailboxStreams = mailboxKeys.map((key) => _mailboxService.getMailboxDetails(key));
           CombineLatestStream.list(mailboxStreams).listen((mailboxes) {
             _mailboxes = mailboxes;
+            print('Carrgando mailboxex: $mailboxes');
             if (_mailboxes.isNotEmpty && _selectedMailbox == null) {
               selectMailbox(_mailboxes.first);
+            }else if (_mailboxes.isEmpty){
+              _selectedMailbox = null;
             }
             notifyListeners();
           });
@@ -44,6 +53,9 @@ class MailboxProvider with ChangeNotifier {
 
   Future<void> selectMailbox(Mailbox mailbox) async {
     try {
+      if(_selectedMailbox == mailbox){
+        return;
+      }
       _selectedMailbox = mailbox;
       notifyListeners();
     } catch (e) {

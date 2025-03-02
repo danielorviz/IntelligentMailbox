@@ -35,6 +35,8 @@ class MailboxService {
         .onValue
         .map((event) {
       final value = event.snapshot.value;
+      print('value $value');
+
       if (value == null) {
         throw Exception('Mailbox not found');
       }
