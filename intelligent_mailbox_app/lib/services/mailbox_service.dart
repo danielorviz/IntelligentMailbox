@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
+import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 
 class MailboxService {
 
@@ -53,5 +54,25 @@ class MailboxService {
     }
     print(value);
     return Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
+  }
+
+  Stream<List<MailboxNotification>> getNotifications(String mailboxId) {
+    return _database
+        .child('notifications')
+        .child(mailboxId)
+        .onValue
+        .map((event) {
+      final notificationsMap = event.snapshot.value as Map<dynamic, dynamic>?;
+      print('notificationsMap: $notificationsMap');
+      if (notificationsMap == null) {
+        return <MailboxNotification>[];
+      }
+      List<MailboxNotification> notifications = [];
+      notificationsMap.forEach((key, value) {
+          notifications.add(MailboxNotification.fromJson(value as Map<dynamic, dynamic>));
+      });
+      print(notifications);
+      return notifications;
+    });
   }
 }

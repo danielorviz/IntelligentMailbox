@@ -7,10 +7,10 @@ class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
   @override
-  _HomeTabState createState() => _HomeTabState();
+  HomeTabState createState() => HomeTabState();
 }
 
-class _HomeTabState extends State<HomeTab> {
+class HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final mailboxProvider = Provider.of<MailboxProvider>(context);
