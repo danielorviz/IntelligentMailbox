@@ -33,7 +33,7 @@ class MailboxProvider with ChangeNotifier {
           CombineLatestStream.list(mailboxStreams).listen((mailboxes) {
             _mailboxes = mailboxes;
             print('Carrgando mailboxex: $mailboxes');
-            if (_mailboxes.isNotEmpty && _selectedMailbox == null) {
+            if (_mailboxes.isNotEmpty) {
               selectMailbox(_mailboxes.first);
             }else if (_mailboxes.isEmpty){
               _selectedMailbox = null;
@@ -54,7 +54,7 @@ class MailboxProvider with ChangeNotifier {
   Future<void> selectMailbox(Mailbox mailbox) async {
     try {
       if(_selectedMailbox == mailbox){
-        return;
+        //return;
       }
       _selectedMailbox = mailbox;
       notifyListeners();

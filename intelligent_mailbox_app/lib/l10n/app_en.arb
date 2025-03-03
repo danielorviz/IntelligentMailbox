@@ -1,0 +1,22 @@
+{
+  "appTitle": "Intelligent Mailbox",
+  "helloWorld": "Hello, World!",
+  "@appTitle": {
+    "description": "Title for the app"
+  },
+  "hello": "Hello {userName}",
+  "@hello": {
+  "description": "A message with a single parameter",
+  "placeholders": {
+    "userName": {
+      "type": "String",
+      "example": "Bob"
+     }
+    }
+  },
+  "home": "Home",
+  "packages": "Packages",
+  "keys":"Keys",
+  "mail": "Mail"
+
+}

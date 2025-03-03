@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MailboxTab extends StatelessWidget {
-  const MailboxTab({super.key});
+class AuthorizedKeysTab extends StatelessWidget {
+  const AuthorizedKeysTab({super.key});
 
   @override
   Widget build(BuildContext context) {

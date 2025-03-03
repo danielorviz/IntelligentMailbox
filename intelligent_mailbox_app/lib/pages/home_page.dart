@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/pages/login_page.dart';
 import 'package:intelligent_mailbox_app/pages/mailbox_tab.dart';
@@ -9,6 +10,7 @@ import 'package:intelligent_mailbox_app/pages/tabs/settings_tab.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
+import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/widgets/drawer_menu.dart';
 import 'package:intelligent_mailbox_app/widgets/bottom_navigation.dart';
 import 'package:provider/provider.dart';
@@ -22,8 +24,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-final AuthService _authService = AuthService();
-  
+  final AuthService _authService = AuthService();
+
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -31,12 +33,13 @@ final AuthService _authService = AuthService();
       _selectedIndex = index;
     });
   }
+
   Future<void> _signOut(BuildContext context) async {
     await _authService.signOut();
     if (context.mounted) {
       Provider.of<UserProvider>(context, listen: false).setUser(null);
       Navigator.of(context).pushReplacement(
-         MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }
   }
@@ -46,19 +49,22 @@ final AuthService _authService = AuthService();
     final mailboxProvider = Provider.of<MailboxProvider>(context);
 
     return Scaffold(
+      backgroundColor: CustomColors.backagroudBlue,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: CustomColors.primaryBlue,
+        title: Text(mailboxProvider.selectedMailbox?.name ??
+          AppLocalizations.of(context)!.appTitle,
+          style: TextStyle(color: CustomColors.unselectedItem, fontWeight: FontWeight.bold),
+        ),
+        iconTheme: const IconThemeData(color: CustomColors.unselectedItem),
       ),
-      drawer: DrawerMenu(
-        onSignOut: () => _signOut(context),
-      ),
+      drawer: DrawerMenu(onSignOut: () => _signOut(context)),
       body: IndexedStack(
         index: _selectedIndex,
         children: const <Widget>[
           HomeTab(),
-          MailboxTab(),
           NotificationsTab(),
+          AuthorizedKeysTab(),
           SettingsTab(),
           ProfileTab(),
         ],

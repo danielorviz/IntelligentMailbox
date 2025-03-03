@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 
 class BottomNavigation extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
-
   const BottomNavigation({
     super.key,
     required this.selectedIndex,
@@ -13,32 +14,37 @@ class BottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-          backgroundColor: Colors.blue,
+          icon: Icon(Icons.markunread_mailbox),
+          label: AppLocalizations.of(context)!.home,
+          backgroundColor: CustomColors.primaryBlue,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.mail),
-          label: 'Mailbox',
+          label: AppLocalizations.of(context)!.mail,
+          backgroundColor: CustomColors.primaryBlue,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notifications',
+          icon: Icon(Icons.dialpad),
+          label: AppLocalizations.of(context)!.keys,
+          backgroundColor: CustomColors.primaryBlue,
         ),
+        
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: 'Settings',
+          icon: Icon(Icons.nfc),
+          label: AppLocalizations.of(context)!.packages,
+          backgroundColor: CustomColors.primaryBlue,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
+          backgroundColor: CustomColors.primaryBlue,
         ),
       ],
       currentIndex: selectedIndex,
-      selectedItemColor: Colors.amber[800],
-      unselectedItemColor: Colors.black,
+      selectedItemColor: CustomColors.secondaryBlue,
+      unselectedItemColor:  CustomColors.unselectedItem,
       onTap: onItemTapped,
     );
   }

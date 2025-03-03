@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
@@ -18,16 +19,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProxyProvider<UserProvider, MailboxProvider>(
-          create: (context) => MailboxProvider(Provider.of<UserProvider>(context, listen: false)),
-          update: (context, userProvider, mailboxProvider) => MailboxProvider(userProvider),
+          create:
+              (context) => MailboxProvider(
+                Provider.of<UserProvider>(context, listen: false),
+              ),
+          update:
+              (context, userProvider, mailboxProvider) =>
+                  MailboxProvider(userProvider),
         ),
       ],
       child: MaterialApp(
-        title: 'Intelligent Mailbox',
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
@@ -41,7 +49,7 @@ class AuthCheck extends StatelessWidget {
   const AuthCheck({super.key});
 
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return FutureBuilder<User?>(
       future: FirebaseAuth.instance.authStateChanges().first,
       builder: (context, snapshot) {
@@ -49,7 +57,10 @@ class AuthCheck extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData && snapshot.data != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Provider.of<UserProvider>(context, listen: false).setUser(snapshot.data);
+            Provider.of<UserProvider>(
+              context,
+              listen: false,
+            ).setUser(snapshot.data);
           });
           return const MyHomePage(title: "Intelligent Mailbox");
         } else {

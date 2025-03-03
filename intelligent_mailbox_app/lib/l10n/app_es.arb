@@ -1,0 +1,21 @@
+{
+  "appTitle": "Mi Aplicación",
+  "helloWorld": "¡Hola Mundo!",
+  "@appTitle": {
+    "description": "Título de la aplicación"
+  },
+  "hello": "Hola {userName}",
+  "@hello": {
+  "description": "A message with a single parameter",
+  "placeholders": {
+    "userName": {
+      "type": "String",
+      "example": "Bob"
+     }
+    }
+  },
+  "home": "Inicio",
+  "packages": "Paquetes",
+  "keys":"Claves",
+  "mail": "Correo"
+}
