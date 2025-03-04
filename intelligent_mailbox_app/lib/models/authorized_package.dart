@@ -11,11 +11,11 @@ class AuthorizedPackage {
     required this.value,
   });
 
-  factory AuthorizedPackage.fromMap(Map<dynamic, dynamic> data) {
+  factory AuthorizedPackage.fromMap(Map<dynamic, dynamic> data, String documentId) {
     return AuthorizedPackage(
       permanent: data['permanent'] ?? false,
       name: data['name'] ?? '',
-      id: data['id'] ?? '',
+      id: documentId,
       value: data['value'] ?? '',
     );
   }

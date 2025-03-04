@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/pages/login_page.dart';
-import 'package:intelligent_mailbox_app/pages/mailbox_tab.dart';
+import 'package:intelligent_mailbox_app/pages/tabs/auth_keys_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/home_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/notifications_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/profile_tab.dart';
-import 'package:intelligent_mailbox_app/pages/tabs/settings_tab.dart';
+import 'package:intelligent_mailbox_app/pages/mailbox_settings.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final mailboxProvider = Provider.of<MailboxProvider>(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.backagroudBlue,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: CustomColors.primaryBlue,
         title: Text(mailboxProvider.selectedMailbox?.name ??
@@ -65,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
           HomeTab(),
           NotificationsTab(),
           AuthorizedKeysTab(),
-          SettingsTab(),
           ProfileTab(),
         ],
       ),

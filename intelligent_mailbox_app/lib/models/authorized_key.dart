@@ -15,13 +15,13 @@ class AuthorizedKey {
     required this.value,
   });
 
-  factory AuthorizedKey.fromMap(Map<dynamic, dynamic> data) {
+  factory AuthorizedKey.fromMap(Map<dynamic, dynamic> data, String documentId) {
     return AuthorizedKey(
       initDate: data['initDate'] ?? 0,
       permanent: data['permanent'] ?? false,
       name: data['name'] ?? '',
       finishDate: data['finishDate'] ?? 0,
-      id: data['id'] ?? '',
+      id: documentId,
       value: data['value'] ?? '',
     );
   }
@@ -32,7 +32,6 @@ class AuthorizedKey {
       'permanent': permanent,
       'name': name,
       'finishDate': finishDate,
-      'id': id,
       'value': value,
     };
   }

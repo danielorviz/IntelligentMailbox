@@ -36,11 +36,6 @@ class BottomNavigation extends StatelessWidget {
           label: AppLocalizations.of(context)!.packages,
           backgroundColor: CustomColors.primaryBlue,
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-          backgroundColor: CustomColors.primaryBlue,
-        ),
       ],
       currentIndex: selectedIndex,
       selectedItemColor: CustomColors.secondaryBlue,

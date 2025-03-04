@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
+import 'package:intelligent_mailbox_app/pages/mailbox_settings.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
@@ -96,6 +97,18 @@ class DrawerMenu extends StatelessWidget {
                       icon: const Icon(Icons.add),
                       label: const Text('Añadir buzón'),
                     ), // Función para añadir un b6uzón
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Configuración'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (context) => const MailboxSettingsScreen(),
+                ),
+        );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout),

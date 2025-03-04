@@ -4,6 +4,14 @@ import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 
 class MailboxService {
 
+  static final MailboxService _instance = MailboxService._internal();
+
+  MailboxService._internal();
+
+  factory MailboxService() {
+    return _instance;
+  }
+
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   Stream<List<String>> getUserMailboxKeys(String userId) {
