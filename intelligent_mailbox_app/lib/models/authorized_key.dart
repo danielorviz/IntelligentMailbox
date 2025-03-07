@@ -1,3 +1,5 @@
+import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
+
 class AuthorizedKey {
   final int initDate;
   final bool permanent;
@@ -34,5 +36,17 @@ class AuthorizedKey {
       'finishDate': finishDate,
       'value': value,
     };
+  }
+
+  DateTime getInitDateWithOffset(int offsetInSeconds) {
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(initDate, offsetInSeconds);
+  }
+
+  DateTime getFinishDateWithOffset(int offsetInSeconds) {
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(finishDate, offsetInSeconds);
+  }
+
+  bool isExpired(int offsetInSeconds) {
+    return DateTimeUtils.hasExpired(initDate, finishDate, offsetInSeconds);
   }
 }

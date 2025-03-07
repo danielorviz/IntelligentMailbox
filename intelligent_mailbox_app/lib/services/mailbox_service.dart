@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 
@@ -82,5 +83,49 @@ class MailboxService {
       print(notifications);
       return notifications;
     });
+  }
+
+  Future<void> saveSettings(String mailboxId, String mailboxName, int offset) async{
+    final updates = {
+      'mailbox/$mailboxId/name': mailboxName,
+      'mailbox/$mailboxId/instructions/offset': offset,
+    };
+    try {
+      await _database.update(updates);
+    } catch (error) {
+      print('Failed to save settings: $error');
+      rethrow; 
+    }
+  }
+
+ Future<void> createAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
+    try {
+      await _database.child('mailbox/$mailboxId/authorizedkeys').push().set(authorizedKey.toMap());
+      print('AuthorizedKey created: ${authorizedKey.toMap()}');
+    } catch (error) {
+      print('Failed to create AuthorizedKey: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> updateAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
+    final updates = {
+      'mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}': authorizedKey.toMap(),
+    };
+    try {
+      await _database.update(updates);
+      print('AuthorizedKey updated: ${authorizedKey.toMap()}');
+    } catch (error) {
+      print('Failed to update AuthorizedKey: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAuthorizedKey(String mailboxId, String authorizedKeyId) async {
+    try {
+      await _database.child('mailbox/$mailboxId/authorizedkeys/$authorizedKeyId').remove();
+    } catch (error) {
+      rethrow;
+    }
   }
 }

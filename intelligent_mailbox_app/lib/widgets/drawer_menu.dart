@@ -102,6 +102,7 @@ class DrawerMenu extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text('Configuración'),
             onTap: () {
+              Navigator.of(context).pop();
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder:

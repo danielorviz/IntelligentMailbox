@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MailboxSettingsScreen extends StatefulWidget {
@@ -11,7 +14,9 @@ class MailboxSettingsScreen extends StatefulWidget {
 class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   final TextEditingController _nameController = TextEditingController();
   bool _notificationsEnabled = false;
+  final MailboxService mailboxService = MailboxService();
   String _selectedOffset = 'system'; // El valor por defecto será "system"
+  String? _mailboxId;
 
   final List<Map<String, dynamic>> _offsetOptions = [
     {'label': 'Usar el offset del sistema', 'value': 'system'},
@@ -45,27 +50,59 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeSettings();
+    });
   }
 
-  void _loadSettings() async {
+  Future<void> _initializeSettings() async {
+    final mailboxProvider = Provider.of<MailboxProvider>(context, listen: false);
+    final mailbox = mailboxProvider.selectedMailbox;
+
+    if (mailbox != null) {
+      if(mounted){
+        setState(() {
+          _nameController.text = mailbox.name;
+          _selectedOffset = _offsetOptions.firstWhere(
+            (offset) => offset['value'] == mailbox.instructions.offset,
+            orElse: () => {'value': 'system'},
+          )['value'].toString();
+        });
+      }
+      _mailboxId = mailbox.id;
+      await _loadSettings(mailbox.id);
+    }
+  }
+
+   Future<void> _loadSettings(String mailboxId) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _nameController.text = prefs.getString('mailboxName') ?? '';
-      _notificationsEnabled = prefs.getBool('notificationsEnabled') ?? false;
-      _selectedOffset = prefs.getString('timeOffset') ?? 'system';
+      _notificationsEnabled = prefs.getBool('${mailboxId}_notificationsEnabled') ?? false;
     });
   }
 
   void _saveSettings() async {
+    if(_mailboxId == null) {
+      return;
+    }
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('mailboxName', _nameController.text);
-    prefs.setBool('notificationsEnabled', _notificationsEnabled);
-    prefs.setString('timeOffset', _getOffset().toString());
+    prefs.setBool('${_mailboxId}_notificationsEnabled', _notificationsEnabled);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Configuración guardada exitosamente')),
-    );
+    try {
+        await mailboxService.saveSettings(_mailboxId!, _nameController.text, _getOffset());
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Configuración guardada exitosamente')),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al guardar la configuración')),
+          );
+        }
+      }
   }
 
   int _getOffset() {
