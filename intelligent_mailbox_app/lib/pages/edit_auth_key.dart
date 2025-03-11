@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
@@ -61,7 +62,7 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
 
         setState(() {
           _initDate = combinedDateTime;
-          _finishDate = null; // Resetear la fecha de finalización
+          _finishDate = null;
         });
       }
     }
@@ -71,8 +72,8 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
 Future<void> _selectEndDate(BuildContext context) async {
   if (_initDate == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Debe seleccionar una fecha de inicio primero'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.mustSelectStartDate),
       ),
     );
     return;
@@ -108,10 +109,8 @@ Future<void> _selectEndDate(BuildContext context) async {
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'La fecha de finalización debe ser posterior a la de inicio',
-              ),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.endDateAfterStartDate),
             ),
           );
         }
@@ -125,9 +124,8 @@ Future<void> _selectEndDate(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       if (!_isPermanent && (_initDate == null || _finishDate == null)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Las fechas de inicio y finalización son obligatorias'),
-          ),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.mustSelectStartDate),),
         );
         return;
       }
@@ -141,7 +139,6 @@ Future<void> _selectEndDate(BuildContext context) async {
           finishDate: DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(_finishDate),
         );
         await _mailboxService.updateAuthorizedKey(widget.mailboxId, updatedKey);
-        print('Actualizado: ${updatedKey.toMap()}');
       }else{
           final newKey = AuthorizedKey(
           initDate: DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(_initDate),
@@ -152,14 +149,13 @@ Future<void> _selectEndDate(BuildContext context) async {
           finishDate: DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(_finishDate),
         );
         await _mailboxService.createAuthorizedKey(widget.mailboxId, newKey);
-        print('Guardado: ${newKey.toMap()}');
       }
       if(mounted){
         Navigator.pop(context);
 
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Actualizado correctamente'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.successfullyUpdated),
             ),
           );
       }
@@ -171,8 +167,7 @@ Future<void> _selectEndDate(BuildContext context) async {
   
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Editar Clave"),
-      backgroundColor: Colors.blue,
+      title: widget.keyData !=null ? Text(AppLocalizations.of(context)!.editKey) : Text(AppLocalizations.of(context)!.newKey),
     ),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -183,13 +178,13 @@ Future<void> _selectEndDate(BuildContext context) async {
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre de la Clave',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.keyName,
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Por favor, ingrese un nombre';
+                  return AppLocalizations.of(context)!.enterName;
                 }
                 return null;
               },
@@ -199,7 +194,7 @@ Future<void> _selectEndDate(BuildContext context) async {
               controller: _valueController,
               obscureText: _isObscured,
               decoration: InputDecoration(
-              labelText: 'Contraseña',
+              labelText: AppLocalizations.of(context)!.password,
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -214,7 +209,7 @@ Future<void> _selectEndDate(BuildContext context) async {
             ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Por favor, ingrese un valor';
+                  return AppLocalizations.of(context)!.enterValue;
                 }
                 return null;
               },
@@ -223,8 +218,8 @@ Future<void> _selectEndDate(BuildContext context) async {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Clave Permanente',
+                Text(
+                  AppLocalizations.of(context)!.permanentKey,
                   style: TextStyle(fontSize: 16),
                 ),
                 Switch(
@@ -240,21 +235,23 @@ Future<void> _selectEndDate(BuildContext context) async {
             if (!_isPermanent) ...[
               const SizedBox(height: 16),
               ListTile(
-                title: const Text('Fecha de Inicio'),
+                title: Text(AppLocalizations.of(context)!.startDate,
+                style: Theme.of(context).textTheme.headlineSmall,),
                 subtitle: Text(
                   _initDate != null
-                      ? _initDate!.toLocal().toString()
-                      : 'Seleccione una fecha',
+                      ?  ("${DateTimeUtils.formatDate(_initDate!.toLocal())}   ${DateTimeUtils.formatTime(_initDate!.toLocal())}")
+                      : AppLocalizations.of(context)!.selectDate,
                 ),
                 trailing: const Icon(Icons.calendar_month),
                 onTap: () => _selectStartDate(context),
               ),
               ListTile(
-                title: const Text('Fecha de Finalización'),
+                title: Text(AppLocalizations.of(context)!.endDate,
+                style: Theme.of(context).textTheme.headlineSmall,),
                 subtitle: Text(
                   _finishDate != null
-                      ? _finishDate!.toLocal().toString()
-                      : 'Seleccione una fecha',
+                      ?  "${DateTimeUtils.formatDate(_finishDate!.toLocal())}   ${DateTimeUtils.formatTime(_finishDate!.toLocal())}"
+                      : AppLocalizations.of(context)!.selectDate,
                 ),
                 trailing: const Icon(Icons.calendar_month),
                 onTap: _initDate == null
@@ -267,9 +264,8 @@ Future<void> _selectEndDate(BuildContext context) async {
               onPressed: _saveKey,
                 style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.blue,
               ),
-              child: const Text('Guardar', style: TextStyle(fontSize: 18)),
+              child: Text(AppLocalizations.of(context)!.save, style: TextStyle(fontSize: 18)),
             ),
           ],
         ),

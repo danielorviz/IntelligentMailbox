@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/pages/mailbox_settings.dart';

@@ -18,7 +18,8 @@ class ConfirmationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: Text(content),
+      content: Text(content,
+      style: Theme.of(context).textTheme.bodyMedium,),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),

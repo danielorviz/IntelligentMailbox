@@ -122,7 +122,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración del Buzón'),
-        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -186,7 +185,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                 onPressed: _saveSettings,
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: Colors.blue,
                 ),
                 child: const Text(
                   'Guardar Configuración',

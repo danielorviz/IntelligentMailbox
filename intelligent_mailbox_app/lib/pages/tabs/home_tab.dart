@@ -39,47 +39,52 @@ class HomeTabState extends State<HomeTab> {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'Mailbox Overview',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Mailbox Overview',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 20),
+          if (lastAuthorizedKey != null) ...[
+            Text(
+              'Última clave autorizada usada:',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text(
+              'Nombre: ${lastAuthorizedKey.name}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Text(
+              'Fecha de inicio: ${DateTime.fromMillisecondsSinceEpoch(lastAuthorizedKey.initDate * 1000)}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Text(
+              'Fecha de finalización: ${DateTime.fromMillisecondsSinceEpoch(lastAuthorizedKey.finishDate * 1000)}',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 20),
-            if (lastAuthorizedKey != null) ...[
-              const Text(
-                'Última clave autorizada usada:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text('Nombre: ${lastAuthorizedKey.name}'),
-              Text(
-                'Fecha de inicio: ${DateTime.fromMillisecondsSinceEpoch(lastAuthorizedKey.initDate * 1000)}',
-              ),
-              Text(
-                'Fecha de finalización: ${DateTime.fromMillisecondsSinceEpoch(lastAuthorizedKey.finishDate * 1000)}',
-              ),
-              const SizedBox(height: 20),
-            ],
-            if (lastPackage != null) ...[
-              const Text(
-                'Último paquete recibido:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text('Nombre: ${lastPackage.name}'),
-              Text('Valor: ${lastPackage.value}'),
-              const SizedBox(height: 20),
-            ],
-            const Text(
-              'Notificaciones recibidas',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 300,
-              child: NotificationsChart(counts: counts, dates: dates),
-            ),
           ],
-        ),
+          if (lastPackage != null) ...[
+            Text(
+              'Último paquete recibido:',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text('Nombre: ${lastPackage.name}'),
+            Text('Valor: ${lastPackage.value}'),
+            const SizedBox(height: 20),
+          ],
+          Text(
+            'Notificaciones recibidas',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          SizedBox(
+            height: 300,
+            child: NotificationsChart(counts: counts, dates: dates),
+          ),
+        ],
+      ),
     );
   }
 }

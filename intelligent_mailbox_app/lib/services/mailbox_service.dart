@@ -28,12 +28,10 @@ class MailboxService {
       }
       List<String> mailboxKeys = [];
       mailboxesMap.forEach((key, value) {
-        print('key: $key, value: $value');
         if (value == true) {
           mailboxKeys.add(key);
         }
       });
-      print(mailboxKeys);
       return mailboxKeys;
     });
   }
@@ -45,7 +43,6 @@ class MailboxService {
         .onValue
         .map((event) {
       final value = event.snapshot.value;
-      print('value $value');
 
       if (value == null) {
         throw Exception('Mailbox not found');
@@ -61,7 +58,6 @@ class MailboxService {
     if (value == null) {
       return {};
     }
-    print(value);
     return Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
   }
 
@@ -72,7 +68,6 @@ class MailboxService {
         .onValue
         .map((event) {
       final notificationsMap = event.snapshot.value as Map<dynamic, dynamic>?;
-      print('notificationsMap: $notificationsMap');
       if (notificationsMap == null) {
         return <MailboxNotification>[];
       }
@@ -80,7 +75,6 @@ class MailboxService {
       notificationsMap.forEach((key, value) {
           notifications.add(MailboxNotification.fromJson(value as Map<dynamic, dynamic>));
       });
-      print(notifications);
       return notifications;
     });
   }
@@ -101,7 +95,6 @@ class MailboxService {
  Future<void> createAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
     try {
       await _database.child('mailbox/$mailboxId/authorizedkeys').push().set(authorizedKey.toMap());
-      print('AuthorizedKey created: ${authorizedKey.toMap()}');
     } catch (error) {
       print('Failed to create AuthorizedKey: $error');
       rethrow;
@@ -114,7 +107,6 @@ class MailboxService {
     };
     try {
       await _database.update(updates);
-      print('AuthorizedKey updated: ${authorizedKey.toMap()}');
     } catch (error) {
       print('Failed to update AuthorizedKey: $error');
       rethrow;
