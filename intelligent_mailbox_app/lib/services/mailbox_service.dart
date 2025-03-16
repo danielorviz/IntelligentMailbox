@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
+import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 
@@ -116,6 +117,35 @@ class MailboxService {
   Future<void> deleteAuthorizedKey(String mailboxId, String authorizedKeyId) async {
     try {
       await _database.child('mailbox/$mailboxId/authorizedkeys/$authorizedKeyId').remove();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+   Future<void> createAuthorizedPackage(String mailboxId, AuthorizedPackage authorizedPackage) async {
+    try {
+      await _database.child('mailbox/$mailboxId/authorizedPackages').push().set(authorizedPackage.toMap());
+    } catch (error) {
+      print('Failed to create AuthorizedPackage: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> updateAuthorizedPackage(String mailboxId, AuthorizedPackage authorizedPackage) async {
+    final updates = {
+      'mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}': authorizedPackage.toMap(),
+    };
+    try {
+      await _database.update(updates);
+    } catch (error) {
+      print('Failed to update AuthorizedPackage: $error');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAuthorizedPackage(String mailboxId, String authorizedPackageId) async {
+    try {
+      await _database.child('mailbox/$mailboxId/authorizedPackages/$authorizedPackageId').remove();
     } catch (error) {
       rethrow;
     }

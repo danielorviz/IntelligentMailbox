@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intelligent_mailbox_app/pages/edit_auth_key.dart';
+import 'package:intelligent_mailbox_app/pages/edit_package.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
-import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
-import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
 import 'package:provider/provider.dart';
 
-class AuthorizedKeysTab extends StatelessWidget {
-  const AuthorizedKeysTab({super.key});
+class PackagesTab extends StatelessWidget {
+
+
+  const PackagesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
-
-    final int offsetInSeconds =
-        mailboxProvider.selectedMailbox?.instructions.offset ?? 0;
-
     if (mailbox == null) {
       return Center(
         child: Text(AppLocalizations.of(context)!.noMailboxSelected,
@@ -28,9 +23,9 @@ class AuthorizedKeysTab extends StatelessWidget {
       );
     }
 
-    if(mailbox.authorizedKeys.isEmpty){
+    if (mailbox.authorizedPackages.isEmpty) {
       return Center(
-        child: Text(AppLocalizations.of(context)!.haveNoAuthKeys,
+        child: Text(AppLocalizations.of(context)!.haveNoPackages,
         style: Theme.of(context).textTheme.headlineSmall,),
       );
     }
@@ -40,32 +35,21 @@ class AuthorizedKeysTab extends StatelessWidget {
         slivers: [
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-              final key = mailbox.authorizedKeys[index];
-              final bool isExpired =
-                  key.permanent ? false : key.isExpired(offsetInSeconds);
+              final key = mailbox.authorizedPackages[index];
 
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
-                          (context) => EditAuthKeyScreen(
+                          (context) => EditPackageScreen(
                             mailboxId: mailbox.id,
                             keyData: key,
-                            offset: mailbox.instructions.offset,
                           ),
                     ),
                   );
                 },
                 child: Card(
-                  color:
-                      isExpired
-                          ? (isDarkTheme
-                              ? AppTheme.cardExpiredDark
-                              : AppTheme.cardExpiredLight)
-                          : (isDarkTheme
-                              ? AppTheme.cardActiveDark
-                              : AppTheme.cardActiveLight),
                   margin: const EdgeInsets.symmetric(
                     vertical: 8.0,
                     horizontal: 16.0,
@@ -89,8 +73,8 @@ class AuthorizedKeysTab extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Icon(
-                                  isExpired ? Icons.lock_open : Icons.lock,
-                                  color: isExpired ? Colors.red : Colors.green,
+                                  Icons.inventory_2_outlined,
+                                  color:  Colors.green,
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -110,14 +94,14 @@ class AuthorizedKeysTab extends StatelessWidget {
                                               content:
                                                   AppLocalizations.of(
                                                     context,
-                                                  )!.confirmDeleteAuthKey,
+                                                  )!.confirmDeleteAuthPackage,
                                             );
                                           },
                                         );
 
                                     if (confirm == true) {
                                       await MailboxService()
-                                          .deleteAuthorizedKey(
+                                          .deleteAuthorizedPackage(
                                             mailbox.id,
                                             key.id,
                                           );
@@ -128,8 +112,8 @@ class AuthorizedKeysTab extends StatelessWidget {
                                           SnackBar(
                                             content: Text(
                                               AppLocalizations.of(
-                                                context,
-                                              )!.authKeyDeleted,
+                                                context, 
+                                              )!.authPackageDeleted,
                                             ),
                                           ),
                                         );
@@ -142,83 +126,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        if (!key.permanent) ...{
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                children: [
-                                  const Icon(Icons.date_range, size: 18),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        DateTimeUtils.formatDate(
-                                          key.getInitDateWithOffset(
-                                            offsetInSeconds,
-                                          ),
-                                        ),
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        DateTimeUtils.formatTime(
-                                          key.getInitDateWithOffset(
-                                            offsetInSeconds,
-                                          ),
-                                        ),
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodyLarge,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  const Icon(Icons.date_range, size: 18),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        DateTimeUtils.formatDate(
-                                          key.getFinishDateWithOffset(
-                                            offsetInSeconds,
-                                          ),
-                                        ),
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodyLarge,
-                                      ),
-                                      Text(
-                                        DateTimeUtils.formatTime(
-                                          key.getFinishDateWithOffset(
-                                            offsetInSeconds,
-                                          ),
-                                        ),
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodyLarge,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 4),
-                        } else ...{
+                        if (key.permanent) ...{
                           Row(
                             children: [
                               const Icon(Icons.key, size: 16),
@@ -235,7 +143,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                   ),
                 ),
               );
-            }, childCount: mailbox.authorizedKeys.length),
+            }, childCount: mailbox.authorizedPackages.length),
           ),
           SliverPadding(padding: const EdgeInsets.only(bottom: 80)),
         ],
@@ -246,9 +154,8 @@ class AuthorizedKeysTab extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder:
-                  (context) => EditAuthKeyScreen(
+                  (context) => EditPackageScreen(
                     mailboxId: mailbox.id,
-                    offset: mailbox.instructions.offset,
                   ),
             ),
           );

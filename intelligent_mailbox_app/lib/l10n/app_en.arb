@@ -36,6 +36,15 @@
   "startDate": "Start date",
   "endDate": "End date",
   "selectDate": "Select a date",
-  "save": "Save"
+  "save": "Save",
+  "haveNoAuthKeys":"You have no authorized keys",
+  "haveNoPackages":"Has no authorized packages",
+  "confirmDeleteAuthPackage": "Are you sure you want to delete this authorized package?",
+  "authPackageDeleted": "Authorized package removed",
+  "editPackage":"Edit package",
+  "newPackage": "New package",
+  "packageCode": "Package code",
+  "enterPackageCode": "Please enter a package code",
+  "permanentAccess": "Permanent access"
 
 }

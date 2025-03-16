@@ -4,7 +4,7 @@ import 'package:intelligent_mailbox_app/pages/login_page.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/auth_keys_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/home_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/notifications_tab.dart';
-import 'package:intelligent_mailbox_app/pages/tabs/profile_tab.dart';
+import 'package:intelligent_mailbox_app/pages/tabs/packages_tab.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
@@ -23,7 +23,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final AuthService _authService = AuthService();
-
+  static const List<Widget> _widgetOptions = <Widget>[
+    HomeTab(),
+          NotificationsTab(),
+          AuthorizedKeysTab(key: ValueKey("keys_tab")),
+          PackagesTab(key: ValueKey("packages_tab")),
+  ];
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -54,15 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
         iconTheme: const IconThemeData(color: CustomColors.unselectedItem),
       ),
       drawer: DrawerMenu(onSignOut: () => _signOut(context)),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: const <Widget>[
-          HomeTab(),
-          NotificationsTab(),
-          AuthorizedKeysTab(),
-          ProfileTab(),
-        ],
-      ),
+      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigation(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,

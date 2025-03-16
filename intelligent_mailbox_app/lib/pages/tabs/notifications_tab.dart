@@ -31,7 +31,12 @@ class NotificationsTabState extends State<NotificationsTab> {
           print('snapshot error: ${snapshot.error}');
           return const Center(child: Text('Error loading notifications'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No notifications found'));
+          return Center(
+            child: Text(
+              'No notifications found',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          );
         } else {
           final notifications = snapshot.data!;
           return Column(

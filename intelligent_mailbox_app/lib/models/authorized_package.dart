@@ -24,7 +24,6 @@ class AuthorizedPackage {
     return {
       'permanent': permanent,
       'name': name,
-      'id': id,
       'value': value,
     };
   }

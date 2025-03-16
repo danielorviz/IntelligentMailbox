@@ -36,5 +36,14 @@
   "startDate": "Fecha de inicio",
   "endDate": "Fecha de finalización",
   "selectDate": "Seleccione una fecha",
-  "save": "Guardar"
+  "save": "Guardar",
+  "haveNoAuthKeys":"No tiene claves autorizadas",
+  "haveNoPackages":"No tiene paquetes autorizados",
+  "confirmDeleteAuthPackage": "¿Estás seguro de que deseas eliminar este paquete autorizado?",
+  "authPackageDeleted": "Paquete autorizado eliminado",
+  "editPackage":"Editar paquete",
+  "newPackage": "Nuevo paquete",
+  "packageCode": "Código del paquete",
+  "enterPackageCode": "Por favor, introduzca un código de paquete",
+  "permanentAccess": "Acceso permanente"
 }
