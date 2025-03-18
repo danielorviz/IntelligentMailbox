@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 #include <WiFiUdp.h>
 #include <NTPClient.h>
+#include <ESP8266WebServer.h>
 // Step 2
 void asyncCB(AsyncResult &aResult);
 void printResult(AsyncResult &aResult);
@@ -34,20 +35,16 @@ bool resetOpen = false;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 
+ESP8266WebServer server(80);
 
 bool conectado = false;
 int contador = 0;
 
 void setup() {
   Serial.begin(9600);  // Comunicación con ATmega2560
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  // Espera conexión WiFi
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Conectando a WiFi...");
-  }
-  Serial.println("Conexión WiFi exitosa");
+  delay(2000);
+  while(!Serial){}
+  setupWiFiModule();
 
   // SETUP FIREBASE
   ssl_clientGeneral.setInsecure();

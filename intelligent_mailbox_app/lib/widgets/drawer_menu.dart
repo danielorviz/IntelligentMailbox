@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
-import 'package:intelligent_mailbox_app/pages/mailbox_settings.dart';
+import 'package:intelligent_mailbox_app/pages/configuration/mailbox_settings.dart';
+import 'package:intelligent_mailbox_app/pages/configuration/new_mailbox_configuration_screen.dart';
+import 'package:intelligent_mailbox_app/pages/configuration/wifi_configuration_screen.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
@@ -95,7 +97,7 @@ class DrawerMenu extends StatelessWidget {
                       onPressed: () => {print("pressed")},
                       icon: const Icon(Icons.add),
                       label: const Text('Añadir buzón'),
-                    ), // Función para añadir un b6uzón
+                    ), 
           ),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -106,6 +108,19 @@ class DrawerMenu extends StatelessWidget {
                 MaterialPageRoute(
                   builder:
                       (context) => const MailboxSettingsScreen(),
+                ),
+        );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Añadir buzón'),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (context) => const NewMailboxConfigurationScreen(),
                 ),
         );
             },
