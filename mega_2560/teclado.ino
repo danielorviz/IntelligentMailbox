@@ -46,9 +46,15 @@ void controlarTeclado() {
         keySound();
         Serial.println("pulsando");
       }
+      Serial.print("Puerta: ");
+      Serial.println(PUERTA_ABIERTA);
       keypadKey += tecla;
     } else if (tecla == '#' && !PUERTA_ABIERTA) {
-      Serial3.println("DOOR_" + keypadKey);
+      Serial.print("Enviando: ");
+      String instruction = "DOOR_" + keypadKey;
+      Serial.println(instruction);
+      Serial3.println(instruction);
+      delay(100);
 
       resetKeypad();
     }

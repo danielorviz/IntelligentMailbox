@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
+import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:provider/provider.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 import 'package:http/http.dart' as http;
 import 'package:wifi_iot/wifi_iot.dart';
+import 'package:flutter/services.dart';
 
 class NewMailboxConfigurationScreen extends StatefulWidget {
   const NewMailboxConfigurationScreen({super.key});
@@ -13,6 +17,9 @@ class NewMailboxConfigurationScreen extends StatefulWidget {
 
 class _NewMailboxConfigurationScreenState
     extends State<NewMailboxConfigurationScreen> {
+  
+  final MailboxService _mailboxService = MailboxService();
+  late UserProvider _userProvider;
   List<WiFiAccessPoint> accessPoints = [];
   String selectedSSID = '';
   final TextEditingController passwordController = TextEditingController();
@@ -30,7 +37,9 @@ class _NewMailboxConfigurationScreenState
   @override
   void initState() {
     super.initState();
-    _startScan();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _userProvider = Provider.of<UserProvider>(context, listen: false);
+    });
     setState(() {
       mailboxIdController.text = 'ardboxmail-7854';
       mailboxIpController.text = '192.168.4.1';
@@ -73,16 +82,26 @@ class _NewMailboxConfigurationScreenState
       _isConnectedToAP = false;
       isLoadingPrincipal = true;
     });
-    bool isConnected = await WiFiForIoTPlugin.connect(
-      ssid,
-      password: password,
-      security: NetworkSecurity.WPA,
-      joinOnce: true,
-      withInternet: true,
-    );
+    //bool isConnected = await WiFiForIoTPlugin.connect(
+    //  ssid,
+    // password: password,
+    //  security: NetworkSecurity.WPA,
+    //  joinOnce: true,
+    //  withInternet: true,
+    //);
 
-    await Future.delayed(Duration(seconds: 8));
-    isConnected = await WiFiForIoTPlugin.isConnected();
+    bool isConnected = await WiFiForIoTPlugin.isConnected();
+    String? newSSID = await WiFiForIoTPlugin.getSSID();
+    isConnected = isConnected && newSSID == ssid;
+
+    //while (!isConnected && attempts > 0 && newSSID != ssid) {
+    //  attempts--;
+    //  isConnected = await WiFiForIoTPlugin.isConnected();
+    //  newSSID = await WiFiForIoTPlugin.getSSID();
+    //  isConnected = isConnected && newSSID == ssid;
+    //  print(newSSID);
+    //  await Future.delayed(Duration(seconds: 2));
+    //}
     setState(() {
       _isConnectedToAP = isConnected;
       isLoadingPrincipal = false;
@@ -111,14 +130,61 @@ class _NewMailboxConfigurationScreenState
     );
   }
 
-  void _showConnectionErrorDialog() {
+  void _showConnectionErrorDialog(String ssid, String password) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Error de Conexión"),
-          content: Text(
-            "No se pudo conectar al punto de acceso del Arduino. Verifique las credenciales e intente de nuevo.",
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "No se pudo conectar al punto de acceso del Arduino. Verifique las credenciales e intente de nuevo.",
+              ),
+              SizedBox(height: 16),
+              Text(
+                "Conéctese manualmente a la red Wi-Fi:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    ssid,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                "Contraseña:",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: SelectableText(
+                      password,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: password));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Contraseña copiada al portapapeles"),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -134,6 +200,9 @@ class _NewMailboxConfigurationScreenState
   }
 
   Future<void> _startScan() async {
+    setState(() {
+      isLoadingPrincipal = true;
+    });
     final can = await WiFiScan.instance.canStartScan(askPermissions: true);
     switch (can) {
       case CanStartScan.yes:
@@ -149,7 +218,8 @@ class _NewMailboxConfigurationScreenState
     final aps = await WiFiScan.instance.getScannedResults();
     setState(() {
       aps.sort((a, b) => b.level.compareTo(a.level));
-      accessPoints = aps;
+      accessPoints = aps.where((ap) => ap.ssid.isNotEmpty && ap.ssid != mailboxIdController.text).toList();
+      isLoadingPrincipal = false;
     });
   }
 
@@ -213,7 +283,7 @@ class _NewMailboxConfigurationScreenState
       }
       await connectToArduinoAP(mailboxIdController.text, '123456789');
       if (!_isConnectedToAP) {
-        _showConnectionErrorDialog();
+        _showConnectionErrorDialog(mailboxIdController.text, '123456789');
         return;
       }
       await _startScan();
@@ -223,6 +293,7 @@ class _NewMailboxConfigurationScreenState
       if (!isMailboxConnected) {
         return;
       }
+      await _mailboxService.createMailbox(mailboxIdController.text, _userProvider.user!.uid, 3600);
     }
     setState(() {
       _currentStep += 1;

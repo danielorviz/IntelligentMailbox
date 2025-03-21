@@ -7,6 +7,7 @@ import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
+import 'package:intelligent_mailbox_app/widgets/custom_floating_button.dart';
 import 'package:provider/provider.dart';
 
 class AuthorizedKeysTab extends StatelessWidget {
@@ -23,15 +24,28 @@ class AuthorizedKeysTab extends StatelessWidget {
 
     if (mailbox == null) {
       return Center(
-        child: Text(AppLocalizations.of(context)!.noMailboxSelected,
-        style: Theme.of(context).textTheme.headlineSmall,),
+        child: Text(
+          AppLocalizations.of(context)!.noMailboxSelected,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       );
     }
 
-    if(mailbox.authorizedKeys.isEmpty){
-      return Center(
-        child: Text(AppLocalizations.of(context)!.haveNoAuthKeys,
-        style: Theme.of(context).textTheme.headlineSmall,),
+    if (mailbox.authorizedKeys.isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            AppLocalizations.of(context)!.haveNoAuthKeys,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ),
+        floatingActionButton: CustomFloatingActionButton(
+          pageBuilder:
+              (context) => EditAuthKeyScreen(
+                mailboxId: mailbox.id,
+                offset: mailbox.instructions.offset,
+              ),
+        ),
       );
     }
 
@@ -240,21 +254,12 @@ class AuthorizedKeysTab extends StatelessWidget {
           SliverPadding(padding: const EdgeInsets.only(bottom: 80)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => EditAuthKeyScreen(
-                    mailboxId: mailbox.id,
-                    offset: mailbox.instructions.offset,
-                  ),
+      floatingActionButton: CustomFloatingActionButton(
+        pageBuilder:
+            (context) => EditAuthKeyScreen(
+              mailboxId: mailbox.id,
+              offset: mailbox.instructions.offset,
             ),
-          );
-        },
-        backgroundColor: CustomColors.primaryBlue,
-        child: const Icon(Icons.add, color: CustomColors.unselectedItem),
       ),
     );
   }

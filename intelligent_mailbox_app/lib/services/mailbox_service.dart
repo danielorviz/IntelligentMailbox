@@ -79,14 +79,28 @@ class MailboxService {
       return notifications;
     });
   }
+  Future<void> createMailbox(String mailboxId, String userId, int offset) async{
+    try {
+      await FirebaseDatabase.instance.ref("mailbox/$mailboxId").update({
+        "name": mailboxId,
+        "id": mailboxId, 
+        "instructions/offset": offset,
+        "instructions/open": false,
+        "users": {
+          userId: true,
+        },
+      });
+      await FirebaseDatabase.instance.ref("users/$userId/mailbox/$mailboxId").set(true);
+    } catch (error) {
+      print('Failed to save settings: $error');
+      rethrow; 
+    }
+  }
 
   Future<void> saveSettings(String mailboxId, String mailboxName, int offset) async{
-    final updates = {
-      'mailbox/$mailboxId/name': mailboxName,
-      'mailbox/$mailboxId/instructions/offset': offset,
-    };
     try {
-      await _database.update(updates);
+      await FirebaseDatabase.instance.ref("mailbox/$mailboxId/name").set(mailboxName);
+      await FirebaseDatabase.instance.ref("mailbox/$mailboxId/instructions/offset").set(offset);
     } catch (error) {
       print('Failed to save settings: $error');
       rethrow; 
@@ -94,8 +108,9 @@ class MailboxService {
   }
 
  Future<void> createAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
+    DatabaseReference authKeys = FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedkeys");
     try {
-      await _database.child('mailbox/$mailboxId/authorizedkeys').push().set(authorizedKey.toMap());
+      await authKeys.push().set(authorizedKey.toMap());
     } catch (error) {
       print('Failed to create AuthorizedKey: $error');
       rethrow;
@@ -103,11 +118,8 @@ class MailboxService {
   }
 
   Future<void> updateAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
-    final updates = {
-      'mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}': authorizedKey.toMap(),
-    };
     try {
-      await _database.update(updates);
+      await FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}").update(authorizedKey.toMap());
     } catch (error) {
       print('Failed to update AuthorizedKey: $error');
       rethrow;
@@ -123,8 +135,9 @@ class MailboxService {
   }
 
    Future<void> createAuthorizedPackage(String mailboxId, AuthorizedPackage authorizedPackage) async {
+    final DatabaseReference authPackage = FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedPackages");
     try {
-      await _database.child('mailbox/$mailboxId/authorizedPackages').push().set(authorizedPackage.toMap());
+      await authPackage.push().set(authorizedPackage.toMap());
     } catch (error) {
       print('Failed to create AuthorizedPackage: $error');
       rethrow;
@@ -132,11 +145,9 @@ class MailboxService {
   }
 
   Future<void> updateAuthorizedPackage(String mailboxId, AuthorizedPackage authorizedPackage) async {
-    final updates = {
-      'mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}': authorizedPackage.toMap(),
-    };
+    final DatabaseReference authPackage = FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}");
     try {
-      await _database.update(updates);
+      await authPackage.update(authorizedPackage.toMap());
     } catch (error) {
       print('Failed to update AuthorizedPackage: $error');
       rethrow;

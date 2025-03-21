@@ -5,11 +5,10 @@ import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
+import 'package:intelligent_mailbox_app/widgets/custom_floating_button.dart';
 import 'package:provider/provider.dart';
 
 class PackagesTab extends StatelessWidget {
-
-
   const PackagesTab({super.key});
 
   @override
@@ -18,15 +17,24 @@ class PackagesTab extends StatelessWidget {
     final mailbox = mailboxProvider.selectedMailbox;
     if (mailbox == null) {
       return Center(
-        child: Text(AppLocalizations.of(context)!.noMailboxSelected,
-        style: Theme.of(context).textTheme.headlineSmall,),
+        child: Text(
+          AppLocalizations.of(context)!.noMailboxSelected,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       );
     }
 
     if (mailbox.authorizedPackages.isEmpty) {
-      return Center(
-        child: Text(AppLocalizations.of(context)!.haveNoPackages,
-        style: Theme.of(context).textTheme.headlineSmall,),
+      return Scaffold(
+        body: Center(
+          child: Text(
+            AppLocalizations.of(context)!.haveNoPackages,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ),
+        floatingActionButton: CustomFloatingActionButton(
+          pageBuilder: (context) => EditPackageScreen(mailboxId: mailbox.id),
+        ),
       );
     }
 
@@ -74,7 +82,7 @@ class PackagesTab extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.inventory_2_outlined,
-                                  color:  Colors.green,
+                                  color: Colors.green,
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -112,7 +120,7 @@ class PackagesTab extends StatelessWidget {
                                           SnackBar(
                                             content: Text(
                                               AppLocalizations.of(
-                                                context, 
+                                                context,
                                               )!.authPackageDeleted,
                                             ),
                                           ),
@@ -148,20 +156,8 @@ class PackagesTab extends StatelessWidget {
           SliverPadding(padding: const EdgeInsets.only(bottom: 80)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => EditPackageScreen(
-                    mailboxId: mailbox.id,
-                  ),
-            ),
-          );
-        },
-        backgroundColor: CustomColors.primaryBlue,
-        child: const Icon(Icons.add, color: CustomColors.unselectedItem),
+      floatingActionButton: CustomFloatingActionButton(
+        pageBuilder: (context) => EditPackageScreen(mailboxId: mailbox.id),
       ),
     );
   }

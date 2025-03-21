@@ -11,9 +11,11 @@ const char* apPassword = "123456789";
 
 void setupWiFiModule() {
   Serial.println("SETUP WIFI");
-  WiFi.disconnect(true);
-  WiFi.begin();
+  //WiFi.disconnect(true);
+  
   if (WiFi.SSID().length() > 0) {
+    WiFi.mode(WIFI_STA);
+    WiFi.begin();
     Serial.println(WiFi.SSID());
 
     bool conected = connectToWiFi();
@@ -21,7 +23,8 @@ void setupWiFiModule() {
       return;
     }
   }
-
+  WiFi.mode(WIFI_AP);
+  WiFi.begin();
   // Si no están guardadas, iniciar el servidor web para recibir credenciales
   Serial.println("Esperando credenciales...");
   // Configurar el dispositivo como Access Point con IP estática
@@ -78,7 +81,11 @@ void handleConfigure() {
 
       // Responder al cliente con un mensaje de éxito
       server.send(200, "text/plain", "Credenciales recibidas. Intentando conectar...");
+      delay(4000);
+      
       server.stop();
+      WiFi.mode(WIFI_STA);
+      WiFi.begin();
     } else {
       server.send(403, "text/plain", "Faltan parámetros: ssid, password, email, accountPassword.");
     }

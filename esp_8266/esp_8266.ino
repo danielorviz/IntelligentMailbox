@@ -12,7 +12,7 @@ void printResult(AsyncResult &aResult);
 
 //FIREBASE CONFIGURATION
 DefaultNetwork network;
-//UserAuth user_auth(FIREBASE_WEB_KEY, FIREBASE_AUTH_MAIL, FIREBASE_PASS);
+UserAuth user_auth(FIREBASE_WEB_KEY, FIREBASE_AUTH_MAIL, FIREBASE_PASS);
 FirebaseApp app;
 WiFiClientSecure ssl_clientGeneral, ssl_clientKeys;
 using AsyncClient = AsyncClientClass;
@@ -22,11 +22,6 @@ RealtimeDatabase Database;
 LegacyToken dbSecret(FIREBASE_DATABASE_SECRET);
 
 // END FIREBASE CONFIGURATION
-
-const int BUFFER_SIZE = 74;      // Tamaño del buffer
-char serialBuffer[BUFFER_SIZE];  // Buffer para almacenar datos
-int bufferIndex = 0;
-
 
 bool onetimeTest = false;
 bool resetOpen = false;
@@ -43,20 +38,20 @@ int contador = 0;
 void setup() {
   Serial.begin(9600);  // Comunicación con ATmega2560
   delay(2000);
-  while(!Serial){}
+  while (!Serial) {}
   setupWiFiModule();
 
   // SETUP FIREBASE
   ssl_clientGeneral.setInsecure();
-  ssl_clientGeneral.setBufferSizes(1024, 512);
+  ssl_clientGeneral.setBufferSizes(1024, 510);
   ssl_clientGeneral.setTimeout(150);
 
   ssl_clientKeys.setInsecure();
-  ssl_clientKeys.setBufferSizes(3072, 1024);
+  ssl_clientKeys.setBufferSizes(1024, 512);
   ssl_clientKeys.setTimeout(150);
 
 
-  initializeApp(aClientGeneral, app, getAuth(dbSecret), asyncCB, "authTask");
+  initializeApp(aClientGeneral, app, getAuth(user_auth), asyncCB, "authTask");
   app.getApp<RealtimeDatabase>(Database);
   Database.url(FIREBASE_DATABASE_URL);
   // FIN SETUP FIREBASE
@@ -69,8 +64,8 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
   DynamicJsonDocument doc(1024);
   DeserializationError error = deserializeJson(doc, firebaseData);
   if (error) {
-    Serial.print("Error al deserializar el JSON: ");
-    Serial.println(error.c_str());
+    Serial.println("Error al deserializar el JSON: ");
+    //Serial.println(error.c_str());
     return DynamicJsonDocument(0);
   }
   return doc;
@@ -82,6 +77,7 @@ void updateTimeOffset(int offset) {
 }
 
 void loop() {
+  readSerial();
   timeClient.update();
   app.loop();
   Database.loop();
@@ -92,45 +88,7 @@ void loop() {
 
       onetimeTest = true;
     }
-    if (Serial.available()) {
-      String instructions = Serial.readStringUntil('\n');
-
-      if (instructions.startsWith("DOOR_")) {
-        String key = instructions.substring(5);
-        key.trim();
-        int validKeyIndex = checkKeyboardAccess(key);
-        if (validKeyIndex >= 0) {
-          Serial.println("DOOR_OK");
-          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con la clave: " + getAuthKeyName(validKeyIndex));
-        } else {
-          Serial.println("DOOR_KO");
-          sendNotificationDoorOpenKO();
-        }
-      } else if (instructions.startsWith("NOTIF_")) {
-        String notification = instructions.substring(6);
-        notification.trim();
-        if (notification == "OPENKO") {
-          sendNotificationDoorOpenKO();
-        } else if (notification == "PACKAGE_PERM") {
-          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con su llave de acceso");
-        } else if (notification == "LETTER") {
-          sendNotification(NOTIFICACION_CARTA_RECIBIDA, "Ha recibido un nuevo correo");
-        } else if (notification == "FULL") {
-          sendNotification(NOTIFICACION_BUZON_LLENO, "Es posible que el buzón esté lleno o se haya atascado un correo");
-        }
-      } else if (instructions.startsWith("PACKAGE_")) {
-        String package = instructions.substring(8);
-        package.trim();
-        int validPackageIndex = checkPackageAccess(package);
-        if (validPackageIndex >= 0) {
-          Serial.println("DOOR_OK");
-          sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con el paquete: " + getPackageKeyName(validPackageIndex));
-        } else {
-          Serial.println("DOOR_KO");
-          sendNotificationDoorOpenKO();
-        }
-      }
-    }
+    
     if (resetOpen) {
       Serial.print("resetResult: ");
       bool result = Database.set<bool>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/instructions/open", false);
@@ -187,14 +145,18 @@ void printResult(AsyncResult &aResult) {
         String path = RTDB.dataPath().c_str();
 
         if (path == "/") {
-          initAuthorizedKeys(doc["authorizedkeys"]);
+          if(doc["authorizedkeys"].is<JsonObject>())
+            initAuthorizedKeys(doc["authorizedkeys"]);
 
-          initAuthorizedPackages(doc["authorizedPackages"]);
+          if(doc["authorizedPackages"].is<JsonObject>())
+            initAuthorizedPackages(doc["authorizedPackages"]);
 
-          JsonObject instructions = doc["instructions"];
-          onInstructionOpen(instructions["open"].as<bool>());
+          if(doc["instructions"].is<JsonObject>()){
+            JsonObject instructions = doc["instructions"];
+            onInstructionOpen(instructions["open"].as<bool>());
 
-          onInstructionOffset(instructions["offset"].as<int>());
+            onInstructionOffset(instructions["offset"].as<int>());
+          }
 
           conectado = true;
 
