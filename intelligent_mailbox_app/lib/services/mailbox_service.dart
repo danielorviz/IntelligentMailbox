@@ -76,6 +76,7 @@ class MailboxService {
       notificationsMap.forEach((key, value) {
           notifications.add(MailboxNotification.fromJson(value as Map<dynamic, dynamic>));
       });
+      notifications.sort((a, b) => b.time.compareTo(a.time));
       return notifications;
     });
   }
