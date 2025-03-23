@@ -319,6 +319,32 @@ class _NewMailboxConfigurationScreenState
                       _currentStep -= 1;
                     })
                     : null,
+            controlsBuilder: (BuildContext context, ControlsDetails details) {
+              final isLastStep = _currentStep == 2;
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (!isLastStep)
+                    ElevatedButton(
+                      onPressed: details.onStepContinue,
+                      child: const Text('Continuar'),
+                    ),
+                  if (isLastStep)
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Finalizar'),
+                    ),
+                  if (_currentStep > 0 && !isLastStep)
+                    TextButton(
+                      onPressed: details.onStepCancel,
+                      child: const Text('Cancelar'),
+                    ),
+                ],
+              );
+            },
             steps: [
               Step(
                 title: Text('Configurar Buzón'),
