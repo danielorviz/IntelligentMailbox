@@ -4,7 +4,6 @@ import 'package:intelligent_mailbox_app/pages/edit_auth_key.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';
-import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
 import 'package:intelligent_mailbox_app/widgets/custom_floating_button.dart';

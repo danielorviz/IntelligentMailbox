@@ -26,7 +26,7 @@ class _WifiConfigurationScreenState extends State<WifiConfigurationScreen> {
     final can = await WiFiScan.instance.canStartScan(askPermissions: true);
     switch (can) {
       case CanStartScan.yes:
-        final isScanning = await WiFiScan.instance.startScan();
+        await WiFiScan.instance.startScan();
         _loadAccessPoints();
         break;
       default:
