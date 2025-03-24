@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
-import 'package:intelligent_mailbox_app/pages/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +63,7 @@ class AuthCheck extends StatelessWidget {
           });
           return const MyHomePage(title: "Intelligent Mailbox");
         } else {
-          return const LoginScreen();
+          return const AuthLoginScreen();
         }
       },
     );

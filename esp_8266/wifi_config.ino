@@ -10,17 +10,27 @@ const char* apssid = "ardboxmail-7854";
 const char* apPassword = "123456789";
 
 void setupWiFiModule() {
+
   Serial.println("SETUP WIFI");
   //WiFi.disconnect(true);
-  
-  if (WiFi.SSID().length() > 0) {
-    WiFi.mode(WIFI_STA);
-    WiFi.begin();
-    Serial.println(WiFi.SSID());
 
-    bool conected = connectToWiFi();
-    if (conected) {
-      return;
+  if (WiFi.SSID().length() > 0) {
+
+    Serial.println("FIRE_READ");
+    while (fireuser == "" || firepass == "") {
+      delay(100);
+      readSerial();
+      delay(1000);
+    }
+    if (fireuser != "break;" && firepass != "break;") {
+      WiFi.mode(WIFI_STA);
+      WiFi.begin();
+      Serial.println(WiFi.SSID());
+
+      bool conected = connectToWiFi();
+      if (conected) {
+        return;
+      }
     }
   }
   WiFi.mode(WIFI_AP);
@@ -42,7 +52,8 @@ void setupWiFiModule() {
   Serial.println(WiFi.softAPIP());
 
   // Configurar el servidor web para recibir las credenciales
-  server.on("/", HTTP_POST, handleConfigure);
+  server.on("/wifi", HTTP_POST, handleConfigure);
+  server.on("/firebase", HTTP_POST, handleFirebase);
 
   // Iniciar el servidor
   server.begin();
@@ -56,7 +67,7 @@ bool connectToWiFi() {
   int intentos = 10;
   // Espera conexión WiFi
   while (WiFi.status() != WL_CONNECTED && intentos > 0) {
-    delay(1000);
+    delay(2000);
     intentos--;
     Serial.println("Conectando a WiFi...");
   }
@@ -82,13 +93,39 @@ void handleConfigure() {
       // Responder al cliente con un mensaje de éxito
       server.send(200, "text/plain", "Credenciales recibidas. Intentando conectar...");
       delay(4000);
-      
+
       server.stop();
       WiFi.mode(WIFI_STA);
       WiFi.begin();
     } else {
       server.send(403, "text/plain", "Faltan parámetros: ssid, password, email, accountPassword.");
     }
+
+  } else {
+    server.send(400, "text/plain", "Faltan parámetros: ssid, password, email, accountPassword.");
+  }
+}
+
+void handleFirebase() {
+  Serial.println("comprobando");
+  if (server.hasArg("user") && server.hasArg("password")) {
+    //boolean result = EEPROM.wipe();
+    //boolean ok = EEPROM.commitReset();
+
+
+    fireuser = server.arg("user");
+    firepass = server.arg("password");
+
+    Serial.println("FIRE_WRITE_U_"+fireuser);
+    delay(1000);
+    Serial.println("FIRE_WRITE_P_"+firepass);
+    delay(500);
+    Serial.println("Credenciales recibidas:");
+    Serial.println("user: " + fireuser);
+    Serial.println("Contraseña firebase: " + firepass);
+
+
+    server.send(200, "text/plain", "Credenciales recibidas. Intentando conectar...");
 
   } else {
     server.send(400, "text/plain", "Faltan parámetros: ssid, password, email, accountPassword.");

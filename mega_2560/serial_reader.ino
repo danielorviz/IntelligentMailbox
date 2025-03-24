@@ -16,7 +16,31 @@ void processMessage(char* message) {
       keySoundWrong();
     }
 
-  } else {
+  }else if (dataFromESP.startsWith("FIRE_READ")) {
+    String pass = readFirebasePass();
+    String user = readFirebaseUser();
+    Serial.println("Enviando datos firebase" );
+
+    Serial3.println("USER_"+user);
+    delay(100);
+    Serial3.println("PASS_"+pass);
+    delay(100);
+    
+  }else if (dataFromESP.startsWith("FIRE_WRITE_U_")) {
+    String user = dataFromESP.substring(13);
+    user.trim();
+    Serial.println("recibiendo user: " + user);
+    writeFirebaseUser(user);
+
+    
+  }else if (dataFromESP.startsWith("FIRE_WRITE_P_")) {
+    String pass = dataFromESP.substring(13);
+    pass.trim();
+    Serial.println("recibiendo pass: " + pass);
+
+    writeFirebasePassword(pass);
+    
+  }  else {
     // Si no comienza con "TO_", es un mensaje de debug
     Serial.println("DEBUG: " + dataFromESP);
   }

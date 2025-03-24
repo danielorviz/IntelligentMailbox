@@ -6,13 +6,14 @@
 #include <WiFiUdp.h>
 #include <NTPClient.h>
 #include <ESP8266WebServer.h>
+
 // Step 2
 void asyncCB(AsyncResult &aResult);
 void printResult(AsyncResult &aResult);
 
 //FIREBASE CONFIGURATION
 DefaultNetwork network;
-UserAuth user_auth(FIREBASE_WEB_KEY, FIREBASE_AUTH_MAIL, FIREBASE_PASS);
+
 FirebaseApp app;
 WiFiClientSecure ssl_clientGeneral, ssl_clientKeys;
 using AsyncClient = AsyncClientClass;
@@ -33,11 +34,16 @@ NTPClient timeClient(ntpUDP);
 ESP8266WebServer server(80);
 
 bool conectado = false;
+bool sendConnectedNotif = true;
+
 int contador = 0;
 
+String firepass="";
+String fireuser="";
 void setup() {
   Serial.begin(9600);  // Comunicación con ATmega2560
   delay(2000);
+  
   while (!Serial) {}
   setupWiFiModule();
 
@@ -50,7 +56,11 @@ void setup() {
   ssl_clientKeys.setBufferSizes(1024, 512);
   ssl_clientKeys.setTimeout(150);
 
-
+  Serial.print("conectando con credenciales: ");
+  Serial.print(fireuser);
+  Serial.print(" ");
+  Serial.println(firepass);
+  UserAuth user_auth(FIREBASE_WEB_KEY, fireuser, firepass);
   initializeApp(aClientGeneral, app, getAuth(user_auth), asyncCB, "authTask");
   app.getApp<RealtimeDatabase>(Database);
   Database.url(FIREBASE_DATABASE_URL);
@@ -95,9 +105,9 @@ void loop() {
       Serial.println(result);
       resetOpen = !result;
     }
-    if (conectado) {
+    if (conectado && sendConnectedNotif) {
       sendNotification(NOTIFICACION_CONEXION_CORRECTA, "Buzon conectado");
-      conectado = false;
+      sendConnectedNotif = false;
     }
   }
   delay(1000);  // Intervalo para verificar Firebase

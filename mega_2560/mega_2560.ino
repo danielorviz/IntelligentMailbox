@@ -14,6 +14,9 @@ void setup() {
   setupPuerta();
 
   Serial.println("ATmega2560 listo para comunicarse con ESP8266.");
+  //clearFirebaseUser();
+  //clearFirebasePassword();
+
 }
 
 void sendNotification(String notification) {

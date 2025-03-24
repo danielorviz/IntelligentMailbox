@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
+import 'package:intelligent_mailbox_app/services/auth_service.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:provider/provider.dart';
 import 'package:wifi_scan/wifi_scan.dart';
@@ -17,48 +19,65 @@ class NewMailboxConfigurationScreen extends StatefulWidget {
 
 class _NewMailboxConfigurationScreenState
     extends State<NewMailboxConfigurationScreen> {
-  
+  // Services
   final MailboxService _mailboxService = MailboxService();
+  final AuthService _authService = AuthService();
   late UserProvider _userProvider;
-  List<WiFiAccessPoint> accessPoints = [];
-  String selectedSSID = '';
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController mailboxIdController = TextEditingController();
-  final TextEditingController mailboxIpController = TextEditingController();
 
+  // Step control
   int _currentStep = 0;
-  bool isMailboxIdValid = false;
-  bool isMailboxConnected = false;
   bool isLoadingPrincipal = false;
 
+  //Step 0
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _accountVerified = false;
+
+  //Step 1
   bool _isWiFiEnabled = false;
+  bool isMailboxIdValid = false;
+  bool isMailboxConnected = false;
+  final TextEditingController mailboxIdController = TextEditingController();
+  final TextEditingController mailboxKeyController = TextEditingController();
+  MailboxInitialConfig? _mailboxInitialConfig;
+
+  // Step 2
   bool _isConnectedToAP = false;
+  bool _credentialsSended = false;
+
+  // Step 3
+  List<WiFiAccessPoint> accessPoints = [];
+  String selectedSSID = '';
+  final TextEditingController ssidPasswordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _startScan();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _userProvider = Provider.of<UserProvider>(context, listen: false);
-    });
-    setState(() {
-      mailboxIdController.text = 'ardboxmail-7854';
-      mailboxIpController.text = '192.168.4.1';
-      isMailboxIdValid = true;
+      setState(() {
+        _emailController.text = _userProvider.user!.email!;
+        mailboxIdController.text = 'ardboxmail-7854';
+        mailboxKeyController.text = 'abc\$123';
+        isMailboxIdValid = true;
+      });
     });
 
     mailboxIdController.addListener(() {
       setState(() {
         isMailboxIdValid =
             mailboxIdController.text.isNotEmpty &&
-            mailboxIpController.text.isNotEmpty;
+            mailboxKeyController.text.isNotEmpty;
       });
     });
 
-    mailboxIpController.addListener(() {
+    mailboxKeyController.addListener(() {
       setState(() {
         isMailboxIdValid =
             mailboxIdController.text.isNotEmpty &&
-            mailboxIpController.text.isNotEmpty;
+            mailboxKeyController.text.isNotEmpty;
       });
     });
   }
@@ -82,26 +101,10 @@ class _NewMailboxConfigurationScreenState
       _isConnectedToAP = false;
       isLoadingPrincipal = true;
     });
-    //bool isConnected = await WiFiForIoTPlugin.connect(
-    //  ssid,
-    // password: password,
-    //  security: NetworkSecurity.WPA,
-    //  joinOnce: true,
-    //  withInternet: true,
-    //);
-
     bool isConnected = await WiFiForIoTPlugin.isConnected();
     String? newSSID = await WiFiForIoTPlugin.getSSID();
     isConnected = isConnected && newSSID == ssid;
-
-    //while (!isConnected && attempts > 0 && newSSID != ssid) {
-    //  attempts--;
-    //  isConnected = await WiFiForIoTPlugin.isConnected();
-    //  newSSID = await WiFiForIoTPlugin.getSSID();
-    //  isConnected = isConnected && newSSID == ssid;
-    //  print(newSSID);
-    //  await Future.delayed(Duration(seconds: 2));
-    //}
+    print("SSID: $ssid newssid: $newSSID conectado $isConnected");
     setState(() {
       _isConnectedToAP = isConnected;
       isLoadingPrincipal = false;
@@ -130,7 +133,7 @@ class _NewMailboxConfigurationScreenState
     );
   }
 
-  void _showConnectionErrorDialog(String ssid, String password) {
+  void _showConnectionErrorDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -141,49 +144,10 @@ class _NewMailboxConfigurationScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "No se pudo conectar al punto de acceso del Arduino. Verifique las credenciales e intente de nuevo.",
+                "No se pudo conectar al punto de acceso del Arduino. Verifique de nuevo la conexión y vuelva a intentarlo.",
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
               SizedBox(height: 16),
-              Text(
-                "Conéctese manualmente a la red Wi-Fi:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Text(
-                    ssid,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Text(
-                "Contraseña:",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: SelectableText(
-                      password,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: password));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Contraseña copiada al portapapeles"),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
             ],
           ),
           actions: [
@@ -218,9 +182,110 @@ class _NewMailboxConfigurationScreenState
     final aps = await WiFiScan.instance.getScannedResults();
     setState(() {
       aps.sort((a, b) => b.level.compareTo(a.level));
-      accessPoints = aps.where((ap) => ap.ssid.isNotEmpty && ap.ssid != mailboxIdController.text).toList();
+      accessPoints =
+          aps
+              .where(
+                (ap) =>
+                    ap.ssid.isNotEmpty && ap.ssid != mailboxIdController.text,
+              )
+              .toList();
       isLoadingPrincipal = false;
     });
+  }
+
+  Future<void> _verifyAccount() async {
+    try {
+      setState(() {
+        isLoadingPrincipal = true;
+      });
+      final user = await _authService.getFirebaseUser(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Correo o contraseña incorrectos')),
+        );
+        return;
+      }
+      setState(() {
+        _accountVerified = true;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al iniciar sesión')));
+    } finally {
+      setState(() {
+        isLoadingPrincipal = false;
+      });
+    }
+  }
+
+  Future<void> _loadMailboxInitialConfig() async {
+    try {
+      setState(() {
+        isLoadingPrincipal = true;
+        _mailboxInitialConfig = null;
+      });
+      final initialConfig = await _mailboxService.getMailboxInitializer(
+        mailboxIdController.text,
+        mailboxKeyController.text,
+      );
+      if (initialConfig == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Buzón no encontrado. Verifique el ID y la clave.'),
+          ),
+        );
+        return;
+      }
+      setState(() {
+        _mailboxInitialConfig = initialConfig;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al cargar informacion')));
+    } finally {
+      setState(() {
+        isLoadingPrincipal = false;
+      });
+    }
+  }
+
+  Future<void> _sendFirebaseCredentials(String ssid, String password) async {
+    setState(() {
+      isLoadingPrincipal = true;
+      _credentialsSended = false;
+    });
+    try {
+      final url = Uri.parse('http://${_mailboxInitialConfig!.ip}/firebase');
+
+      final response = await http.post(
+        url,
+        body: {'user': ssid, 'password': password},
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Credenciales enviadas correctamente.')),
+        );
+        setState(() {
+          _credentialsSended = true;
+        });
+      } 
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al enviar credenciales.')));
+    } finally {
+      setState(() {
+        isLoadingPrincipal = false;
+      });
+    }
   }
 
   Future<void> _sendCredentials(String ssid, String password) async {
@@ -231,7 +296,7 @@ class _NewMailboxConfigurationScreenState
     });
     try {
       final url = Uri.parse(
-        'http://${mailboxIpController.text}/',
+        'http://${_mailboxInitialConfig!.ip}/wifi',
       ); // IP del Arduino
 
       final response = await http.post(
@@ -276,24 +341,43 @@ class _NewMailboxConfigurationScreenState
 
   void _nextStep() async {
     if (_currentStep == 0) {
+      await _verifyAccount();
+      if (!_accountVerified) {
+        return;
+      }
+    }
+    if (_currentStep == 1) {
+      await _loadMailboxInitialConfig();
+      if (_mailboxInitialConfig == null) {
+        return;
+      }
+    }
+    if (_currentStep == 2) {
       await _initializeWiFi();
       if (!_isWiFiEnabled) {
         _showWiFiDisabledDialog();
         return;
       }
-      await connectToArduinoAP(mailboxIdController.text, '123456789');
+      await connectToArduinoAP(mailboxIdController.text, ssidPasswordController.text);
       if (!_isConnectedToAP) {
-        _showConnectionErrorDialog(mailboxIdController.text, '123456789');
+        _showConnectionErrorDialog();
         return;
       }
-      await _startScan();
+      await _sendFirebaseCredentials(_emailController.text, _passwordController.text);
+      if (!_credentialsSended) {
+        return;
+      }
     }
-    if (_currentStep == 1) {
-      await _sendCredentials(selectedSSID, passwordController.text);
+    if (_currentStep == 3) {
+      await _sendCredentials(selectedSSID, ssidPasswordController.text);
       if (!isMailboxConnected) {
         return;
       }
-      await _mailboxService.createMailbox(mailboxIdController.text, _userProvider.user!.uid, 3600);
+      await _mailboxService.createMailbox(
+        mailboxIdController.text,
+        _userProvider.user!.uid,
+        3600,
+      );
     }
     setState(() {
       _currentStep += 1;
@@ -310,7 +394,7 @@ class _NewMailboxConfigurationScreenState
             type: StepperType.vertical,
             currentStep: _currentStep,
             onStepContinue:
-                (isMailboxIdValid || _currentStep > 0) && _currentStep != 1
+                (isMailboxIdValid || _currentStep > 0) && _currentStep != 3
                     ? _nextStep
                     : null,
             onStepCancel:
@@ -320,7 +404,7 @@ class _NewMailboxConfigurationScreenState
                     })
                     : null,
             controlsBuilder: (BuildContext context, ControlsDetails details) {
-              final isLastStep = _currentStep == 2;
+              final isLastStep = _currentStep == 4;
 
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -347,7 +431,51 @@ class _NewMailboxConfigurationScreenState
             },
             steps: [
               Step(
-                title: Text('Configurar Buzón'),
+                title: Text('Verifique su cuenta'),
+                content: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: _emailController,
+                        enabled: false,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.email),
+                          labelText: 'Correo Electrónico',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: !_isPasswordVisible,
+                        decoration: InputDecoration(
+                          labelText: 'Contraseña',
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Step(
+                title: Text('Datos del Buzón'),
                 content: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Column(
@@ -362,11 +490,75 @@ class _NewMailboxConfigurationScreenState
                       ),
                       const SizedBox(height: 16),
                       TextField(
-                        controller: mailboxIpController,
+                        controller: mailboxKeyController,
                         decoration: InputDecoration(
-                          labelText: 'IP del Buzón',
+                          labelText: 'Clave del Buzón',
                           border: OutlineInputBorder(),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Step(
+                title: Text('Conectar a buzón'),
+                content: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Por favor, para conntinuar conéctese manualmente a la red Wi-Fi del buzón:",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                            _mailboxInitialConfig?.id ?? '',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        "Contraseña:",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SelectableText(
+                              _mailboxInitialConfig?.wifiPass ?? '',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.copy),
+                            onPressed: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                  text: _mailboxInitialConfig!.wifiPass,
+                                ),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Contraseña copiada al portapapeles",
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -440,7 +632,7 @@ class _NewMailboxConfigurationScreenState
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: passwordController,
+                controller: ssidPasswordController,
                 decoration: InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
               ),

@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
+import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 
 class MailboxService {
@@ -160,6 +161,24 @@ class MailboxService {
       await _database.child('mailbox/$mailboxId/authorizedPackages/$authorizedPackageId').remove();
     } catch (error) {
       rethrow;
+    }
+  }
+
+  Future<MailboxInitialConfig?> getMailboxInitializer(String mailboxId, String key) async {
+    try {
+      final configuration = await _database.child('configuration/mailboxes/$mailboxId').get();
+      if (configuration.value != null) {
+        final data = Map<String, dynamic>.from(configuration.value as Map<dynamic, dynamic>);
+        if(data["key"] == null || data["key"] != key) {
+          return null;
+        }
+        return MailboxInitialConfig.fromMap(data, mailboxId);
+      } else {
+        return null;
+
+      }
+    } catch (error) {
+      return null;
     }
   }
 }
