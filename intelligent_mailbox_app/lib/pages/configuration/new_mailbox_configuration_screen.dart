@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
@@ -104,7 +105,6 @@ class _NewMailboxConfigurationScreenState
     bool isConnected = await WiFiForIoTPlugin.isConnected();
     String? newSSID = await WiFiForIoTPlugin.getSSID();
     isConnected = isConnected && newSSID == ssid;
-    print("SSID: $ssid newssid: $newSSID conectado $isConnected");
     setState(() {
       _isConnectedToAP = isConnected;
       isLoadingPrincipal = false;
@@ -116,16 +116,14 @@ class _NewMailboxConfigurationScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Wi-Fi Desactivado"),
-          content: Text(
-            "El Wi-Fi está desactivado. Por favor, actívelo para continuar.",
-          ),
+          title: Text(AppLocalizations.of(context)!.wifiDisabled),
+          content: Text(AppLocalizations.of(context)!.wifiDisabledMessage),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.confirm),
             ),
           ],
         );
@@ -138,13 +136,13 @@ class _NewMailboxConfigurationScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error de Conexión"),
+          title: Text( AppLocalizations.of(context)!.connectionError),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "No se pudo conectar al punto de acceso del Arduino. Verifique de nuevo la conexión y vuelva a intentarlo.",
+                AppLocalizations.of(context)!.arduinoAPConnectionError,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               SizedBox(height: 16),
@@ -155,7 +153,7 @@ class _NewMailboxConfigurationScreenState
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("OK"),
+              child: Text(AppLocalizations.of(context)!.confirm),
             ),
           ],
         );
@@ -204,18 +202,14 @@ class _NewMailboxConfigurationScreenState
       );
 
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Correo o contraseña incorrectos')),
-        );
+        _showMessage(_getAppLocalizations()?.incorrectCredentials ?? '');
         return;
       }
       setState(() {
         _accountVerified = true;
       });
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error al iniciar sesión')));
+      _showMessage(_getAppLocalizations()?.accountVerificationError ?? '');
     } finally {
       setState(() {
         isLoadingPrincipal = false;
@@ -234,20 +228,14 @@ class _NewMailboxConfigurationScreenState
         mailboxKeyController.text,
       );
       if (initialConfig == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Buzón no encontrado. Verifique el ID y la clave.'),
-          ),
-        );
+        _showMessage(_getAppLocalizations()?.mailboxNotFound ?? '');
         return;
       }
       setState(() {
         _mailboxInitialConfig = initialConfig;
       });
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error al cargar informacion')));
+      _showMessage(_getAppLocalizations()?.informationVerificationError ?? '');
     } finally {
       setState(() {
         isLoadingPrincipal = false;
@@ -255,7 +243,7 @@ class _NewMailboxConfigurationScreenState
     }
   }
 
-  Future<void> _sendFirebaseCredentials(String ssid, String password) async {
+  Future<void> _sendFirebaseCredentials(String user, String password) async {
     setState(() {
       isLoadingPrincipal = true;
       _credentialsSended = false;
@@ -265,22 +253,18 @@ class _NewMailboxConfigurationScreenState
 
       final response = await http.post(
         url,
-        body: {'user': ssid, 'password': password},
+        body: {'user': user, 'password': password},
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Credenciales enviadas correctamente.')),
-        );
         setState(() {
           _credentialsSended = true;
         });
-      } 
+      } else if (response.statusCode == 400) {
+        _showMessage(_getAppLocalizations()?.mailboxConnectionError ?? '');
+      }
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error al enviar credenciales.')));
+      _showMessage(_getAppLocalizations()?.mailboxConnectionError ?? '');
     } finally {
       setState(() {
         isLoadingPrincipal = false;
@@ -295,9 +279,7 @@ class _NewMailboxConfigurationScreenState
       isMailboxConnected = false;
     });
     try {
-      final url = Uri.parse(
-        'http://${_mailboxInitialConfig!.ip}/wifi',
-      ); // IP del Arduino
+      final url = Uri.parse('http://${_mailboxInitialConfig!.ip}/wifi');
 
       final response = await http.post(
         url,
@@ -305,24 +287,15 @@ class _NewMailboxConfigurationScreenState
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Credenciales enviadas correctamente.')),
-        );
+        _showMessage(_getAppLocalizations()?.mailboxConnectedWiFi ?? '');
         connected = true;
       } else if (response.statusCode == 403) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Credenciales incorrectas.')));
+        _showMessage(_getAppLocalizations()?.wifiCredentialsError ?? '');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al enviar credenciales.')),
-        );
+        _showMessage(_getAppLocalizations()?.mailboxConnectionError ?? '');
       }
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error al enviar credenciales.')));
+      _showMessage(_getAppLocalizations()?.mailboxConnectionError ?? '');
     } finally {
       setState(() {
         isLoadingPrincipal = false;
@@ -345,30 +318,33 @@ class _NewMailboxConfigurationScreenState
       if (!_accountVerified) {
         return;
       }
-    }
-    if (_currentStep == 1) {
+    } else if (_currentStep == 1) {
       await _loadMailboxInitialConfig();
       if (_mailboxInitialConfig == null) {
         return;
       }
-    }
-    if (_currentStep == 2) {
+    } else if (_currentStep == 2) {
       await _initializeWiFi();
       if (!_isWiFiEnabled) {
         _showWiFiDisabledDialog();
         return;
       }
-      await connectToArduinoAP(mailboxIdController.text, ssidPasswordController.text);
+      await connectToArduinoAP(
+        mailboxIdController.text,
+        ssidPasswordController.text,
+      );
       if (!_isConnectedToAP) {
         _showConnectionErrorDialog();
         return;
       }
-      await _sendFirebaseCredentials(_emailController.text, _passwordController.text);
+      await _sendFirebaseCredentials(
+        _emailController.text,
+        _passwordController.text,
+      );
       if (!_credentialsSended) {
         return;
       }
-    }
-    if (_currentStep == 3) {
+    } else if (_currentStep == 3) {
       await _sendCredentials(selectedSSID, ssidPasswordController.text);
       if (!isMailboxConnected) {
         return;
@@ -378,16 +354,31 @@ class _NewMailboxConfigurationScreenState
         _userProvider.user!.uid,
         3600,
       );
+    } else if (_currentStep == 4) {
+      Navigator.of(context).pop();
+      return;
     }
     setState(() {
       _currentStep += 1;
     });
   }
 
+  String _getTextNextButton() {
+    if (_currentStep == 0 || _currentStep == 1) {
+      return AppLocalizations.of(context)!.verify;
+    } else if (_currentStep == 2) {
+      return AppLocalizations.of(context)!.connect;
+    } else if (_currentStep == 3) {
+      return AppLocalizations.of(context)!.send;
+    } else {
+      return AppLocalizations.of(context)!.finish;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Configurar Buzón')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.connectNewMailbox)),
       body: Stack(
         children: [
           Stepper(
@@ -404,34 +395,34 @@ class _NewMailboxConfigurationScreenState
                     })
                     : null,
             controlsBuilder: (BuildContext context, ControlsDetails details) {
-              final isLastStep = _currentStep == 4;
-
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (!isLastStep)
-                    ElevatedButton(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: ElevatedButton(
                       onPressed: details.onStepContinue,
-                      child: const Text('Continuar'),
+                      child: Text(_getTextNextButton()),
                     ),
-                  if (isLastStep)
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Finalizar'),
+                  ),
+                  if (_currentStep == 2) ...{
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: TextButton(
+                        onPressed: details.onStepCancel,
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                      ),
                     ),
-                  if (_currentStep > 0 && !isLastStep)
-                    TextButton(
-                      onPressed: details.onStepCancel,
-                      child: const Text('Cancelar'),
-                    ),
+                  },
                 ],
               );
             },
             steps: [
               Step(
-                title: Text('Verifique su cuenta'),
+                title: Text(
+                  AppLocalizations.of(context)!.verifyYourAccount,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 content: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Column(
@@ -442,7 +433,7 @@ class _NewMailboxConfigurationScreenState
                         enabled: false,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.email),
-                          labelText: 'Correo Electrónico',
+                          labelText: AppLocalizations.of(context)!.email,
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -451,7 +442,7 @@ class _NewMailboxConfigurationScreenState
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
-                          labelText: 'Contraseña',
+                          labelText: AppLocalizations.of(context)!.password,
                           prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -475,99 +466,100 @@ class _NewMailboxConfigurationScreenState
                 ),
               ),
               Step(
-                title: Text('Datos del Buzón'),
-                content: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        controller: mailboxIdController,
-                        decoration: InputDecoration(
-                          labelText: 'ID del Buzón',
-                          border: OutlineInputBorder(),
-                        ),
+                title: Text(AppLocalizations.of(context)!.mailboxDetails,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppLocalizations.of(context)!.enterMailboxDetails,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: mailboxIdController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.mailboxId,
+                        border: OutlineInputBorder(),
                       ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: mailboxKeyController,
-                        decoration: InputDecoration(
-                          labelText: 'Clave del Buzón',
-                          border: OutlineInputBorder(),
-                        ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: mailboxKeyController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.mailboxKey
+,
+                        border: OutlineInputBorder(),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Step(
-                title: Text('Conectar a buzón'),
-                content: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Por favor, para conntinuar conéctese manualmente a la red Wi-Fi del buzón:",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            _mailboxInitialConfig?.id ?? '',
+                title: Text(AppLocalizations.of(context)!.connectToMailbox,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppLocalizations.of(context)!.pleaseConnectManually,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(
+                          _mailboxInitialConfig?.id ?? '',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      '${AppLocalizations.of(context)!.password}:',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SelectableText(
+                            _mailboxInitialConfig?.wifiPass ?? '',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        "Contraseña:",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SelectableText(
-                              _mailboxInitialConfig?.wifiPass ?? '',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: _mailboxInitialConfig!.wifiPass,
                               ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(
-                                ClipboardData(
-                                  text: _mailboxInitialConfig!.wifiPass,
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "Contraseña copiada al portapapeles",
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                            );
+                            _showMessage(_getAppLocalizations()?.passwordCopied ?? '');
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               Step(
-                title: Text('Conectar a la red WiFi'),
+                title: Text(AppLocalizations.of(context)!.connectMailboxToWiFi,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 content: Column(
                   children: [
+                    Text(AppLocalizations.of(context)!.selectWiFiNetwork,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                     SizedBox(
                       height: 300,
                       child: ListView.builder(
@@ -601,14 +593,26 @@ class _NewMailboxConfigurationScreenState
                     ),
                     ElevatedButton(
                       onPressed: _startScan,
-                      child: Text('Escanear redes'),
+                      child: Text(AppLocalizations.of(context)!.scanNetworks),
                     ),
                   ],
                 ),
               ),
               Step(
-                title: Text('Finalizar Configuración'),
-                content: Text("data"),
+                title: Text(
+                  AppLocalizations.of(context)!.finishSetup,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppLocalizations.of(context)!.congratulationsSetupCompleted,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    SizedBox(height: 8),
+                  ],
+                ),
               ),
             ],
           ),
@@ -627,13 +631,13 @@ class _NewMailboxConfigurationScreenState
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Conectar a $ssid'),
+          title: Text('${AppLocalizations.of(context)!.connectTo} $ssid'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: ssidPasswordController,
-                decoration: InputDecoration(labelText: 'Contraseña'),
+                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
                 obscureText: true,
               ),
             ],
@@ -642,21 +646,36 @@ class _NewMailboxConfigurationScreenState
             TextButton(
               onPressed: () {
                 if (context.mounted) {
-                  Navigator.pop(context); // Cerrar el diálogo si no se conecta
+                  Navigator.pop(context);
                 }
               },
-              child: Text('Cancelar'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 _nextStep();
               },
-              child: Text('Conectar'),
+              child: Text(AppLocalizations.of(context)!.connect),
             ),
           ],
         );
       },
     );
+  }
+
+  void _showMessage(String message) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  AppLocalizations? _getAppLocalizations() {
+    if (context.mounted) {
+      return AppLocalizations.of(context);
+    }
+    return null;
   }
 }

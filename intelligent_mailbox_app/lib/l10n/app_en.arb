@@ -45,6 +45,78 @@
   "newPackage": "New package",
   "packageCode": "Package code",
   "enterPackageCode": "Please enter a package code",
-  "permanentAccess": "Permanent access"
+  "permanentAccess": "Permanent access",
+  "confirm": "Confirm",
+  "wifiDisabled": "Wi-Fi Disabled",
+  "wifiDisabledMessage": "Wi-Fi is disabled. Please enable it to continue.",
+  "connectionError": "Connection Error",
+  "arduinoAPConnectionError": "Could not connect to the Arduino access point. Please check the connection and try again.",
+  "incorrectCredentials": "Incorrect email or password.",
+  "accountVerificationError": "Account verification failed.",
+  "mailboxNotFound": "Mailbox not found. Please check the ID and key.",
+  "informationVerificationError": "Error verifying information.",
+  "mailboxConnectionError": "Error connecting to the mailbox",
+  "wifiCredentialsError": "Incorrect Wi-Fi credentials",
+  "mailboxConnectedWiFi": "Mailbox connected to the Wi-Fi network",
+  "verify": "Verify",
+  "connect": "Connect",
+  "send": "Send",
+  "finish": "Finish",
+  "connectNewMailbox": "Connect new mailbox",
+  "cancel":"Cancel",
+  "verifyYourAccount": "Verify your account",
+  "email": "Email",
+  "mailboxDetails": "Mailbox details",
+  "enterMailboxDetails": "Enter mailbox details",
+  "mailboxId": "Mailbox ID",
+  "mailboxKey": "Mailbox key",
+  "connectToMailbox": "Connect to mailbox",
+  "pleaseConnectManually": "Please, to continue, manually connect to the mailbox Wi-Fi network:",
+  "passwordCopied": "Password copied to clipboard",
+  "connectMailboxToWiFi": "Connect mailbox to the Wi-Fi network",
+  "selectWiFiNetwork": "Select the Wi-Fi network to which you will connect your mailbox",
+  "scanNetworks": "Scan networks",
+  "finishSetup": "Finish setup",
+  "congratulationsSetupCompleted": "Congratulations! You have completed the mailbox setup.",
+  "connectTo":"Connect to",
+  "manageSmartMailboxes": "Manage your smart mailboxes efficiently and securely with our app.",
+  "login": "Login",
+  "copyright": "© 2025 Intelligent Mailbox. All rights reserved.",
+  "passwordCannotBeEmpty": "The password cannot be empty",
+  "enterValidEmail": "Enter a valid email",
+  "emailCannotBeEmpty": "The email cannot be empty",
+  "loginError": "Error logging in",
+  "welcome": "Welcome"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

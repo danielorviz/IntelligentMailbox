@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';

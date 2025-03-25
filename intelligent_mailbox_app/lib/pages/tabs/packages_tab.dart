@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/edit_package.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';

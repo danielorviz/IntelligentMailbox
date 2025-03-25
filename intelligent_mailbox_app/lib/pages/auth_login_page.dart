@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
@@ -20,7 +21,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
 
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
-      return; 
+      return;
     }
 
     try {
@@ -38,26 +39,31 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder:
-                  (context) => const MyHomePage(title: "Intelligent Mailbox"),
+                  (context) =>
+                      MyHomePage(title: AppLocalizations.of(context)!.appTitle),
             ),
           );
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Bienvenido, ${user.displayName ?? "Usuario"}!'),
+              content: Text(
+                '${AppLocalizations.of(context)!.welcome}, ${user.displayName ?? "Usuario"}!',
+              ),
             ),
           );
         }
       } else {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Correo o contraseña incorrectos')),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.incorrectCredentials),
+            ),
           );
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error al iniciar sesión: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.loginError)),
+      );
     }
   }
 
@@ -77,15 +83,15 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                   const SizedBox(height: 40), // Espacio inicial opcional
                   Image.asset('assets/images/logo.png', height: 100),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Intelligent Mailbox',
+                  Text(
+                    AppLocalizations.of(context)!.appTitle,
                     style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 32.0),
                     child: Text(
-                      'Gestiona tus buzones inteligentes de manera eficiente y segura con nuestra aplicación.',
+                      AppLocalizations.of(context)!.manageSmartMailboxes,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     ),
@@ -95,7 +101,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Correo electrónico',
+                      labelText: AppLocalizations.of(context)!.email,
                       prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -103,10 +109,10 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El correo no puede estar vacío';
+                        return AppLocalizations.of(context)!.emailCannotBeEmpty;
                       }
                       if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return 'Ingresa un correo válido';
+                        return AppLocalizations.of(context)!.enterValidEmail;
                       }
                       return null;
                     },
@@ -116,7 +122,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
-                      labelText: 'Contraseña',
+                      labelText: AppLocalizations.of(context)!.password,
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -136,10 +142,9 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'La contraseña no puede estar vacía';
-                      }
-                      if (value.length < 6) {
-                        return 'La contraseña debe tener al menos 6 caracteres';
+                        return AppLocalizations.of(
+                          context,
+                        )!.passwordCannotBeEmpty;
                       }
                       return null;
                     },
@@ -161,18 +166,18 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                       children: [
                         const Icon(Icons.login),
                         const SizedBox(width: 8),
-                        const Text(
-                          "Confirmar inicio de sesión",
+                        Text(
+                          AppLocalizations.of(context)!.login,
                           style: TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      '© 2025 Intelligent Mailbox. Todos los derechos reservados.',
+                      AppLocalizations.of(context)!.copyright,
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ),
