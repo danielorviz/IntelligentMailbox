@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
-import 'package:intelligent_mailbox_app/pages/login_page.dart';
+import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/auth_keys_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/home_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/notifications_tab.dart';
@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (context.mounted) {
       Provider.of<UserProvider>(context, listen: false).setUser(null);
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const AuthLoginScreen()),
       );
     }
   }

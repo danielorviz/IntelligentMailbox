@@ -10,8 +10,8 @@ class ConfirmationDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.content,
-    this.cancelText = 'Cancelar',
-    this.confirmText = 'Eliminar',
+    required this.cancelText,
+    required this.confirmText,
   });
 
   @override

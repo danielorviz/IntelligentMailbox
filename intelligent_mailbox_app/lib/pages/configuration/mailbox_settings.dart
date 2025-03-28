@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:provider/provider.dart';
@@ -18,34 +19,35 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   String _selectedOffset = 'system'; // El valor por defecto será "system"
   String? _mailboxId;
 
-  final List<Map<String, dynamic>> _offsetOptions = [
-    {'label': 'Usar el offset del sistema', 'value': 'system'},
-    {'label': 'UTC-12:00', 'value': -43200},
-    {'label': 'UTC-11:00', 'value': -39600},
-    {'label': 'UTC-10:00', 'value': -36000},
-    {'label': 'UTC-09:00', 'value': -32400},
-    {'label': 'UTC-08:00', 'value': -28800},
-    {'label': 'UTC-07:00', 'value': -25200},
-    {'label': 'UTC-06:00', 'value': -21600},
-    {'label': 'UTC-05:00', 'value': -18000},
-    {'label': 'UTC-04:00', 'value': -14400},
-    {'label': 'UTC-03:00', 'value': -10800},
-    {'label': 'UTC-02:00', 'value': -7200},
-    {'label': 'UTC-01:00', 'value': -3600},
-    {'label': 'UTC+00:00', 'value': 0},
-    {'label': 'UTC+01:00', 'value': 3600},
-    {'label': 'UTC+02:00', 'value': 7200},
-    {'label': 'UTC+03:00', 'value': 10800},
-    {'label': 'UTC+04:00', 'value': 14400},
-    {'label': 'UTC+05:00', 'value': 18000},
-    {'label': 'UTC+06:00', 'value': 21600},
-    {'label': 'UTC+07:00', 'value': 25200},
-    {'label': 'UTC+08:00', 'value': 28800},
-    {'label': 'UTC+09:00', 'value': 32400},
-    {'label': 'UTC+10:00', 'value': 36000},
-    {'label': 'UTC+11:00', 'value': 39600},
-    {'label': 'UTC+12:00', 'value': 43200},
-  ];
+  List<Map<String, dynamic>> getOffsetOptions(BuildContext context) {
+    return [
+      {'label': AppLocalizations.of(context)!.system, 'value': 'system'},
+      {'label': AppLocalizations.of(context)!.utc12, 'value': -43200},
+      {'label': AppLocalizations.of(context)!.utc11, 'value': -39600},
+      {'label': AppLocalizations.of(context)!.utc10, 'value': -36000},
+      {'label': AppLocalizations.of(context)!.utc09, 'value': -32400},
+      {'label': AppLocalizations.of(context)!.utc08, 'value': -28800},
+      {'label': AppLocalizations.of(context)!.utc07, 'value': -25200},
+      {'label': AppLocalizations.of(context)!.utc06, 'value': -21600},
+      {'label': AppLocalizations.of(context)!.utc05, 'value': -18000},
+      {'label': AppLocalizations.of(context)!.utc04, 'value': -14400},
+      {'label': AppLocalizations.of(context)!.utc03, 'value': -10800},
+      {'label': AppLocalizations.of(context)!.utc02, 'value': -7200},
+      {'label': AppLocalizations.of(context)!.utc00, 'value': 0},
+      {'label': AppLocalizations.of(context)!.utc01, 'value': 3600},
+      {'label': AppLocalizations.of(context)!.utc02_2, 'value': 7200},
+      {'label': AppLocalizations.of(context)!.utc03_2, 'value': 10800},
+      {'label': AppLocalizations.of(context)!.utc04_2, 'value': 14400},
+      {'label': AppLocalizations.of(context)!.utc05_2, 'value': 18000},
+      {'label': AppLocalizations.of(context)!.utc06_2, 'value': 21600},
+      {'label': AppLocalizations.of(context)!.utc07_2, 'value': 25200},
+      {'label': AppLocalizations.of(context)!.utc08_2, 'value': 28800},
+      {'label': AppLocalizations.of(context)!.utc09_2, 'value': 32400},
+      {'label': AppLocalizations.of(context)!.utc10_2, 'value': 36000},
+      {'label': AppLocalizations.of(context)!.utc11_2, 'value': 39600},
+      {'label': AppLocalizations.of(context)!.utc12_2, 'value': 43200},
+    ];
+  }
 
   @override
   void initState() {
@@ -56,17 +58,23 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   }
 
   Future<void> _initializeSettings() async {
-    final mailboxProvider = Provider.of<MailboxProvider>(context, listen: false);
+    final mailboxProvider = Provider.of<MailboxProvider>(
+      context,
+      listen: false,
+    );
     final mailbox = mailboxProvider.selectedMailbox;
 
     if (mailbox != null) {
-      if(mounted){
+      if (mounted) {
         setState(() {
           _nameController.text = mailbox.name;
-          _selectedOffset = _offsetOptions.firstWhere(
-            (offset) => offset['value'] == mailbox.instructions.offset,
-            orElse: () => {'value': 'system'},
-          )['value'].toString();
+          _selectedOffset =
+              getOffsetOptions(context)
+                  .firstWhere(
+                    (offset) => offset['value'] == mailbox.instructions.offset,
+                    orElse: () => {'value': 'system'},
+                  )['value']
+                  .toString();
         });
       }
       _mailboxId = mailbox.id;
@@ -74,55 +82,58 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     }
   }
 
-   Future<void> _loadSettings(String mailboxId) async {
+  Future<void> _loadSettings(String mailboxId) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _notificationsEnabled = prefs.getBool('${mailboxId}_notificationsEnabled') ?? false;
+      _notificationsEnabled =
+          prefs.getBool('${mailboxId}_notificationsEnabled') ?? false;
     });
   }
 
   void _saveSettings() async {
-    if(_mailboxId == null) {
+    if (_mailboxId == null) {
       return;
     }
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('${_mailboxId}_notificationsEnabled', _notificationsEnabled);
 
     try {
-        await mailboxService.saveSettings(_mailboxId!, _nameController.text, _getOffset());
-        if (mounted) {
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Configuración guardada exitosamente')),
-          );
-        }
-      } catch (error) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al guardar la configuración')),
-          );
-        }
+      await mailboxService.saveSettings(
+        _mailboxId!,
+        _nameController.text,
+        _getOffset(),
+      );
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Configuración guardada exitosamente')),
+        );
       }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar la configuración')),
+        );
+      }
+    }
   }
 
   int _getOffset() {
-  if (_selectedOffset == 'system') {
-    return DateTime.now().timeZoneOffset.inSeconds;
-  } else {
-    final offset = _offsetOptions.firstWhere(
-      (offset) => offset['value'].toString() == _selectedOffset,
-      orElse: () => {'value': 0}, 
-    );
-    return offset['value'];
+    if (_selectedOffset == 'system') {
+      return DateTime.now().timeZoneOffset.inSeconds;
+    } else {
+      final offset = getOffsetOptions(context).firstWhere(
+        (offset) => offset['value'].toString() == _selectedOffset,
+        orElse: () => {'value': 0},
+      );
+      return offset['value'];
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Configuración del Buzón'),
-      ),
+      appBar: AppBar(title: const Text('Configuración del Buzón')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -171,12 +182,15 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                     _selectedOffset = newValue!;
                   });
                 },
-                items: _offsetOptions.map<DropdownMenuItem<String>>((Map<String, dynamic> offset) {
-                  return DropdownMenuItem<String>(
-                    value: offset['value'].toString(),
-                    child: Text(offset['label']),
-                  );
-                }).toList(),
+                items:
+                    getOffsetOptions(context).map<DropdownMenuItem<String>>((
+                      Map<String, dynamic> offset,
+                    ) {
+                      return DropdownMenuItem<String>(
+                        value: offset['value'].toString(),
+                        child: Text(offset['label']),
+                      );
+                    }).toList(),
               ),
               const SizedBox(height: 32),
 

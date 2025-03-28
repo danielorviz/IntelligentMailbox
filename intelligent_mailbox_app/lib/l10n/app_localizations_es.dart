@@ -237,4 +237,145 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get welcome => 'Bienvenido';
+
+  @override
+  String get createAccount => 'Crear cuenta';
+
+  @override
+  String get signup => 'Registrarse';
+
+  @override
+  String get signupSuccess => 'Cuenta creada con éxito. Por favor, inicie sesión.';
+
+  @override
+  String get signupError => 'Error al crear la cuenta. Por favor, inténtelo de nuevo.';
+
+  @override
+  String get confirmPassword => 'Confirmar contraseña';
+
+  @override
+  String get passwordMismatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get passwordTooShort => 'La contraseña debe tener al menos 6 caracteres';
+
+  @override
+  String get alreadyHaveAccount => '¿Ya tiene una cuenta?';
+
+  @override
+  String get name => 'Nombre';
+
+  @override
+  String get nameCannotBeEmpty => 'El nombre no puede estar vacío';
+
+  @override
+  String get unexpectedError => 'Ocurrió un error inesperado. Inténtalo de nuevo.';
+
+  @override
+  String get userNotFound => 'No se encontró un usuario con este correo electrónico.';
+
+  @override
+  String get emailAlreadyInUse => 'El correo electrónico ya está en uso.';
+
+  @override
+  String get invalidEmail => 'El correo electrónico no es válido.';
+
+  @override
+  String get weakPassword => 'La contraseña es demasiado débil.';
+
+  @override
+  String get emailNotVerified => 'Por favor, verifica tu correo electrónico antes de continuar.';
+
+  @override
+  String get forgotPassword => '¿Olvidó su contraseña?';
+
+  @override
+  String get passwordResetEmailSent => 'Le hemos enviado un correo para restablecer su contraseña.';
+
+  @override
+  String get passwordResetError => 'Ocurrió un error al intentar enviar el correo de recuperación.';
+
+  @override
+  String get passwordReset => 'Restablecer la contraseña';
+
+  @override
+  String get passwordResetWillSent => 'Se le enviará un correo para restablecer su contraseña a';
+
+  @override
+  String get enterEmailToResetPassword => 'Ingrese un correo electrónico para restablecer la contraseña';
+
+  @override
+  String get system => 'Usar el desfase del sistema';
+
+  @override
+  String get utc12 => 'Honolulu (UTC-12:00)';
+
+  @override
+  String get utc11 => 'Pago Pago (UTC-11:00)';
+
+  @override
+  String get utc10 => 'Anchorage (UTC-10:00)';
+
+  @override
+  String get utc09 => 'Los Ángeles (UTC-09:00)';
+
+  @override
+  String get utc08 => 'Vancouver (UTC-08:00)';
+
+  @override
+  String get utc07 => 'Denver (UTC-07:00)';
+
+  @override
+  String get utc06 => 'Ciudad de México (UTC-06:00)';
+
+  @override
+  String get utc05 => 'Nueva York (UTC-05:00)';
+
+  @override
+  String get utc04 => 'Caracas (UTC-04:00)';
+
+  @override
+  String get utc03 => 'Buenos Aires (UTC-03:00)';
+
+  @override
+  String get utc02 => 'Fernando de Noronha (UTC-02:00)';
+
+  @override
+  String get utc00 => 'Lisboa (UTC+00:00)';
+
+  @override
+  String get utc01 => 'Madrid (UTC+01:00)';
+
+  @override
+  String get utc02_2 => 'Atenas (UTC+02:00)';
+
+  @override
+  String get utc03_2 => 'Moscú (UTC+03:00)';
+
+  @override
+  String get utc04_2 => 'Dubái (UTC+04:00)';
+
+  @override
+  String get utc05_2 => 'Karachi (UTC+05:00)';
+
+  @override
+  String get utc06_2 => 'Almaty (UTC+06:00)';
+
+  @override
+  String get utc07_2 => 'Bangkok (UTC+07:00)';
+
+  @override
+  String get utc08_2 => 'Shanghái (UTC+08:00)';
+
+  @override
+  String get utc09_2 => 'Tokio (UTC+09:00)';
+
+  @override
+  String get utc10_2 => 'Sídney (UTC+10:00)';
+
+  @override
+  String get utc11_2 => 'Honiara (UTC+11:00)';
+
+  @override
+  String get utc12_2 => 'Auckland (UTC+12:00)';
 }

@@ -550,6 +550,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome'**
   String get welcome;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @signup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signup;
+
+  /// No description provided for @signupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully. Please log in.'**
+  String get signupSuccess;
+
+  /// No description provided for @signupError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating account. Please try again.'**
+  String get signupError;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordMismatch;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters long'**
+  String get passwordTooShort;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @nameCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Name cannot be empty'**
+  String get nameCannotBeEmpty;
+
+  /// No description provided for @unexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get unexpectedError;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No user found with this email address.'**
+  String get userNotFound;
+
+  /// No description provided for @emailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'The email address is already in use.'**
+  String get emailAlreadyInUse;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'The email address is invalid.'**
+  String get invalidEmail;
+
+  /// No description provided for @weakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'The password is too weak.'**
+  String get weakPassword;
+
+  /// No description provided for @emailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Por favor, verifica tu correo electrónico antes de continuar.'**
+  String get emailNotVerified;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPassword;
+
+  /// No description provided for @passwordResetEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Te hemos enviado un correo para restablecer tu contraseña.'**
+  String get passwordResetEmailSent;
+
+  /// No description provided for @passwordResetError.
+  ///
+  /// In en, this message translates to:
+  /// **'Ocurrió un error al intentar enviar el correo de recuperación.'**
+  String get passwordResetError;
+
+  /// No description provided for @passwordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Reset'**
+  String get passwordReset;
+
+  /// No description provided for @passwordResetWillSent.
+  ///
+  /// In en, this message translates to:
+  /// **'A password reset email will be sent to'**
+  String get passwordResetWillSent;
+
+  /// No description provided for @enterEmailToResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an email to reset the password'**
+  String get enterEmailToResetPassword;
+
+  /// No description provided for @system.
+  ///
+  /// In en, this message translates to:
+  /// **'Use system offset'**
+  String get system;
+
+  /// No description provided for @utc12.
+  ///
+  /// In en, this message translates to:
+  /// **'Honolulu (UTC-12:00)'**
+  String get utc12;
+
+  /// No description provided for @utc11.
+  ///
+  /// In en, this message translates to:
+  /// **'Pago Pago (UTC-11:00)'**
+  String get utc11;
+
+  /// No description provided for @utc10.
+  ///
+  /// In en, this message translates to:
+  /// **'Anchorage (UTC-10:00)'**
+  String get utc10;
+
+  /// No description provided for @utc09.
+  ///
+  /// In en, this message translates to:
+  /// **'Los Angeles (UTC-09:00)'**
+  String get utc09;
+
+  /// No description provided for @utc08.
+  ///
+  /// In en, this message translates to:
+  /// **'Vancouver (UTC-08:00)'**
+  String get utc08;
+
+  /// No description provided for @utc07.
+  ///
+  /// In en, this message translates to:
+  /// **'Denver (UTC-07:00)'**
+  String get utc07;
+
+  /// No description provided for @utc06.
+  ///
+  /// In en, this message translates to:
+  /// **'Mexico City (UTC-06:00)'**
+  String get utc06;
+
+  /// No description provided for @utc05.
+  ///
+  /// In en, this message translates to:
+  /// **'New York (UTC-05:00)'**
+  String get utc05;
+
+  /// No description provided for @utc04.
+  ///
+  /// In en, this message translates to:
+  /// **'Caracas (UTC-04:00)'**
+  String get utc04;
+
+  /// No description provided for @utc03.
+  ///
+  /// In en, this message translates to:
+  /// **'Buenos Aires (UTC-03:00)'**
+  String get utc03;
+
+  /// No description provided for @utc02.
+  ///
+  /// In en, this message translates to:
+  /// **'Fernando de Noronha (UTC-02:00)'**
+  String get utc02;
+
+  /// No description provided for @utc00.
+  ///
+  /// In en, this message translates to:
+  /// **'Lisbon (UTC+00:00)'**
+  String get utc00;
+
+  /// No description provided for @utc01.
+  ///
+  /// In en, this message translates to:
+  /// **'Madrid (UTC+01:00)'**
+  String get utc01;
+
+  /// No description provided for @utc02_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Athens (UTC+02:00)'**
+  String get utc02_2;
+
+  /// No description provided for @utc03_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Moscow (UTC+03:00)'**
+  String get utc03_2;
+
+  /// No description provided for @utc04_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Dubai (UTC+04:00)'**
+  String get utc04_2;
+
+  /// No description provided for @utc05_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Karachi (UTC+05:00)'**
+  String get utc05_2;
+
+  /// No description provided for @utc06_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Almaty (UTC+06:00)'**
+  String get utc06_2;
+
+  /// No description provided for @utc07_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Bangkok (UTC+07:00)'**
+  String get utc07_2;
+
+  /// No description provided for @utc08_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Shanghai (UTC+08:00)'**
+  String get utc08_2;
+
+  /// No description provided for @utc09_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Tokyo (UTC+09:00)'**
+  String get utc09_2;
+
+  /// No description provided for @utc10_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sydney (UTC+10:00)'**
+  String get utc10_2;
+
+  /// No description provided for @utc11_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Honiara (UTC+11:00)'**
+  String get utc11_2;
+
+  /// No description provided for @utc12_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Auckland (UTC+12:00)'**
+  String get utc12_2;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

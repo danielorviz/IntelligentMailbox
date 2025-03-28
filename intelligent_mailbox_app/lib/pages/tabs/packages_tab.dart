@@ -102,6 +102,14 @@ class PackagesTab extends StatelessWidget {
                                                   AppLocalizations.of(
                                                     context,
                                                   )!.confirmDeleteAuthPackage,
+                                              cancelText:
+                                                  AppLocalizations.of(
+                                                    context,
+                                                  )!.cancel,
+                                              confirmText:
+                                                  AppLocalizations.of(
+                                                    context,
+                                                  )!.confirm,
                                             );
                                           },
                                         );

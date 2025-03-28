@@ -124,6 +124,14 @@ class AuthorizedKeysTab extends StatelessWidget {
                                                   AppLocalizations.of(
                                                     context,
                                                   )!.confirmDeleteAuthKey,
+                                              cancelText:
+                                                  AppLocalizations.of(
+                                                    context,
+                                                  )!.cancel,
+                                              confirmText:
+                                                  AppLocalizations.of(
+                                                    context,
+                                                  )!.confirm,
                                             );
                                           },
                                         );

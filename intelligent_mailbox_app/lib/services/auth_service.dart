@@ -11,9 +11,17 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final User? user = await getFirebaseUser(email: email, password: password);
+      final User? user = await getFirebaseUser(
+        email: email,
+        password: password,
+      );
 
       if (user != null) {
+        if(user.emailVerified == false) {
+          user.sendEmailVerification();
+          await _auth.signOut();
+          throw Exception('email-not-verified');
+        }
         final DatabaseReference userRef = _database
             .ref()
             .child('users')
@@ -32,6 +40,9 @@ class AuthService {
 
       return user;
     } catch (e) {
+      if(e.toString().contains("email-not-verified")){
+        rethrow;
+      }
       return null;
     }
   }
@@ -40,15 +51,10 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    try {
       final UserCredential userCredential = await _auth
           .signInWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
       return user;
-
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<User?> registerWithFirebase({
@@ -62,6 +68,10 @@ class AuthService {
       final User? user = userCredential.user;
 
       if (user != null) {
+        await userCredential.user!.updateDisplayName(name);
+        await userCredential.user!.reload();
+        user.sendEmailVerification();
+
         final DatabaseReference userRef = _database
             .ref()
             .child('users')
@@ -76,10 +86,25 @@ class AuthService {
       }
 
       return user;
+    } on FirebaseAuthException catch (e) {
+        throw Exception(e.code);
     } catch (e) {
-      return null;
+      throw Exception('error-registrar-usuario'); 
+    }finally {
+      await _auth.signOut();
     }
   }
+
+   Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception('error-enviar-email-restablecimiento');
+    }
+  }
+
 
   Future<User?> signInWithGoogle() async {
     try {
