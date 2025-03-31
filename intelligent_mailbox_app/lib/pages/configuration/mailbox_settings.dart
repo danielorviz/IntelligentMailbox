@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,38 +16,8 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   final TextEditingController _nameController = TextEditingController();
   bool _notificationsEnabled = false;
   final MailboxService mailboxService = MailboxService();
-  String _selectedOffset = 'system'; // El valor por defecto será "system"
+  String _selectedOffset = '0'; // El valor por defecto será "system"
   String? _mailboxId;
-
-  List<Map<String, dynamic>> getOffsetOptions(BuildContext context) {
-    return [
-      {'label': AppLocalizations.of(context)!.system, 'value': 'system'},
-      {'label': AppLocalizations.of(context)!.utc12, 'value': -43200},
-      {'label': AppLocalizations.of(context)!.utc11, 'value': -39600},
-      {'label': AppLocalizations.of(context)!.utc10, 'value': -36000},
-      {'label': AppLocalizations.of(context)!.utc09, 'value': -32400},
-      {'label': AppLocalizations.of(context)!.utc08, 'value': -28800},
-      {'label': AppLocalizations.of(context)!.utc07, 'value': -25200},
-      {'label': AppLocalizations.of(context)!.utc06, 'value': -21600},
-      {'label': AppLocalizations.of(context)!.utc05, 'value': -18000},
-      {'label': AppLocalizations.of(context)!.utc04, 'value': -14400},
-      {'label': AppLocalizations.of(context)!.utc03, 'value': -10800},
-      {'label': AppLocalizations.of(context)!.utc02, 'value': -7200},
-      {'label': AppLocalizations.of(context)!.utc00, 'value': 0},
-      {'label': AppLocalizations.of(context)!.utc01, 'value': 3600},
-      {'label': AppLocalizations.of(context)!.utc02_2, 'value': 7200},
-      {'label': AppLocalizations.of(context)!.utc03_2, 'value': 10800},
-      {'label': AppLocalizations.of(context)!.utc04_2, 'value': 14400},
-      {'label': AppLocalizations.of(context)!.utc05_2, 'value': 18000},
-      {'label': AppLocalizations.of(context)!.utc06_2, 'value': 21600},
-      {'label': AppLocalizations.of(context)!.utc07_2, 'value': 25200},
-      {'label': AppLocalizations.of(context)!.utc08_2, 'value': 28800},
-      {'label': AppLocalizations.of(context)!.utc09_2, 'value': 32400},
-      {'label': AppLocalizations.of(context)!.utc10_2, 'value': 36000},
-      {'label': AppLocalizations.of(context)!.utc11_2, 'value': 39600},
-      {'label': AppLocalizations.of(context)!.utc12_2, 'value': 43200},
-    ];
-  }
 
   @override
   void initState() {
@@ -69,12 +39,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
         setState(() {
           _nameController.text = mailbox.name;
           _selectedOffset =
-              getOffsetOptions(context)
-                  .firstWhere(
-                    (offset) => offset['value'] == mailbox.instructions.offset,
-                    orElse: () => {'value': 'system'},
-                  )['value']
-                  .toString();
+              DateTimeUtils.getOffsetStringValue(context, mailbox.instructions.offset);
         });
       }
       _mailboxId = mailbox.id;
@@ -122,7 +87,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     if (_selectedOffset == 'system') {
       return DateTime.now().timeZoneOffset.inSeconds;
     } else {
-      final offset = getOffsetOptions(context).firstWhere(
+      final offset = DateTimeUtils.getOffsetOptions(context).firstWhere(
         (offset) => offset['value'].toString() == _selectedOffset,
         orElse: () => {'value': 0},
       );
@@ -183,7 +148,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                   });
                 },
                 items:
-                    getOffsetOptions(context).map<DropdownMenuItem<String>>((
+                    DateTimeUtils.getOffsetOptions(context).map<DropdownMenuItem<String>>((
                       Map<String, dynamic> offset,
                     ) {
                       return DropdownMenuItem<String>(

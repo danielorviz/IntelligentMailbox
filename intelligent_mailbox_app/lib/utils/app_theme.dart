@@ -230,8 +230,9 @@ class AppTheme {
       ),
     ),
     cardTheme: const CardTheme(
-      color: surfaceDark,
+      color: Colors.white,
       margin: EdgeInsets.all(8),
+      elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
