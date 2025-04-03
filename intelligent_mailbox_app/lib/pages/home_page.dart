@@ -38,9 +38,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _signOut(BuildContext context) async {
+    Provider.of<MailboxProvider>(context, listen: false).signOut();
+    Provider.of<UserProvider>(context, listen: false).setUser(null);
     await _authService.signOut();
     if (context.mounted) {
-      Provider.of<UserProvider>(context, listen: false).setUser(null);
+      
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const AuthLoginScreen()),
       );

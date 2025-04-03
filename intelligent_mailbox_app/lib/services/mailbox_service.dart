@@ -6,7 +6,6 @@ import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 
 class MailboxService {
-
   static final MailboxService _instance = MailboxService._internal();
 
   MailboxService._internal();
@@ -18,99 +17,134 @@ class MailboxService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   Stream<List<String>> getUserMailboxKeys(String userId) {
-    return _database
-        .child('users')
-        .child(userId)
-        .child('mailbox')
-        .onValue
-        .map((event) {
-      final mailboxesMap = event.snapshot.value as Map<dynamic, dynamic>?;
-      if (mailboxesMap == null) {
-        return <String>[];
-      }
-      List<String> mailboxKeys = [];
-      mailboxesMap.forEach((key, value) {
-        if (value == true) {
-          mailboxKeys.add(key);
-        }
-      });
-      return mailboxKeys;
-    });
+    try {
+      return _database
+          .child('users')
+          .child(userId)
+          .child('mailbox')
+          .onValue
+          .map((event) {
+            final mailboxesMap = event.snapshot.value as Map<dynamic, dynamic>?;
+            if (mailboxesMap == null) {
+              return <String>[];
+            }
+            List<String> mailboxKeys = [];
+            mailboxesMap.forEach((key, value) {
+              if (value == true) {
+                mailboxKeys.add(key);
+              }
+            });
+            return mailboxKeys;
+          });
+    } catch (error) {
+      return Stream.value([]);
+    }
   }
 
-  Stream<Mailbox> getMailboxDetails(String mailboxId) {
-    return _database
-        .child('mailbox')
-        .child(mailboxId)
-        .onValue
-        .map((event) {
-      final value = event.snapshot.value;
+  Stream<Mailbox?> getMailboxDetails(String mailboxId) {
+    try {
+      return _database.child('mailbox').child(mailboxId).onValue.map((event) {
+        final value = event.snapshot.value;
 
-      if (value == null) {
-        throw Exception('Mailbox not found');
-      }
-      final mailboxData = Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
-      return Mailbox.fromMap(mailboxData, mailboxId);
-    });
+        if (value == null) {
+          return null;
+        }
+        final mailboxData = Map<String, dynamic>.from(
+          value as Map<dynamic, dynamic>,
+        );
+        return Mailbox.fromMap(mailboxData, mailboxId);
+      });
+    } catch (error) {
+      return Stream.value(null);
+    }
   }
 
   Future<Map<String, dynamic>> getMailboxContent(String mailboxId) async {
-    final snapshot = await _database.child('mailboxes').child(mailboxId).once();
-    final value = snapshot.snapshot.value;
-    if (value == null) {
+    try {
+      final snapshot =
+          await _database.child('mailboxes').child(mailboxId).once();
+      final value = snapshot.snapshot.value;
+      if (value == null) {
+        return {};
+      }
+      return Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
+    } catch (error) {
+      print('Error getting mailbox content: $error');
       return {};
     }
-    return Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
   }
 
   Stream<List<MailboxNotification>> getNotifications(String mailboxId) {
-    return _database
-        .child('notifications')
-        .child(mailboxId)
-        .onValue
-        .map((event) {
-      final notificationsMap = event.snapshot.value as Map<dynamic, dynamic>?;
-      if (notificationsMap == null) {
-        return <MailboxNotification>[];
-      }
-      List<MailboxNotification> notifications = [];
-      notificationsMap.forEach((key, value) {
-          notifications.add(MailboxNotification.fromJson(value as Map<dynamic, dynamic>));
+    try {
+      return _database.child('notifications').child(mailboxId).onValue.map((
+        event,
+      ) {
+        final notificationsMap = event.snapshot.value as Map<dynamic, dynamic>?;
+        if (notificationsMap == null) {
+          return <MailboxNotification>[];
+        }
+        List<MailboxNotification> notifications = [];
+        notificationsMap.forEach((key, value) {
+          notifications.add(
+            MailboxNotification.fromJson(value as Map<dynamic, dynamic>),
+          );
+        });
+        notifications.sort((a, b) => b.time.compareTo(a.time));
+        return notifications;
       });
-      notifications.sort((a, b) => b.time.compareTo(a.time));
-      return notifications;
-    });
+    } catch (error) {
+      print('Error getting notifications: $error');
+      return Stream.value([]);
+    }
   }
-  Future<void> createMailbox(String mailboxId, String userId, int offset) async{
+
+  Future<void> createMailbox(
+    String mailboxId,
+    String userId,
+    int offset,
+  ) async {
     try {
       await FirebaseDatabase.instance.ref("mailbox/$mailboxId").update({
         "name": mailboxId,
-        "id": mailboxId, 
+        "id": mailboxId,
         "instructions/offset": offset,
         "instructions/open": false,
-        "users": {
-          userId: true,
-        },
+        "users": {userId: true},
       });
-      await FirebaseDatabase.instance.ref("users/$userId/mailbox/$mailboxId").set(true);
+      await FirebaseDatabase.instance
+          .ref("users/$userId/mailbox/$mailboxId")
+          .set(true);
     } catch (error) {
       print('Failed to save settings: $error');
-      rethrow; 
+      rethrow;
     }
   }
 
-  Future<void> saveSettings(String mailboxId, String mailboxName, int offset) async{
+  Future<void> saveSettings(
+    String mailboxId,
+    String mailboxName,
+    int offset,
+  ) async {
     try {
-      await FirebaseDatabase.instance.ref("mailbox/$mailboxId/name").set(mailboxName);
-      await FirebaseDatabase.instance.ref("mailbox/$mailboxId/instructions/offset").set(offset);
+      await FirebaseDatabase.instance
+          .ref("mailbox/$mailboxId/name")
+          .set(mailboxName);
+      await FirebaseDatabase.instance
+          .ref("mailbox/$mailboxId/instructions/offset")
+          .set(offset);
     } catch (error) {
       print('Failed to save settings: $error');
-      rethrow; 
+      rethrow;
     }
   }
 
- Future<void> createAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
-    DatabaseReference authKeys = FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedkeys");
+  Future<void> createAuthorizedKey(
+    String mailboxId,
+    AuthorizedKey authorizedKey,
+  ) async {
+    DatabaseReference authKeys = FirebaseDatabase.instance.ref(
+      "mailbox/$mailboxId/authorizedkeys",
+    );
     try {
       await authKeys.push().set(authorizedKey.toMap());
     } catch (error) {
@@ -119,25 +153,40 @@ class MailboxService {
     }
   }
 
-  Future<void> updateAuthorizedKey(String mailboxId, AuthorizedKey authorizedKey) async {
+  Future<void> updateAuthorizedKey(
+    String mailboxId,
+    AuthorizedKey authorizedKey,
+  ) async {
     try {
-      await FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}").update(authorizedKey.toMap());
+      await FirebaseDatabase.instance
+          .ref("mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}")
+          .update(authorizedKey.toMap());
     } catch (error) {
       print('Failed to update AuthorizedKey: $error');
       rethrow;
     }
   }
 
-  Future<void> deleteAuthorizedKey(String mailboxId, String authorizedKeyId) async {
+  Future<void> deleteAuthorizedKey(
+    String mailboxId,
+    String authorizedKeyId,
+  ) async {
     try {
-      await _database.child('mailbox/$mailboxId/authorizedkeys/$authorizedKeyId').remove();
+      await _database
+          .child('mailbox/$mailboxId/authorizedkeys/$authorizedKeyId')
+          .remove();
     } catch (error) {
       rethrow;
     }
   }
 
-   Future<void> createAuthorizedPackage(String mailboxId, AuthorizedPackage authorizedPackage) async {
-    final DatabaseReference authPackage = FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedPackages");
+  Future<void> createAuthorizedPackage(
+    String mailboxId,
+    AuthorizedPackage authorizedPackage,
+  ) async {
+    final DatabaseReference authPackage = FirebaseDatabase.instance.ref(
+      "mailbox/$mailboxId/authorizedPackages",
+    );
     try {
       await authPackage.push().set(authorizedPackage.toMap());
     } catch (error) {
@@ -146,8 +195,13 @@ class MailboxService {
     }
   }
 
-  Future<void> updateAuthorizedPackage(String mailboxId, AuthorizedPackage authorizedPackage) async {
-    final DatabaseReference authPackage = FirebaseDatabase.instance.ref("mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}");
+  Future<void> updateAuthorizedPackage(
+    String mailboxId,
+    AuthorizedPackage authorizedPackage,
+  ) async {
+    final DatabaseReference authPackage = FirebaseDatabase.instance.ref(
+      "mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}",
+    );
     try {
       await authPackage.update(authorizedPackage.toMap());
     } catch (error) {
@@ -156,26 +210,36 @@ class MailboxService {
     }
   }
 
-  Future<void> deleteAuthorizedPackage(String mailboxId, String authorizedPackageId) async {
+  Future<void> deleteAuthorizedPackage(
+    String mailboxId,
+    String authorizedPackageId,
+  ) async {
     try {
-      await _database.child('mailbox/$mailboxId/authorizedPackages/$authorizedPackageId').remove();
+      await _database
+          .child('mailbox/$mailboxId/authorizedPackages/$authorizedPackageId')
+          .remove();
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<MailboxInitialConfig?> getMailboxInitializer(String mailboxId, String key) async {
+  Future<MailboxInitialConfig?> getMailboxInitializer(
+    String mailboxId,
+    String key,
+  ) async {
     try {
-      final configuration = await _database.child('configuration/mailboxes/$mailboxId').get();
+      final configuration =
+          await _database.child('configuration/mailboxes/$mailboxId').get();
       if (configuration.value != null) {
-        final data = Map<String, dynamic>.from(configuration.value as Map<dynamic, dynamic>);
-        if(data["key"] == null || data["key"] != key) {
+        final data = Map<String, dynamic>.from(
+          configuration.value as Map<dynamic, dynamic>,
+        );
+        if (data["key"] == null || data["key"] != key) {
           return null;
         }
         return MailboxInitialConfig.fromMap(data, mailboxId);
       } else {
         return null;
-
       }
     } catch (error) {
       return null;
