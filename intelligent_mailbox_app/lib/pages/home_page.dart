@@ -25,9 +25,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final AuthService _authService = AuthService();
   static const List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
-          NotificationsTab(),
-          AuthorizedKeysTab(key: ValueKey("keys_tab")),
-          PackagesTab(key: ValueKey("packages_tab")),
+    NotificationsTab(),
+    AuthorizedKeysTab(key: ValueKey("keys_tab")),
+    PackagesTab(key: ValueKey("packages_tab")),
   ];
   int _selectedIndex = 0;
 
@@ -42,7 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Provider.of<UserProvider>(context, listen: false).setUser(null);
     await _authService.signOut();
     if (context.mounted) {
-      
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const AuthLoginScreen()),
       );
@@ -51,12 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final mailboxProvider = Provider.of<MailboxProvider>(context);
-
+    if (!context.mounted) return const SizedBox.shrink();
     return Scaffold(
       appBar: AppBar(
-        title: Text(mailboxProvider.selectedMailbox?.name ??
-          AppLocalizations.of(context)!.appTitle,
+        title: Consumer<MailboxProvider>(
+          builder: (context, mailboxProvider, child) {
+            return Text(
+              mailboxProvider.selectedMailbox?.name ??
+                  AppLocalizations.of(context)!.appTitle,
+            );
+          },
         ),
         iconTheme: const IconThemeData(color: CustomColors.unselectedItem),
       ),

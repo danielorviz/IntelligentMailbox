@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
@@ -11,6 +12,12 @@ import 'package:intelligent_mailbox_app/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Solo permite portrait normal
+    DeviceOrientation.portraitDown, // Opcional: permite portrait invertido
+  ]);
+  
   await Firebase.initializeApp();
   runApp(const MyApp());
 }

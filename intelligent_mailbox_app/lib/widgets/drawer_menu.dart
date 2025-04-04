@@ -14,9 +14,7 @@ class DrawerMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mailboxProvider = Provider.of<MailboxProvider>(context);
-    final selectedMailbox = mailboxProvider.selectedMailbox;
-    final mailboxes = mailboxProvider.mailboxes;
+    if (!context.mounted) return const SizedBox.shrink();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Drawer(
       child: ListView(
@@ -49,54 +47,59 @@ class DrawerMenu extends StatelessWidget {
               ],
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.mail),
-            title: const Text('Buzones'),
-            trailing:
-                mailboxes.isNotEmpty
-                    ? DropdownButton<String>(
-                      value:
-                          mailboxes.any(
-                                (mailbox) => mailbox.id == selectedMailbox?.id,
-                              )
-                              ? selectedMailbox?.id
-                              : null,
-                      icon: const Icon(Icons.arrow_downward),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.black),
-                      underline: Container(
-                        height: 2,
-                        color: CustomColors.primaryBlue,
-                      ),
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          final newMailbox = mailboxes.firstWhere(
-                            (mailbox) => mailbox.id == newValue,
-                          );
-                          mailboxProvider.selectMailbox(newMailbox);
-                        }
-                      },
-                      items:
-                          mailboxes.map<DropdownMenuItem<String>>((
-                            Mailbox mailbox,
-                          ) {
-                            return DropdownMenuItem<String>(
-                              value: mailbox.id,
-                              child: Text(
-                                mailbox.name,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                    )
-                    : TextButton.icon(
-                      onPressed: () => {print("pressed")},
-                      icon: const Icon(Icons.add),
-                      label: const Text('Añadir buzón'),
-                    ), 
+          Consumer<MailboxProvider>(
+            builder: (context, mailboxProvider, child) {
+              return ListTile(
+                leading: const Icon(Icons.mail),
+                title: const Text('Buzones'),
+                trailing:
+                    mailboxProvider.mailboxes.isNotEmpty
+                        ? DropdownButton<String>(
+                          value:
+                              mailboxProvider.mailboxes.any(
+                                    (mailbox) =>
+                                        mailbox.id == mailboxProvider.selectedMailbox?.id,
+                                  )
+                                  ? mailboxProvider.selectedMailbox?.id
+                                  : null,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.black),
+                          underline: Container(
+                            height: 2,
+                            color: CustomColors.primaryBlue,
+                          ),
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              final newMailbox = mailboxProvider.mailboxes.firstWhere(
+                                (mailbox) => mailbox.id == newValue,
+                              );
+                              mailboxProvider.selectMailbox(newMailbox);
+                            }
+                          },
+                          items:
+                              mailboxProvider.mailboxes.map<DropdownMenuItem<String>>((
+                                Mailbox mailbox,
+                              ) {
+                                return DropdownMenuItem<String>(
+                                  value: mailbox.id,
+                                  child: Text(
+                                    mailbox.name,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                        )
+                        : TextButton.icon(
+                          onPressed: () => {print("pressed")},
+                          icon: const Icon(Icons.add),
+                          label: const Text('Añadir buzón'),
+                        ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -105,10 +108,9 @@ class DrawerMenu extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder:
-                      (context) => const MailboxSettingsScreen(),
+                  builder: (context) => const MailboxSettingsScreen(),
                 ),
-        );
+              );
             },
           ),
           ListTile(
@@ -118,10 +120,9 @@ class DrawerMenu extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder:
-                      (context) => const NewMailboxConfigurationScreen(),
+                  builder: (context) => const NewMailboxConfigurationScreen(),
                 ),
-        );
+              );
             },
           ),
           ListTile(

@@ -74,7 +74,8 @@ class MailboxService {
     }
   }
 
-  Stream<List<MailboxNotification>> getNotifications(String mailboxId) {
+  Stream<List<MailboxNotification>> getNotifications(String? mailboxId) {
+    if(mailboxId== null || mailboxId.isEmpty ) return Stream.value([]);
     try {
       return _database.child('notifications').child(mailboxId).onValue.map((
         event,
@@ -97,6 +98,24 @@ class MailboxService {
       return Stream.value([]);
     }
   }
+
+  Stream<MailboxNotification?> getLastNotificationByType(String? mailboxId, String type) {
+  if(mailboxId== null || mailboxId.isEmpty ) return Stream.value(null);
+  return _database.child('notifications').child(mailboxId)
+      .orderByChild('time')
+      .onValue
+      .map((event) {
+    final data = event.snapshot.value as Map?;
+    if (data == null) return null;
+    final notificaciones = data.entries
+        .map((entry) => Map<String, dynamic>.from(entry.value))
+        .where((noti) => noti['type'] == type)
+        .toList();
+    notificaciones.sort((a, b) => (b['time'] as int).compareTo(a['time'] as int));
+
+    return MailboxNotification.fromJson(notificaciones[0]);
+  });
+}
 
   Future<void> createMailbox(
     String mailboxId,

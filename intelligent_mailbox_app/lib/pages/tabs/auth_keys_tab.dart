@@ -14,6 +14,7 @@ class AuthorizedKeysTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(!context.mounted) return const SizedBox.shrink();
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;

@@ -12,6 +12,7 @@ class PackagesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(!context.mounted) return const SizedBox.shrink();
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
     if (mailbox == null) {

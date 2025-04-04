@@ -62,9 +62,7 @@ class MailboxProvider with ChangeNotifier {
       } catch (e) {
         print('Error loading mailboxes: $e');
       }
-    } else {
-      print('User is null');
-    }
+    } 
   }
 
   Future<void> selectMailbox(Mailbox? mailbox) async {
