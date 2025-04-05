@@ -108,6 +108,7 @@ class HomeTabState extends State<HomeTab> {
                             size: 30,
                           ),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Estado del Buzón",
@@ -209,6 +210,8 @@ class HomeTabState extends State<HomeTab> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     spacing: 16,
                     children: [
                       Row(
@@ -218,6 +221,7 @@ class HomeTabState extends State<HomeTab> {
                             children: [
                               Icon(Icons.dialpad, size: 20),
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 spacing: 8,
                                 children: [
                                   Text(
@@ -248,6 +252,7 @@ class HomeTabState extends State<HomeTab> {
                               Icon(Icons.nfc, size: 20),
                               Column(
                                 spacing: 8,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Último escaneo",
@@ -277,6 +282,7 @@ class HomeTabState extends State<HomeTab> {
                               Icon(Icons.mail, size: 20),
                               Column(
                                 spacing: 8,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Última notificacion recibida",
@@ -337,6 +343,8 @@ class HomeTabState extends State<HomeTab> {
 
           final notification = snapshot.data!;
           return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text.rich(
                 TextSpan(
