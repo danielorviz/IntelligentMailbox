@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intelligent_mailbox_app/generated/l10n.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/pages/configuration/mailbox_settings.dart';
@@ -10,7 +9,6 @@ import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/widgets/notifications_chart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -110,7 +108,6 @@ class HomeTabState extends State<HomeTab> {
                             size: 30,
                           ),
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Estado del Buzón",
@@ -212,8 +209,6 @@ class HomeTabState extends State<HomeTab> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     spacing: 16,
                     children: [
                       Row(
@@ -223,7 +218,6 @@ class HomeTabState extends State<HomeTab> {
                             children: [
                               Icon(Icons.dialpad, size: 20),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 spacing: 8,
                                 children: [
                                   Text(
@@ -254,7 +248,6 @@ class HomeTabState extends State<HomeTab> {
                               Icon(Icons.nfc, size: 20),
                               Column(
                                 spacing: 8,
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Último escaneo",
@@ -284,7 +277,6 @@ class HomeTabState extends State<HomeTab> {
                               Icon(Icons.mail, size: 20),
                               Column(
                                 spacing: 8,
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Última notificacion recibida",
@@ -345,8 +337,6 @@ class HomeTabState extends State<HomeTab> {
 
           final notification = snapshot.data!;
           return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text.rich(
                 TextSpan(
