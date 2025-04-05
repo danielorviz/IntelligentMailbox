@@ -99,14 +99,24 @@ class MailboxService {
     }
   }
 
-  Stream<MailboxNotification?> getLastNotificationByType(String? mailboxId, String type) {
+  Stream<MailboxNotification?> getLastNotificationByType(String? mailboxId, String? type) {
   if(mailboxId== null || mailboxId.isEmpty ) return Stream.value(null);
+  int limit = type !=null ? 100:1;
   return _database.child('notifications').child(mailboxId)
       .orderByChild('time')
+      .limitToFirst(limit)
       .onValue
       .map((event) {
     final data = event.snapshot.value as Map?;
     if (data == null) return null;
+
+    if(type == null || type.isEmpty) {
+      final notificaciones = data.entries
+          .map((entry) => Map<String, dynamic>.from(entry.value))
+          .toList();
+      notificaciones.sort((a, b) => (b['time'] as int).compareTo(a['time'] as int));
+      return MailboxNotification.fromJson(notificaciones[0]);
+    }
     final notificaciones = data.entries
         .map((entry) => Map<String, dynamic>.from(entry.value))
         .where((noti) => noti['type'] == type)

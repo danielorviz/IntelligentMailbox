@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/generated/l10n.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/pages/configuration/mailbox_settings.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
@@ -63,8 +65,10 @@ class HomeTabState extends State<HomeTab> {
         if (mailbox == null) {
           return const Center(child: Text('No mailbox selected'));
         }
-        Provider.of<PreferencesProvider>(context, listen: false)
-            .loadPreferences(mailbox.id);
+        Provider.of<PreferencesProvider>(
+          context,
+          listen: false,
+        ).loadPreferences(mailbox.id);
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
@@ -73,7 +77,7 @@ class HomeTabState extends State<HomeTab> {
             children: [
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 32.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -98,13 +102,13 @@ class HomeTabState extends State<HomeTab> {
                         ],
                       ),
                       Row(
+                        spacing: 16,
                         children: [
                           Icon(
                             isConnected ? Icons.wifi : Icons.wifi_off,
                             color: isConnected ? Colors.green : Colors.red,
                             size: 30,
                           ),
-                          SizedBox(width: 16),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -200,36 +204,38 @@ class HomeTabState extends State<HomeTab> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 2),
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    spacing: 16,
                     children: [
-                      Column(
+                      Row(
                         children: [
-                          Row( 
+                          Row(
+                            spacing: 16,
                             children: [
                               Icon(Icons.dialpad, size: 20),
-                              SizedBox(width: 16),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 8,
                                 children: [
                                   Text(
-                                    "Último acceso",
+                                    "Último acceso por clave",
                                     style:
                                         Theme.of(
                                           context,
                                         ).textTheme.headlineSmall,
                                   ),
-                                  SizedBox(height: 8),
                                   ..._buildLastAccess(
                                     mailbox.id,
+                                    AppLocalizations.of(context)!.keyName,
                                     "KEY",
                                     mailbox.instructions.offset,
                                   ),
@@ -239,14 +245,15 @@ class HomeTabState extends State<HomeTab> {
                           ),
                         ],
                       ),
-                      SizedBox(width: 16),
-                      Column(
+                      Row(
+                        spacing: 16,
                         children: [
                           Row(
+                            spacing: 16,
                             children: [
                               Icon(Icons.nfc, size: 20),
-                              SizedBox(width: 16),
                               Column(
+                                spacing: 8,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -256,10 +263,40 @@ class HomeTabState extends State<HomeTab> {
                                           context,
                                         ).textTheme.headlineSmall,
                                   ),
-                                  SizedBox(height: 8),
                                   ..._buildLastAccess(
                                     mailbox.id,
+                                    AppLocalizations.of(context)!.packageCode,
                                     "PACKAGE",
+                                    mailbox.instructions.offset,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        spacing: 16,
+                        children: [
+                          Row(
+                            spacing: 16,
+                            children: [
+                              Icon(Icons.mail, size: 20),
+                              Column(
+                                spacing: 8,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Última notificacion recibida",
+                                    style:
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.headlineSmall,
+                                  ),
+                                  ..._buildLastAccess(
+                                    mailbox.id,
+                                    AppLocalizations.of(context)!.info,
+                                    null,
                                     mailbox.instructions.offset,
                                   ),
                                 ],
@@ -272,7 +309,6 @@ class HomeTabState extends State<HomeTab> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
               Card(
                 child: SizedBox(
                   height: 300,
@@ -288,7 +324,8 @@ class HomeTabState extends State<HomeTab> {
 
   List<Widget> _buildLastAccess(
     String mailboxId,
-    String type,
+    String infoLabel,
+    String? type,
     int timezoneOffset,
   ) {
     return [
@@ -300,33 +337,53 @@ class HomeTabState extends State<HomeTab> {
           }
 
           if (!snapshot.hasData || snapshot.data == null) {
-            return const Text('Sin accesos recientes.');
+            return Text(
+              'Sin información reciente.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            );
           }
 
           final notification = snapshot.data!;
           return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                notification.typeInfo,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              Text(
-                DateTimeUtils.formatDate(
-                  notification.getTimeWithOffset(timezoneOffset),
+              Text.rich(
+                TextSpan(
+                  children: [
+                      TextSpan(
+                        text: '$infoLabel: ',
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                    TextSpan(
+                      text:
+                          type != null
+                              ? notification.typeInfo
+                              : notification.title,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
                 ),
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              Text(
-                DateTimeUtils.formatTime(
-                  notification.getTimeWithOffset(timezoneOffset),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '${AppLocalizations.of(context)!.date}: ',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    TextSpan(
+                      text:
+                          '${DateTimeUtils.formatDate(notification.getTimeWithOffset(timezoneOffset))} ${DateTimeUtils.formatTime(notification.getTimeWithOffset(timezoneOffset))}',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
                 ),
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           );
         },
       ),
-      const SizedBox(height: 8), // Espaciado adicional si es necesario
     ];
   }
 }

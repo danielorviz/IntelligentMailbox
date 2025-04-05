@@ -35,6 +35,7 @@
   "enterValue": "Por favor, introduzca un valor",
   "startDate": "Fecha de inicio",
   "endDate": "Fecha de finalización",
+  "date": "Fecha",
   "selectDate": "Seleccione una fecha",
   "save": "Guardar",
   "haveNoAuthKeys":"No tiene claves autorizadas",
@@ -109,6 +110,8 @@
   "passwordReset": "Restablecer la contraseña",
   "passwordResetWillSent": "Se le enviará un correo para restablecer su contraseña a",
   "enterEmailToResetPassword": "Ingrese un correo electrónico para restablecer la contraseña",
+  "info": "Info.",
+  
   "system": "Usar el desfase del sistema",
   "utc12": "Honolulu (UTC-12:00)",
   "utc11": "Pago Pago (UTC-11:00)",

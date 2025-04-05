@@ -83,6 +83,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get endDate => 'Fecha de finalización';
 
   @override
+  String get date => 'Fecha';
+
+  @override
   String get selectDate => 'Seleccione una fecha';
 
   @override
@@ -303,6 +306,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get enterEmailToResetPassword => 'Ingrese un correo electrónico para restablecer la contraseña';
+
+  @override
+  String get info => 'Info.';
 
   @override
   String get system => 'Usar el desfase del sistema';

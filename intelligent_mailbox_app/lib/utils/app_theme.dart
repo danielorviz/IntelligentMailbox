@@ -184,6 +184,18 @@ class AppTheme {
         color: textOnSecondaryBlue,
         fontSize: 12,
       ),
+      labelLarge: TextStyle(
+        color: textOnSecondaryBlue,
+        fontSize: 16,
+      ),
+      labelMedium: TextStyle(
+        color: textOnSecondaryBlue,
+        fontSize: 14,
+      ), 
+      labelSmall: TextStyle(
+        color: textOnSecondaryBlue,
+        fontSize: 12,
+      ), 
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white,

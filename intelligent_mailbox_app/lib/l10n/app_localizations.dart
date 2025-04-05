@@ -239,6 +239,12 @@ abstract class AppLocalizations {
   /// **'End date'**
   String get endDate;
 
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
   /// No description provided for @selectDate.
   ///
   /// In en, this message translates to:
@@ -682,6 +688,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter an email to reset the password'**
   String get enterEmailToResetPassword;
+
+  /// No description provided for @info.
+  ///
+  /// In en, this message translates to:
+  /// **'Info.'**
+  String get info;
 
   /// No description provided for @system.
   ///

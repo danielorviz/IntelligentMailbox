@@ -83,6 +83,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endDate => 'End date';
 
   @override
+  String get date => 'Date';
+
+  @override
   String get selectDate => 'Select a date';
 
   @override
@@ -303,6 +306,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterEmailToResetPassword => 'Enter an email to reset the password';
+
+  @override
+  String get info => 'Info.';
 
   @override
   String get system => 'Use system offset';
