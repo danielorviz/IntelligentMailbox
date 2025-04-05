@@ -31,7 +31,7 @@ class MailboxProvider with ChangeNotifier {
             if (mailboxKeys.isEmpty && _mailboxes.isNotEmpty) {
               _mailboxes = [];
               _selectedMailbox = null;
-              notifyListeners();
+              _safeNotifyListeners();
               return;
             }
 
@@ -39,6 +39,7 @@ class MailboxProvider with ChangeNotifier {
             final combinedStream = CombineLatestStream.list(mailboxStreams);
 
             final combinedSubscription = combinedStream.listen((mailboxes) {
+              if (!hasListeners) return;
               _mailboxes = mailboxes.whereType<Mailbox>().toList();
               print('Cargando mailboxes: $mailboxes');
               if (_mailboxes.isNotEmpty) {
@@ -46,7 +47,7 @@ class MailboxProvider with ChangeNotifier {
               } else if (_mailboxes.isEmpty) {
                 _selectedMailbox = null;
               }
-              notifyListeners();
+              _safeNotifyListeners();
             });
 
             // Agrega la suscripción combinada a la lista
@@ -68,25 +69,22 @@ class MailboxProvider with ChangeNotifier {
   Future<void> selectMailbox(Mailbox? mailbox) async {
     try {
       if (_selectedMailbox == mailbox) {
-        return; // Ya está seleccionado, no hacer nada
+        return;
       }
       _selectedMailbox = mailbox;
-      notifyListeners();
+      _safeNotifyListeners();
     } catch (e) {
       print('Error selecting mailbox: $e');
     }
   }
 
   Future<void> signOut() async {
-    // Cancela todas las suscripciones activas
     await _cancelAllSubscriptions();
 
-    // Limpia los datos
     _mailboxes = [];
     _selectedMailbox = null;
 
-    // Notifica cambios
-    notifyListeners();
+    _safeNotifyListeners();
   }
 
   Future<void> _cancelAllSubscriptions() async {
@@ -94,5 +92,17 @@ class MailboxProvider with ChangeNotifier {
       await subscription.cancel();
     }
     _subscriptions.clear(); // Limpia la lista de suscripciones
+  }
+
+  void _safeNotifyListeners() {
+  if (hasListeners) {
+    notifyListeners();
+  }
+}
+
+  @override
+  void dispose() {
+    _cancelAllSubscriptions();
+    super.dispose();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
@@ -43,15 +44,15 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
         });
       }
       _mailboxId = mailbox.id;
-      await _loadSettings(mailbox.id);
+      await _loadPreferences(mailbox.id);
     }
   }
 
-  Future<void> _loadSettings(String mailboxId) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> _loadPreferences(String mailboxId) async {
+    final prefs = Provider.of<PreferencesProvider>(context, listen: false);
+    await prefs.loadPreferences(mailboxId);
     setState(() {
-      _notificationsEnabled =
-          prefs.getBool('${mailboxId}_notificationsEnabled') ?? false;
+      _notificationsEnabled = prefs.notificationsEnabled;
     });
   }
 
@@ -59,8 +60,8 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     if (_mailboxId == null) {
       return;
     }
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('${_mailboxId}_notificationsEnabled', _notificationsEnabled);
+    final prefs = Provider.of<PreferencesProvider>(context, listen: false);
+    prefs.updateNotificationState(_mailboxId!, _notificationsEnabled);
 
     try {
       await mailboxService.saveSettings(

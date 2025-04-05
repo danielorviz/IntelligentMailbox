@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
@@ -17,7 +18,7 @@ void main() async {
     DeviceOrientation.portraitUp, // Solo permite portrait normal
     DeviceOrientation.portraitDown, // Opcional: permite portrait invertido
   ]);
-  
+
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -27,7 +28,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -39,6 +39,9 @@ class MyApp extends StatelessWidget {
           update:
               (context, userProvider, mailboxProvider) =>
                   MailboxProvider(userProvider),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PreferencesProvider(),
         ),
       ],
       child: MaterialApp(

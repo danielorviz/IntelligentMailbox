@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/pages/configuration/mailbox_settings.dart';
+import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
@@ -24,19 +25,12 @@ class HomeTabState extends State<HomeTab> {
   String lastKeyUsed = "1234";
   String lastPackageScanned = "Paquete #5678";
   String lastCheckDate = "Nunca";
-  bool _notificationsEnabled = false;
-
 
   void checkConnection() {
     setState(() {
       isConnected = !isConnected;
     });
   }
-
-   Future<bool> _getNotificationState(String mailboxId) async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('${mailboxId}_notificationsEnabled') ?? false;
-}
 
   void openMailbox() {
     // Lógica para abrir el buzón
@@ -69,6 +63,9 @@ class HomeTabState extends State<HomeTab> {
         if (mailbox == null) {
           return const Center(child: Text('No mailbox selected'));
         }
+        Provider.of<PreferencesProvider>(context, listen: false)
+            .loadPreferences(mailbox.id);
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -145,32 +142,36 @@ class HomeTabState extends State<HomeTab> {
                                   ],
                                 ),
                               ),
-                              Text.rich(
-                                TextSpan(
-                                  children: [
+                              Consumer<PreferencesProvider>(
+                                builder: (context, preferences, child) {
+                                  return Text.rich(
                                     TextSpan(
-                                      text: "Notificaciones: ",
-                                      style:
-                                          Theme.of(
+                                      children: [
+                                        TextSpan(
+                                          text: "Notificaciones: ",
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.labelLarge,
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              preferences.notificationsEnabled
+                                                  ? "Activadas"
+                                                  : "Desactivadas",
+                                          style: Theme.of(
                                             context,
-                                          ).textTheme.labelLarge,
+                                          ).textTheme.bodyMedium?.copyWith(
+                                            color:
+                                                preferences.notificationsEnabled
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    TextSpan(
-                                      text:
-                                          _notificationsEnabled
-                                              ? "Activadas"
-                                              : "Desactivadas",
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium?.copyWith(
-                                        color:
-                                            _notificationsEnabled
-                                                ? Colors.green
-                                                : Colors.red,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
                               Text.rich(
                                 TextSpan(
@@ -212,7 +213,7 @@ class HomeTabState extends State<HomeTab> {
                     children: [
                       Column(
                         children: [
-                          Row(
+                          Row( 
                             children: [
                               Icon(Icons.dialpad, size: 20),
                               SizedBox(width: 16),
