@@ -695,6 +695,102 @@ abstract class AppLocalizations {
   /// **'Info.'**
   String get info;
 
+  /// No description provided for @mailboxConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox configuration'**
+  String get mailboxConfig;
+
+  /// No description provided for @checkConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Check connection'**
+  String get checkConnection;
+
+  /// No description provided for @mailboxStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox status'**
+  String get mailboxStatus;
+
+  /// No description provided for @checkingConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking connection ...'**
+  String get checkingConnection;
+
+  /// No description provided for @checking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking ...'**
+  String get checking;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connected;
+
+  /// No description provided for @disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get disconnected;
+
+  /// No description provided for @lastCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Last check: '**
+  String get lastCheck;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// No description provided for @timezone.
+  ///
+  /// In en, this message translates to:
+  /// **'Timezone'**
+  String get timezone;
+
+  /// No description provided for @lastKeyboardAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Last keyboard access'**
+  String get lastKeyboardAccess;
+
+  /// No description provided for @lastScanAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Last scan access'**
+  String get lastScanAccess;
+
+  /// No description provided for @lastNotificationReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Last notification received'**
+  String get lastNotificationReceived;
+
+  /// No description provided for @noRecentInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent information'**
+  String get noRecentInfo;
+
   /// No description provided for @system.
   ///
   /// In en, this message translates to:

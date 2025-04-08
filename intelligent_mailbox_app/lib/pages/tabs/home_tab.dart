@@ -21,15 +21,22 @@ class HomeTabState extends State<HomeTab> {
   StreamSubscription<MailboxNotification?>? _streamSubscription;
 
   final MailboxService _mailboxService = MailboxService();
-  bool isConnected = false;
-  String lastKeyUsed = "1234";
-  String lastPackageScanned = "Paquete #5678";
-  String lastCheckDate = "Nunca";
+  String lastKeyUsed = "";
+  String lastPackageScanned = "";
+  String lastCheckDate = "";
+  bool checkingConnection = false;
 
-  void checkConnection() {
+  Future<void> checkConnection(String mailboxId) async {
     setState(() {
-      isConnected = !isConnected;
+      checkingConnection = true;
     });
+    try {
+      await _mailboxService.checkMailboxConnection(mailboxId);
+    } finally {
+      setState(() {
+        checkingConnection = false;
+      });
+    }
   }
 
   void openMailbox() {
@@ -61,12 +68,14 @@ class HomeTabState extends State<HomeTab> {
       builder: (context, mailboxProvider, child) {
         final mailbox = mailboxProvider.selectedMailbox;
         if (mailbox == null) {
-          return const Center(child: Text('No mailbox selected'));
+          return Center(child: Text(AppLocalizations.of(context)!.noMailboxSelected));
         }
         Provider.of<PreferencesProvider>(
           context,
           listen: false,
         ).loadPreferences(mailbox.id);
+
+        bool wifiStatus = mailbox.getWifiStatusBool();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
@@ -82,60 +91,86 @@ class HomeTabState extends State<HomeTab> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.refresh, size: 20),
-                            onPressed: checkConnection,
+                          Tooltip(
+                            message: AppLocalizations.of(context)!.checkConnection,
+                            child: IconButton(
+                              icon: Icon(Icons.refresh, size: 20),
+                              onPressed: () => checkConnection(mailbox.id),
+                            ),
                           ),
-                          IconButton(
-                            icon: Icon(Icons.settings, size: 20),
-                            onPressed:
-                                () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) =>
-                                            const MailboxSettingsScreen(),
+                          Tooltip(
+                            message: AppLocalizations.of(context)!.mailboxConfig,
+                            child: IconButton(
+                              icon: Icon(Icons.settings, size: 20),
+                              onPressed:
+                                  () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              const MailboxSettingsScreen(),
+                                    ),
                                   ),
-                                ),
+                            ),
                           ),
                         ],
                       ),
                       Row(
                         spacing: 16,
                         children: [
-                          Icon(
-                            isConnected ? Icons.wifi : Icons.wifi_off,
-                            color: isConnected ? Colors.green : Colors.red,
-                            size: 30,
-                          ),
+                          if (checkingConnection) ...{
+                            const SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: CircularProgressIndicator(),
+                            ),
+                          } else ...{
+                            Icon(
+                              wifiStatus ? Icons.wifi : Icons.wifi_off,
+                              color: wifiStatus ? Colors.green : Colors.red,
+                              size: 30,
+                            ),
+                          },
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Estado del Buzón",
+                                AppLocalizations.of(context)!.mailboxStatus,
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
-                              Text(
-                                isConnected ? "Conectado" : "Desconectado",
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium!.copyWith(
-                                  color:
-                                      isConnected ? Colors.green : Colors.red,
+                              if (checkingConnection) ...{
+                                Text(
+                                  AppLocalizations.of(context)!.checkingConnection,
+                                  style: Theme.of(context).textTheme.bodyMedium!
+                                      .copyWith(color: Colors.orange),
                                 ),
-                              ),
+                              } else ...{
+                                Text(
+                                  wifiStatus ? AppLocalizations.of(context)!.connected : AppLocalizations.of(context)!.disconnected,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium!.copyWith(
+                                    color:
+                                        wifiStatus ? Colors.green : Colors.red,
+                                  ),
+                                ),
+                              },
                               Text.rich(
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: "Última comprobación: ",
+                                      text: AppLocalizations.of(context)!.lastCheck,
                                       style:
                                           Theme.of(
                                             context,
                                           ).textTheme.labelLarge,
                                     ),
                                     TextSpan(
-                                      text: lastCheckDate,
+                                      text:
+                                          checkingConnection
+                                              ? AppLocalizations.of(context)!.checking
+                                              : '${DateTimeUtils.formatDate(mailbox.getLastWifiStatusCheckWithOffset())} ${DateTimeUtils.formatTime(mailbox.getLastWifiStatusCheckWithOffset())}',
                                       style:
                                           Theme.of(
                                             context,
@@ -150,7 +185,7 @@ class HomeTabState extends State<HomeTab> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: "Notificaciones: ",
+                                          text: '${AppLocalizations.of(context)!.notifications}: ',
                                           style:
                                               Theme.of(
                                                 context,
@@ -159,8 +194,8 @@ class HomeTabState extends State<HomeTab> {
                                         TextSpan(
                                           text:
                                               preferences.notificationsEnabled
-                                                  ? "Activadas"
-                                                  : "Desactivadas",
+                                                  ? AppLocalizations.of(context)!.active
+                                                  : AppLocalizations.of(context)!.inactive,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.bodyMedium?.copyWith(
@@ -179,7 +214,7 @@ class HomeTabState extends State<HomeTab> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: "Zona horaria: ",
+                                      text: '${AppLocalizations.of(context)!.timezone}: ',
                                       style:
                                           Theme.of(
                                             context,
@@ -225,7 +260,7 @@ class HomeTabState extends State<HomeTab> {
                                 spacing: 8,
                                 children: [
                                   Text(
-                                    "Último acceso por clave",
+                                    AppLocalizations.of(context)!.lastKeyboardAccess,
                                     style:
                                         Theme.of(
                                           context,
@@ -255,7 +290,7 @@ class HomeTabState extends State<HomeTab> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Último escaneo",
+                                    AppLocalizations.of(context)!.lastScanAccess,
                                     style:
                                         Theme.of(
                                           context,
@@ -285,7 +320,7 @@ class HomeTabState extends State<HomeTab> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Última notificacion recibida",
+                                    AppLocalizations.of(context)!.lastNotificationReceived,
                                     style:
                                         Theme.of(
                                           context,
@@ -336,7 +371,7 @@ class HomeTabState extends State<HomeTab> {
 
           if (!snapshot.hasData || snapshot.data == null) {
             return Text(
-              'Sin información reciente.',
+              AppLocalizations.of(context)!.noRecentInfo,
               style: Theme.of(context).textTheme.bodyMedium,
             );
           }
@@ -349,10 +384,10 @@ class HomeTabState extends State<HomeTab> {
               Text.rich(
                 TextSpan(
                   children: [
-                      TextSpan(
-                        text: '$infoLabel: ',
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
+                    TextSpan(
+                      text: '$infoLabel: ',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
                     TextSpan(
                       text:
                           type != null

@@ -1,6 +1,8 @@
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/models/instructions.dart';
+import 'package:intelligent_mailbox_app/utils/constants.dart';
+import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 
 class Mailbox {
   final String id;
@@ -8,6 +10,8 @@ class Mailbox {
   Instructions instructions;
   List<AuthorizedKey> authorizedKeys = [];
   List<AuthorizedPackage> authorizedPackages = [];
+  final String wifiStatus;
+  final int lastWifiStatusCheck;
 
   Mailbox({
     required this.id,
@@ -15,6 +19,8 @@ class Mailbox {
     required this.instructions,
     this.authorizedKeys = const [],
     this.authorizedPackages = const [],
+    this.wifiStatus = Constants.connectionFailed,
+    this.lastWifiStatusCheck = 0,
   });
 
   factory Mailbox.fromMap(Map<String, dynamic> data, String documentId) {
@@ -38,7 +44,8 @@ class Mailbox {
             (entry.value as Map<dynamic, dynamic>).map(
               (key, value) => MapEntry(key.toString(), value),
             ),
-          entry.key.toString());
+            entry.key.toString(),
+          );
         }).toList();
 
     return Mailbox(
@@ -47,6 +54,25 @@ class Mailbox {
       instructions: Instructions.fromMap(data['instructions'] ?? {}),
       authorizedKeys: keys,
       authorizedPackages: packages,
+      wifiStatus: data['wifiStatus'] ?? Constants.connectionFailed,
+      lastWifiStatusCheck: data['lastWifiStatusCheck'] ?? 0,
+    );
+  }
+
+  bool getWifiStatusBool() {
+    return wifiStatus == Constants.connectionSuccess;
+  }
+
+  DateTime getLastWifiStatusCheckWithOffset() {
+    int lastDate =
+        lastWifiStatusCheck == 0
+            ? DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(
+              DateTime.now(),
+            )
+            : lastWifiStatusCheck;
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(
+      lastDate,
+      instructions.offset,
     );
   }
 }

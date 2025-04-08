@@ -311,6 +311,54 @@ class AppLocalizationsEs extends AppLocalizations {
   String get info => 'Info.';
 
   @override
+  String get mailboxConfig => 'Configuración del buzón';
+
+  @override
+  String get checkConnection => 'Comprobar conexión';
+
+  @override
+  String get mailboxStatus => 'Estado del buzón';
+
+  @override
+  String get checkingConnection => 'Comprobando conexión ...';
+
+  @override
+  String get checking => 'Comprobando ...';
+
+  @override
+  String get connected => 'Conectado';
+
+  @override
+  String get disconnected => 'Desconectado';
+
+  @override
+  String get lastCheck => 'Última comprobación: ';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get active => 'Activadas';
+
+  @override
+  String get inactive => 'Desactivadas';
+
+  @override
+  String get timezone => 'Zona horaria';
+
+  @override
+  String get lastKeyboardAccess => 'Último acceso por teclado';
+
+  @override
+  String get lastScanAccess => 'Último acceso por escaneo';
+
+  @override
+  String get lastNotificationReceived => 'Última notificación recibida';
+
+  @override
+  String get noRecentInfo => 'Sin información reciente';
+
+  @override
   String get system => 'Usar el desfase del sistema';
 
   @override
