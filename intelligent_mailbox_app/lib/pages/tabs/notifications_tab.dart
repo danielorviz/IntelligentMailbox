@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
-import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 
 class NotificationsTab extends StatefulWidget {
   const NotificationsTab({super.key});
@@ -12,7 +12,7 @@ class NotificationsTab extends StatefulWidget {
 }
 
 class NotificationsTabState extends State<NotificationsTab> {
-  final MailboxService _mailboxService = MailboxService();
+  final NotificationService _notificationsService = NotificationService();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class NotificationsTabState extends State<NotificationsTab> {
       return const Center(child: Text('No mailbox selected'));
     }
     return StreamBuilder<List<MailboxNotification>>(
-      stream: _mailboxService.getNotifications(mailbox.id),
+      stream: _notificationsService.getNotifications(mailbox.id),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

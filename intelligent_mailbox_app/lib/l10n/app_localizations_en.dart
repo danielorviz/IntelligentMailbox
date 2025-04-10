@@ -401,7 +401,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get utc01 => 'Madrid (UTC+01:00)';
 
   @override
-  String get utc02_2 => 'Athens (UTC+02:00)';
+  String get utc02_2 => 'Madrid (UTC+02:00, Summer)';
 
   @override
   String get utc03_2 => 'Moscow (UTC+03:00)';
@@ -432,4 +432,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get utc12_2 => 'Auckland (UTC+12:00)';
+
+  @override
+  String get january => 'January';
+
+  @override
+  String get february => 'February';
+
+  @override
+  String get march => 'March';
+
+  @override
+  String get april => 'April';
+
+  @override
+  String get may => 'May';
+
+  @override
+  String get june => 'June';
+
+  @override
+  String get july => 'July';
+
+  @override
+  String get august => 'August';
+
+  @override
+  String get september => 'September';
+
+  @override
+  String get october => 'October';
+
+  @override
+  String get november => 'November';
+
+  @override
+  String get december => 'December';
+
+  @override
+  String get monday => 'Mon';
+
+  @override
+  String get tuesday => 'Tue';
+
+  @override
+  String get wednesday => 'Wed';
+
+  @override
+  String get thursday => 'Thu';
+
+  @override
+  String get friday => 'Fri';
+
+  @override
+  String get saturday => 'Sat';
+
+  @override
+  String get sunday => 'Sun';
+
+  @override
+  String get selectMonth => 'Select Month';
+
+  @override
+  String get selectYear => 'Select Year';
+
+  @override
+  String get notificationsStatistics => 'Notifications Statistics';
 }

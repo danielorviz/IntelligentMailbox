@@ -1,0 +1,144 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
+
+class NotificationService {
+  static final NotificationService _instance = NotificationService._internal();
+
+  NotificationService._internal();
+
+  factory NotificationService() {
+    return _instance;
+  }
+
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+
+  Stream<List<MailboxNotification>> getNotifications(String? mailboxId) {
+    if (mailboxId == null || mailboxId.isEmpty) return Stream.value([]);
+    try {
+      return _database.child('notifications').child(mailboxId).onValue.map((
+        event,
+      ) {
+        final notificationsMap = event.snapshot.value as Map<dynamic, dynamic>?;
+        if (notificationsMap == null) {
+          return <MailboxNotification>[];
+        }
+        List<MailboxNotification> notifications = [];
+        notificationsMap.forEach((key, value) {
+          notifications.add(
+            MailboxNotification.fromJson(value as Map<dynamic, dynamic>),
+          );
+        });
+        notifications.sort((a, b) => b.time.compareTo(a.time));
+        return notifications;
+      });
+    } catch (error) {
+      print('Error getting notifications: $error');
+      return Stream.value([]);
+    }
+  }
+
+  Stream<MailboxNotification?> getLastNotificationByType(
+    String? mailboxId,
+    String? type,
+  ) {
+    if (mailboxId == null || mailboxId.isEmpty) return Stream.value(null);
+    int limit = type != null ? 100 : 1;
+    return _database
+        .child('notifications')
+        .child(mailboxId)
+        .orderByChild('time')
+        .limitToLast(limit)
+        .onValue
+        .map((event) {
+          final data = event.snapshot.value as Map?;
+          if (data == null) return null;
+
+          if (type == null || type.isEmpty) {
+            final notificaciones =
+                data.entries
+                    .map((entry) => Map<String, dynamic>.from(entry.value))
+                    .toList();
+            notificaciones.sort(
+              (a, b) => (b['time'] as int).compareTo(a['time'] as int),
+            );
+            return MailboxNotification.fromJson(notificaciones[0]);
+          }
+          final notificaciones =
+              data.entries
+                  .map((entry) => Map<String, dynamic>.from(entry.value))
+                  .where((noti) => noti['type'] == type)
+                  .toList();
+          notificaciones.sort(
+            (a, b) => (b['time'] as int).compareTo(a['time'] as int),
+          );
+
+          return MailboxNotification.fromJson(notificaciones[0]);
+        });
+  }
+
+  Future<int> getFirstNotificationTime(String? mailboxId) async {
+    if (mailboxId == null || mailboxId.isEmpty) {
+      return DateTime.now().millisecondsSinceEpoch;
+    }
+    try {
+      final snapshot =
+          await _database
+              .child('notifications')
+              .child(mailboxId)
+              .orderByChild('time')
+              .limitToFirst(1)
+              .get();
+      final data = snapshot.value as Map?;
+      if (data == null || data.isEmpty) return 0;
+
+      final firstNotification = data.values.first as Map<dynamic, dynamic>;
+      return firstNotification['time'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+    } catch (error) {
+      print('Error getting first notification time: $error');
+      return 0;
+    }
+  }
+
+  Stream<List<int>> getWeeklyCountsByMonth({
+    required String? mailboxId,
+    required int year,
+    required int month,
+    required int offset,
+  }) {
+    if (mailboxId == null || mailboxId.isEmpty) {
+      return Stream.value(List<int>.filled(7, 0));
+    }
+
+    return _database.child('notifications').child(mailboxId).onValue.map((
+      event,
+    ) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+
+      if (data == null) return List<int>.filled(7, 0);
+
+      final notifications = data.values
+          .map(
+            (entry) =>
+                MailboxNotification.fromJson(Map<String, dynamic>.from(entry)),
+          )
+          .where((noti) {
+            final date = DateTime.fromMillisecondsSinceEpoch(
+              noti.time * 1000,
+            ).add(Duration(seconds: offset));
+            return date.year == year && date.month == month;
+          });
+
+      final Map<int, int> dayCounts = {for (int i = 0; i < 7; i++) i: 0};
+
+      for (final noti in notifications) {
+        final date = DateTime.fromMillisecondsSinceEpoch(
+          noti.time * 1000,
+        ).add(Duration(seconds: offset));
+        int dayOfWeek = date.weekday - 1; // Lunes es 0, Domingo es 6
+        dayCounts[dayOfWeek] = (dayCounts[dayOfWeek] ?? 0) + 1;
+      }
+
+      return dayCounts.values.toList(); // Retornar conteos como lista
+    });
+  }
+}

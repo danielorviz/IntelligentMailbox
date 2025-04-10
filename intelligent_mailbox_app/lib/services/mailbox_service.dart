@@ -5,7 +5,6 @@ import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
-import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/utils/constants.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 
@@ -84,9 +83,8 @@ class MailboxService {
     await mailboxRef.update({'wifiStatus': Constants.connectionChecking});
 
     mailboxRef.update({
-      'lastWifiStatusCheck': DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(
-        DateTime.now(),
-      ),
+      'lastWifiStatusCheck':
+          DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(DateTime.now()),
     });
 
     const timeoutDuration = Duration(seconds: 10);
@@ -109,10 +107,7 @@ class MailboxService {
         }
       });
 
-      await Future.any([
-        Future.delayed(timeoutDuration),
-        completer.future,
-      ]);
+      await Future.any([Future.delayed(timeoutDuration), completer.future]);
 
       if (!connectionSuccess) {
         await mailboxRef.update({'wifiStatus': Constants.connectionFailed});
@@ -123,70 +118,6 @@ class MailboxService {
     } finally {
       await connectionStatusListener?.cancel();
     }
-  }
-
-  Stream<List<MailboxNotification>> getNotifications(String? mailboxId) {
-    if (mailboxId == null || mailboxId.isEmpty) return Stream.value([]);
-    try {
-      return _database.child('notifications').child(mailboxId).onValue.map((
-        event,
-      ) {
-        final notificationsMap = event.snapshot.value as Map<dynamic, dynamic>?;
-        if (notificationsMap == null) {
-          return <MailboxNotification>[];
-        }
-        List<MailboxNotification> notifications = [];
-        notificationsMap.forEach((key, value) {
-          notifications.add(
-            MailboxNotification.fromJson(value as Map<dynamic, dynamic>),
-          );
-        });
-        notifications.sort((a, b) => b.time.compareTo(a.time));
-        return notifications;
-      });
-    } catch (error) {
-      print('Error getting notifications: $error');
-      return Stream.value([]);
-    }
-  }
-
-  Stream<MailboxNotification?> getLastNotificationByType(
-    String? mailboxId,
-    String? type,
-  ) {
-    if (mailboxId == null || mailboxId.isEmpty) return Stream.value(null);
-    int limit = type != null ? 100 : 1;
-    return _database
-        .child('notifications')
-        .child(mailboxId)
-        .orderByChild('time')
-        .limitToFirst(limit)
-        .onValue
-        .map((event) {
-          final data = event.snapshot.value as Map?;
-          if (data == null) return null;
-
-          if (type == null || type.isEmpty) {
-            final notificaciones =
-                data.entries
-                    .map((entry) => Map<String, dynamic>.from(entry.value))
-                    .toList();
-            notificaciones.sort(
-              (a, b) => (b['time'] as int).compareTo(a['time'] as int),
-            );
-            return MailboxNotification.fromJson(notificaciones[0]);
-          }
-          final notificaciones =
-              data.entries
-                  .map((entry) => Map<String, dynamic>.from(entry.value))
-                  .where((noti) => noti['type'] == type)
-                  .toList();
-          notificaciones.sort(
-            (a, b) => (b['time'] as int).compareTo(a['time'] as int),
-          );
-
-          return MailboxNotification.fromJson(notificaciones[0]);
-        });
   }
 
   Future<void> createMailbox(

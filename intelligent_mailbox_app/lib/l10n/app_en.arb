@@ -142,7 +142,7 @@
   "utc02": "Fernando de Noronha (UTC-02:00)",
   "utc00": "Lisbon (UTC+00:00)",
   "utc01": "Madrid (UTC+01:00)",
-  "utc02_2": "Athens (UTC+02:00)",
+  "utc02_2": "Madrid (UTC+02:00, Summer)",
   "utc03_2": "Moscow (UTC+03:00)",
   "utc04_2": "Dubai (UTC+04:00)",
   "utc05_2": "Karachi (UTC+05:00)",
@@ -152,6 +152,30 @@
   "utc09_2": "Tokyo (UTC+09:00)",
   "utc10_2": "Sydney (UTC+10:00)",
   "utc11_2": "Honiara (UTC+11:00)",
-  "utc12_2": "Auckland (UTC+12:00)"
+  "utc12_2": "Auckland (UTC+12:00)",
+  
+  "january": "January",
+  "february": "February",
+  "march": "March",
+  "april": "April",
+  "may": "May",
+  "june": "June",
+  "july": "July",
+  "august": "August",
+  "september": "September",
+  "october": "October",
+  "november": "November",
+  "december": "December",
 
+  "monday": "Mon",
+  "tuesday": "Tue",
+  "wednesday": "Wed",
+  "thursday": "Thu",
+  "friday": "Fri",
+  "saturday": "Sat",
+  "sunday": "Sun",
+
+  "selectMonth": "Select Month",
+  "selectYear": "Select Year",
+  "notificationsStatistics": "Notifications Statistics"
 }

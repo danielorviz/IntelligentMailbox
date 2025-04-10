@@ -71,20 +71,51 @@ class DateTimeUtils {
       {'label': AppLocalizations.of(context)!.utc12_2, 'value': 43200},
     ];
   }
+
+  static List<String> getMonths(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.january,
+      AppLocalizations.of(context)!.february,
+      AppLocalizations.of(context)!.march,
+      AppLocalizations.of(context)!.april,
+      AppLocalizations.of(context)!.may,
+      AppLocalizations.of(context)!.june,
+      AppLocalizations.of(context)!.july,
+      AppLocalizations.of(context)!.august,
+      AppLocalizations.of(context)!.september,
+      AppLocalizations.of(context)!.october,
+      AppLocalizations.of(context)!.november,
+      AppLocalizations.of(context)!.december,
+    ];
+  }
+
+  static List<String> getWeekDays(BuildContext context) {
+    return [
+      AppLocalizations.of(context)!.monday,
+      AppLocalizations.of(context)!.tuesday,
+      AppLocalizations.of(context)!.wednesday,
+      AppLocalizations.of(context)!.thursday,
+      AppLocalizations.of(context)!.friday,
+      AppLocalizations.of(context)!.saturday,
+      AppLocalizations.of(context)!.sunday,
+    ];
+  }
+
   static String getOffsetStringValue(BuildContext context, int mailboxOffset) {
     return DateTimeUtils.getOffsetOptions(context)
-                  .firstWhere(
-                    (offset) => offset['value'] == mailboxOffset,
-                    orElse: () => {'value': '0'},
-                  )['value']
-                  .toString();
+        .firstWhere(
+          (offset) => offset['value'] == mailboxOffset,
+          orElse: () => {'value': '0'},
+        )['value']
+        .toString();
   }
+
   static String getOffsetStringLabel(BuildContext context, int mailboxOffset) {
     return DateTimeUtils.getOffsetOptions(context)
-                  .firstWhere(
-                    (offset) => offset['value'] == mailboxOffset,
-                    orElse: () => {'value': '0'},
-                  )['label']
-                  .toString();
+        .firstWhere(
+          (offset) => offset['value'] == mailboxOffset,
+          orElse: () => {'value': '0'},
+        )['label']
+        .toString();
   }
 }

@@ -5,10 +5,11 @@ import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/pages/configuration/mailbox_settings.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
+import 'package:intelligent_mailbox_app/widgets/notifications_statistics.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
-import 'package:intelligent_mailbox_app/widgets/notifications_chart.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -21,6 +22,8 @@ class HomeTabState extends State<HomeTab> {
   StreamSubscription<MailboxNotification?>? _streamSubscription;
 
   final MailboxService _mailboxService = MailboxService();
+  final NotificationService _notificationsService = NotificationService();
+
   String lastKeyUsed = "";
   String lastPackageScanned = "";
   String lastCheckDate = "";
@@ -56,19 +59,13 @@ class HomeTabState extends State<HomeTab> {
   Widget build(BuildContext context) {
     if (!mounted) return const SizedBox.shrink();
 
-    final dates = [
-      DateTime(2022, 9, 19),
-      DateTime(2022, 9, 26),
-      DateTime(2022, 10, 3),
-      DateTime(2022, 10, 10),
-    ];
-    final counts = [5, 25, 100, 75];
-
     return Consumer<MailboxProvider>(
       builder: (context, mailboxProvider, child) {
         final mailbox = mailboxProvider.selectedMailbox;
         if (mailbox == null) {
-          return Center(child: Text(AppLocalizations.of(context)!.noMailboxSelected));
+          return Center(
+            child: Text(AppLocalizations.of(context)!.noMailboxSelected),
+          );
         }
         Provider.of<PreferencesProvider>(
           context,
@@ -92,14 +89,16 @@ class HomeTabState extends State<HomeTab> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Tooltip(
-                            message: AppLocalizations.of(context)!.checkConnection,
+                            message:
+                                AppLocalizations.of(context)!.checkConnection,
                             child: IconButton(
                               icon: Icon(Icons.refresh, size: 20),
                               onPressed: () => checkConnection(mailbox.id),
                             ),
                           ),
                           Tooltip(
-                            message: AppLocalizations.of(context)!.mailboxConfig,
+                            message:
+                                AppLocalizations.of(context)!.mailboxConfig,
                             child: IconButton(
                               icon: Icon(Icons.settings, size: 20),
                               onPressed:
@@ -141,13 +140,19 @@ class HomeTabState extends State<HomeTab> {
                               ),
                               if (checkingConnection) ...{
                                 Text(
-                                  AppLocalizations.of(context)!.checkingConnection,
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.checkingConnection,
                                   style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(color: Colors.orange),
                                 ),
                               } else ...{
                                 Text(
-                                  wifiStatus ? AppLocalizations.of(context)!.connected : AppLocalizations.of(context)!.disconnected,
+                                  wifiStatus
+                                      ? AppLocalizations.of(context)!.connected
+                                      : AppLocalizations.of(
+                                        context,
+                                      )!.disconnected,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodyMedium!.copyWith(
@@ -160,7 +165,10 @@ class HomeTabState extends State<HomeTab> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: AppLocalizations.of(context)!.lastCheck,
+                                      text:
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.lastCheck,
                                       style:
                                           Theme.of(
                                             context,
@@ -169,7 +177,9 @@ class HomeTabState extends State<HomeTab> {
                                     TextSpan(
                                       text:
                                           checkingConnection
-                                              ? AppLocalizations.of(context)!.checking
+                                              ? AppLocalizations.of(
+                                                context,
+                                              )!.checking
                                               : '${DateTimeUtils.formatDate(mailbox.getLastWifiStatusCheckWithOffset())} ${DateTimeUtils.formatTime(mailbox.getLastWifiStatusCheckWithOffset())}',
                                       style:
                                           Theme.of(
@@ -185,7 +195,8 @@ class HomeTabState extends State<HomeTab> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: '${AppLocalizations.of(context)!.notifications}: ',
+                                          text:
+                                              '${AppLocalizations.of(context)!.notifications}: ',
                                           style:
                                               Theme.of(
                                                 context,
@@ -194,8 +205,12 @@ class HomeTabState extends State<HomeTab> {
                                         TextSpan(
                                           text:
                                               preferences.notificationsEnabled
-                                                  ? AppLocalizations.of(context)!.active
-                                                  : AppLocalizations.of(context)!.inactive,
+                                                  ? AppLocalizations.of(
+                                                    context,
+                                                  )!.active
+                                                  : AppLocalizations.of(
+                                                    context,
+                                                  )!.inactive,
                                           style: Theme.of(
                                             context,
                                           ).textTheme.bodyMedium?.copyWith(
@@ -214,7 +229,8 @@ class HomeTabState extends State<HomeTab> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: '${AppLocalizations.of(context)!.timezone}: ',
+                                      text:
+                                          '${AppLocalizations.of(context)!.timezone}: ',
                                       style:
                                           Theme.of(
                                             context,
@@ -260,7 +276,9 @@ class HomeTabState extends State<HomeTab> {
                                 spacing: 8,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.lastKeyboardAccess,
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.lastKeyboardAccess,
                                     style:
                                         Theme.of(
                                           context,
@@ -290,7 +308,9 @@ class HomeTabState extends State<HomeTab> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.lastScanAccess,
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.lastScanAccess,
                                     style:
                                         Theme.of(
                                           context,
@@ -320,7 +340,9 @@ class HomeTabState extends State<HomeTab> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.lastNotificationReceived,
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.lastNotificationReceived,
                                     style:
                                         Theme.of(
                                           context,
@@ -342,12 +364,7 @@ class HomeTabState extends State<HomeTab> {
                   ),
                 ),
               ),
-              Card(
-                child: SizedBox(
-                  height: 300,
-                  child: NotificationsChart(dates: dates, counts: counts),
-                ),
-              ),
+              NotificationsStatistics(),
             ],
           ),
         );
@@ -363,7 +380,10 @@ class HomeTabState extends State<HomeTab> {
   ) {
     return [
       StreamBuilder<MailboxNotification?>(
-        stream: _mailboxService.getLastNotificationByType(mailboxId, type),
+        stream: _notificationsService.getLastNotificationByType(
+          mailboxId,
+          type,
+        ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
