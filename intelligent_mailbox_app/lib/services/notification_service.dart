@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -92,7 +93,8 @@ class NotificationService {
       if (data == null || data.isEmpty) return 0;
 
       final firstNotification = data.values.first as Map<dynamic, dynamic>;
-      return firstNotification['time'] as int? ?? DateTime.now().millisecondsSinceEpoch;
+      return firstNotification['time'] as int? ??
+          DateTime.now().millisecondsSinceEpoch;
     } catch (error) {
       print('Error getting first notification time: $error');
       return 0;
@@ -140,5 +142,46 @@ class NotificationService {
 
       return dayCounts.values.toList(); // Retornar conteos como lista
     });
+  }
+
+  @pragma('vm:entry-point')
+  Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage message,
+  ) async {
+    // Este método se ejecuta cuando se recibe una notificación en segundo plano
+    print('Mensaje recibido en segundo plano: ${message.notification?.title}}');
+  }
+
+  Future<void> initFirebaseMessaging() async {
+    await FirebaseMessaging.instance.subscribeToTopic('ardboxmail-7854');
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print(
+        "Message received while in foreground: ${message.notification?.title}",
+      );
+    });
+    await requestNotificationPermissions();
+  }
+
+  Future<void> requestNotificationPermissions() async {
+    NotificationSettings settings = await FirebaseMessaging.instance
+        .requestPermission(
+          alert: true,
+          announcement: false,
+          badge: true,
+          carPlay: false,
+          criticalAlert: false,
+          provisional: false,
+          sound: true,
+        );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('Permisos de notificaciones concedidos.');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('Permisos provisionales concedidos.');
+    } else {
+      print('Permisos de notificaciones denegados.');
+    }
   }
 }

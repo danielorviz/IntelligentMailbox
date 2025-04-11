@@ -1,0 +1,8 @@
+Integrar mensajeria en flutter
+https://firebase.google.com/docs/cloud-messaging/flutter/client?hl=es-419
+
+LOG DE REGISTROS DE LA CLOUD FUNCTION
+https://firebase.google.com/docs/functions/writing-and-viewing-logs?hl=es-419&gen=2nd
+
+FCM y cloud functions
+https://firebase.google.com/docs/database/extend-with-functions?hl=es-419&gen=2nd

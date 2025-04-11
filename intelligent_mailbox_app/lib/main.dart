@@ -6,21 +6,27 @@ import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp, // Solo permite portrait normal
-    DeviceOrientation.portraitDown, // Opcional: permite portrait invertido
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
   ]);
 
   await Firebase.initializeApp();
   runApp(const MyApp());
+ 
+  await NotificationService().initFirebaseMessaging();
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -40,9 +46,7 @@ class MyApp extends StatelessWidget {
               (context, userProvider, mailboxProvider) =>
                   MailboxProvider(userProvider),
         ),
-        ChangeNotifierProvider(
-          create: (context) => PreferencesProvider(),
-        ),
+        ChangeNotifierProvider(create: (context) => PreferencesProvider()),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
