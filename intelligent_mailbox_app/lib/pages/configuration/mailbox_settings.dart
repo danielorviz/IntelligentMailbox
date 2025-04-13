@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +18,8 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   final TextEditingController _nameController = TextEditingController();
   bool _notificationsEnabled = false;
   final MailboxService mailboxService = MailboxService();
-  String _selectedOffset = '0'; // El valor por defecto será "system"
+  final NotificationService notificationService = NotificationService();
+  String _selectedOffset = '0';
   String? _mailboxId;
 
   @override
@@ -38,8 +41,10 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
       if (mounted) {
         setState(() {
           _nameController.text = mailbox.name;
-          _selectedOffset =
-              DateTimeUtils.getOffsetStringValue(context, mailbox.instructions.offset);
+          _selectedOffset = DateTimeUtils.getOffsetStringValue(
+            context,
+            mailbox.instructions.offset,
+          );
         });
       }
       _mailboxId = mailbox.id;
@@ -49,7 +54,8 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
 
   Future<void> _loadPreferences(String mailboxId) async {
     final prefs = Provider.of<PreferencesProvider>(context, listen: false);
-    await prefs.loadPreferences(mailboxId);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    await prefs.loadPreferences(userProvider.user!.uid, mailboxId);
     setState(() {
       _notificationsEnabled = prefs.notificationsEnabled;
     });
@@ -60,9 +66,15 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
       return;
     }
     final prefs = Provider.of<PreferencesProvider>(context, listen: false);
-    prefs.updateNotificationState(_mailboxId!, _notificationsEnabled);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    prefs.updateNotificationState(
+      userProvider.user!.uid,
+      _mailboxId!,
+      _notificationsEnabled,
+    );
 
     try {
+      await notificationService.activateDeactivateMailboxNotifications(_mailboxId!, _notificationsEnabled);
       await mailboxService.saveSettings(
         _mailboxId!,
         _nameController.text,
@@ -148,7 +160,9 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                   });
                 },
                 items:
-                    DateTimeUtils.getOffsetOptions(context).map<DropdownMenuItem<String>>((
+                    DateTimeUtils.getOffsetOptions(
+                      context,
+                    ).map<DropdownMenuItem<String>>((
                       Map<String, dynamic> offset,
                     ) {
                       return DropdownMenuItem<String>(

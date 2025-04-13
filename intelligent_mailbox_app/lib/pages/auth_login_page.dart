@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_signup_page.dart';
+import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
+import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
@@ -39,6 +42,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
       if (user != null) {
         if (context.mounted) {
           Provider.of<UserProvider>(context, listen: false).setUser(user);
+          _updateNotificationsPreferences(user.uid);
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder:
@@ -81,6 +85,21 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
       });
     }
   }
+
+  Future<void> _updateNotificationsPreferences(String userId) async {
+    final prefs = Provider.of<PreferencesProvider>(context, listen: false);
+    List<String> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
+      userId,
+    );
+    for (String mailboxId in mailboxes) {
+      await prefs.loadPreferences(userId, mailboxId);
+      NotificationService().activateDeactivateMailboxNotifications(
+        mailboxId,
+        prefs.notificationsEnabled,
+      );
+    }
+  }
+
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return AppLocalizations.of(context)!.emailCannotBeEmpty;
@@ -96,7 +115,9 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
     if (validEmail != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.enterEmailToResetPassword),
+          content: Text(
+            AppLocalizations.of(context)!.enterEmailToResetPassword,
+          ),
         ),
       );
       return;
@@ -106,7 +127,8 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
       builder: (BuildContext context) {
         return ConfirmationDialog(
           title: AppLocalizations.of(context)!.passwordReset,
-          content: "${AppLocalizations.of(context)!.passwordResetWillSent}: ${_emailController.text}",
+          content:
+              "${AppLocalizations.of(context)!.passwordResetWillSent}: ${_emailController.text}",
           cancelText: AppLocalizations.of(context)!.cancel,
           confirmText: AppLocalizations.of(context)!.confirm,
         );

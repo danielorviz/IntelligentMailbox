@@ -8,6 +8,8 @@ import 'package:intelligent_mailbox_app/pages/tabs/packages_tab.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
+import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/widgets/drawer_menu.dart';
 import 'package:intelligent_mailbox_app/widgets/bottom_navigation.dart';
@@ -38,12 +40,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _signOut(BuildContext context) async {
+    await _updateNotificationsPreferences(
+      Provider.of<UserProvider>(context, listen: false).user!.uid,
+    );
     Provider.of<MailboxProvider>(context, listen: false).signOut();
     Provider.of<UserProvider>(context, listen: false).setUser(null);
+    
     await _authService.signOut();
     if (context.mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const AuthLoginScreen()),
+      );
+    }
+  }
+  Future<void> _updateNotificationsPreferences(String userId) async {
+    List<String> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
+      userId,
+    );
+    for (String mailboxId in mailboxes) {
+      NotificationService().activateDeactivateMailboxNotifications(
+        mailboxId,
+        false,
       );
     }
   }

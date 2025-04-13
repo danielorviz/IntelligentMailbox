@@ -44,6 +44,10 @@ class MailboxService {
     }
   }
 
+  Future<List<String>> fetchUserMailboxKeysOnce(String userId) async {
+    return await getUserMailboxKeys(userId).first;
+  }
+
   Stream<Mailbox?> getMailboxDetails(String mailboxId) {
     try {
       return _database.child('mailbox').child(mailboxId).onValue.map((event) {

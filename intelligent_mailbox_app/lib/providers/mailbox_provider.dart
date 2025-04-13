@@ -12,7 +12,7 @@ class MailboxProvider with ChangeNotifier {
 
   List<Mailbox> _mailboxes = [];
   Mailbox? _selectedMailbox;
-  final List<StreamSubscription> _subscriptions = []; // Lista para almacenar todas las suscripciones
+  final List<StreamSubscription> _subscriptions = []; 
 
   MailboxProvider(this._userProvider) {
     _loadMailboxes();
@@ -50,7 +50,6 @@ class MailboxProvider with ChangeNotifier {
               _safeNotifyListeners();
             });
 
-            // Agrega la suscripción combinada a la lista
             _subscriptions.add(combinedSubscription);
           },
           onError: (error) {
@@ -58,7 +57,6 @@ class MailboxProvider with ChangeNotifier {
           },
         );
 
-        // Agrega la suscripción principal a la lista
         _subscriptions.add(mailboxKeysSubscription);
       } catch (e) {
         print('Error loading mailboxes: $e');
@@ -91,7 +89,7 @@ class MailboxProvider with ChangeNotifier {
     for (final subscription in _subscriptions) {
       await subscription.cancel();
     }
-    _subscriptions.clear(); // Limpia la lista de suscripciones
+    _subscriptions.clear(); 
   }
 
   void _safeNotifyListeners() {

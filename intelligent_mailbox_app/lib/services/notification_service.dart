@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -144,6 +146,19 @@ class NotificationService {
     });
   }
 
+  Future<void> activateDeactivateMailboxNotifications(String? mailboxId, bool active) async {
+    if (mailboxId == null || mailboxId.isEmpty) return;
+    try {
+      if (active) {
+        await FirebaseMessaging.instance.subscribeToTopic(mailboxId);
+      } else {
+        await FirebaseMessaging.instance.unsubscribeFromTopic(mailboxId);
+      }
+    } catch (error) {
+      print('Error al activar las notificaciones: $error');
+    }
+  }
+
   @pragma('vm:entry-point')
   Future<void> _firebaseMessagingBackgroundHandler(
     RemoteMessage message,
@@ -153,8 +168,6 @@ class NotificationService {
   }
 
   Future<void> initFirebaseMessaging() async {
-    await FirebaseMessaging.instance.subscribeToTopic('ardboxmail-7854');
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print(
         "Message received while in foreground: ${message.notification?.title}",

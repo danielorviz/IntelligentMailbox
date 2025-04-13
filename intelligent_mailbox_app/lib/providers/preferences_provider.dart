@@ -6,16 +6,16 @@ class PreferencesProvider extends ChangeNotifier {
 
   bool get notificationsEnabled => _notificationsEnabled;
 
-  Future<void> loadPreferences(String mailboxId) async {
+  Future<void> loadPreferences(String userId, String mailboxId) async {
     final prefs = await SharedPreferences.getInstance();
     _notificationsEnabled =
-        prefs.getBool('${mailboxId}_notificationsEnabled') ?? false;
+        prefs.getBool('${userId}_${mailboxId}_notificationsEnabled') ?? false;
     notifyListeners();
   }
 
-  Future<void> updateNotificationState(String mailboxId, bool value) async {
+  Future<void> updateNotificationState(String userId, String mailboxId, bool value) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('${mailboxId}_notificationsEnabled', value);
+    await prefs.setBool('${userId}_${mailboxId}_notificationsEnabled', value);
     _notificationsEnabled = value;
     notifyListeners();
   }

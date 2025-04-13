@@ -4,6 +4,7 @@ import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/pages/configuration/mailbox_settings.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
@@ -67,10 +68,11 @@ class HomeTabState extends State<HomeTab> {
             child: Text(AppLocalizations.of(context)!.noMailboxSelected),
           );
         }
+        ;
         Provider.of<PreferencesProvider>(
           context,
           listen: false,
-        ).loadPreferences(mailbox.id);
+        ).loadPreferences(Provider.of<UserProvider>(context, listen: false).user!.uid,mailbox.id);
 
         bool wifiStatus = mailbox.getWifiStatusBool();
 
