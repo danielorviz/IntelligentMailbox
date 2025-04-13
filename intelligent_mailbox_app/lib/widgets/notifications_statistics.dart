@@ -69,6 +69,7 @@ class _NotificationsStatisticsState extends State<NotificationsStatistics> {
                 children: [
                   Icon(
                     Icons.bar_chart,
+                    size: 25,
                   ),
                   Text(
                     AppLocalizations.of(context)!.notificationsStatistics,

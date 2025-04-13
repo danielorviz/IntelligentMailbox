@@ -740,7 +740,7 @@ abstract class AppLocalizations {
   /// No description provided for @lastCheck.
   ///
   /// In en, this message translates to:
-  /// **'Last check: '**
+  /// **'Checked: '**
   String get lastCheck;
 
   /// No description provided for @notifications.

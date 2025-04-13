@@ -332,7 +332,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disconnected => 'Disconnected';
 
   @override
-  String get lastCheck => 'Last check: ';
+  String get lastCheck => 'Checked: ';
 
   @override
   String get notifications => 'Notifications';

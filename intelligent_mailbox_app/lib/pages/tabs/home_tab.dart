@@ -31,6 +31,7 @@ class HomeTabState extends State<HomeTab> {
   bool checkingConnection = false;
 
   Future<void> checkConnection(String mailboxId) async {
+    if (checkingConnection) return;
     setState(() {
       checkingConnection = true;
     });
@@ -72,7 +73,10 @@ class HomeTabState extends State<HomeTab> {
         Provider.of<PreferencesProvider>(
           context,
           listen: false,
-        ).loadPreferences(Provider.of<UserProvider>(context, listen: false).user!.uid,mailbox.id);
+        ).loadPreferences(
+          Provider.of<UserProvider>(context, listen: false).user!.uid,
+          mailbox.id,
+        );
 
         bool wifiStatus = mailbox.getWifiStatusBool();
 
@@ -116,22 +120,10 @@ class HomeTabState extends State<HomeTab> {
                         ],
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 16,
                         children: [
-                          if (checkingConnection) ...{
-                            const SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: CircularProgressIndicator(),
-                            ),
-                          } else ...{
-                            Icon(
-                              wifiStatus ? Icons.wifi : Icons.wifi_off,
-                              color: wifiStatus ? Colors.green : Colors.red,
-                              size: 30,
-                            ),
-                          },
-
+                          Icon(Icons.markunread_mailbox, size: 25),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -140,65 +132,65 @@ class HomeTabState extends State<HomeTab> {
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
-                              if (checkingConnection) ...{
-                                Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.checkingConnection,
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .copyWith(color: Colors.orange),
-                                ),
-                              } else ...{
-                                Text(
-                                  wifiStatus
-                                      ? AppLocalizations.of(context)!.connected
-                                      : AppLocalizations.of(
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  if (checkingConnection) ...{
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(
                                         context,
-                                      )!.disconnected,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium!.copyWith(
-                                    color:
-                                        wifiStatus ? Colors.green : Colors.red,
-                                  ),
-                                ),
-                              },
-                              Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.lastCheck,
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.labelLarge,
+                                      )!.checkingConnection,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: Colors.orange),
                                     ),
-                                    TextSpan(
-                                      text:
-                                          checkingConnection
-                                              ? AppLocalizations.of(
-                                                context,
-                                              )!.checking
-                                              : '${DateTimeUtils.formatDate(mailbox.getLastWifiStatusCheckWithOffset())} ${DateTimeUtils.formatTime(mailbox.getLastWifiStatusCheckWithOffset())}',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium,
+                                  } else ...{
+                                    Icon(
+                                      wifiStatus ? Icons.wifi : Icons.wifi_off,
+                                      color:
+                                          wifiStatus
+                                              ? Colors.green
+                                              : Colors.red,
+                                      size: 20,
                                     ),
-                                  ],
-                                ),
+                                    Text(
+                                      wifiStatus
+                                          ? AppLocalizations.of(
+                                            context,
+                                          )!.connected
+                                          : AppLocalizations.of(
+                                            context,
+                                          )!.disconnected,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium!.copyWith(
+                                        color:
+                                            wifiStatus
+                                                ? Colors.green
+                                                : Colors.red,
+                                      ),
+                                    ),
+                                  },
+                                ],
                               ),
-                              Consumer<PreferencesProvider>(
-                                builder: (context, preferences, child) {
-                                  return Text.rich(
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  Icon(Icons.access_time, size: 20),
+                                  Text.rich(
                                     TextSpan(
                                       children: [
                                         TextSpan(
                                           text:
-                                              '${AppLocalizations.of(context)!.notifications}: ',
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.lastCheck,
                                           style:
                                               Theme.of(
                                                 context,
@@ -206,50 +198,100 @@ class HomeTabState extends State<HomeTab> {
                                         ),
                                         TextSpan(
                                           text:
-                                              preferences.notificationsEnabled
+                                              checkingConnection
                                                   ? AppLocalizations.of(
                                                     context,
-                                                  )!.active
-                                                  : AppLocalizations.of(
-                                                    context,
-                                                  )!.inactive,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium?.copyWith(
-                                            color:
-                                                preferences.notificationsEnabled
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                          ),
+                                                  )!.checking
+                                                  : '${DateTimeUtils.formatDate(mailbox.getLastWifiStatusCheckWithOffset())} ${DateTimeUtils.formatTime(mailbox.getLastWifiStatusCheckWithOffset())}',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium,
                                         ),
                                       ],
                                     ),
+                                  ),
+                                ],
+                              ),
+                              Consumer<PreferencesProvider>(
+                                builder: (context, preferences, child) {
+                                  return Row(
+                                    spacing: 8,
+                                    children: [
+                                      Icon(
+                                        preferences.notificationsEnabled
+                                            ? Icons.notifications_active
+                                            : Icons.notifications_off,
+                                        size: 20,
+                                      ),
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  '${AppLocalizations.of(context)!.notifications}: ',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.labelLarge,
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  preferences
+                                                          .notificationsEnabled
+                                                      ? AppLocalizations.of(
+                                                        context,
+                                                      )!.active
+                                                      : AppLocalizations.of(
+                                                        context,
+                                                      )!.inactive,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium?.copyWith(
+                                                color:
+                                                    preferences
+                                                            .notificationsEnabled
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   );
                                 },
                               ),
-                              Text.rich(
-                                TextSpan(
-                                  children: [
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  Icon(Icons.public, size: 20),
+                                  Text.rich(
                                     TextSpan(
-                                      text:
-                                          '${AppLocalizations.of(context)!.timezone}: ',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.labelLarge,
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              '${AppLocalizations.of(context)!.timezone}: ',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.labelLarge,
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              DateTimeUtils.getOffsetStringLabel(
+                                                context,
+                                                mailbox.instructions.offset,
+                                              ),
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium,
+                                        ),
+                                      ],
                                     ),
-                                    TextSpan(
-                                      text: DateTimeUtils.getOffsetStringLabel(
-                                        context,
-                                        mailbox.instructions.offset,
-                                      ),
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -268,95 +310,76 @@ class HomeTabState extends State<HomeTab> {
                     spacing: 16,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 16,
                         children: [
-                          Row(
-                            spacing: 16,
+                          Icon(Icons.dialpad, size: 25),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 8,
                             children: [
-                              Icon(Icons.dialpad, size: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 8,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    )!.lastKeyboardAccess,
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.headlineSmall,
-                                  ),
-                                  ..._buildLastAccess(
-                                    mailbox.id,
-                                    AppLocalizations.of(context)!.keyName,
-                                    "KEY",
-                                    mailbox.instructions.offset,
-                                  ),
-                                ],
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.lastKeyboardAccess,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              ..._buildLastAccess(
+                                mailbox.id,
+                                AppLocalizations.of(context)!.keyName,
+                                "KEY",
+                                mailbox.instructions.offset,
                               ),
                             ],
                           ),
                         ],
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 16,
                         children: [
-                          Row(
-                            spacing: 16,
+                          Icon(Icons.nfc, size: 25),
+                          Column(
+                            spacing: 8,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.nfc, size: 20),
-                              Column(
-                                spacing: 8,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    )!.lastScanAccess,
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.headlineSmall,
-                                  ),
-                                  ..._buildLastAccess(
-                                    mailbox.id,
-                                    AppLocalizations.of(context)!.packageCode,
-                                    "PACKAGE",
-                                    mailbox.instructions.offset,
-                                  ),
-                                ],
+                              Text(
+                                AppLocalizations.of(context)!.lastScanAccess,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              ..._buildLastAccess(
+                                mailbox.id,
+                                AppLocalizations.of(context)!.packageCode,
+                                "PACKAGE",
+                                mailbox.instructions.offset,
                               ),
                             ],
                           ),
                         ],
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 16,
                         children: [
-                          Row(
-                            spacing: 16,
+                          Icon(Icons.mail, size: 25),
+                          Column(
+                            spacing: 8,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.mail, size: 20),
-                              Column(
-                                spacing: 8,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    )!.lastNotificationReceived,
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.headlineSmall,
-                                  ),
-                                  ..._buildLastAccess(
-                                    mailbox.id,
-                                    AppLocalizations.of(context)!.info,
-                                    null,
-                                    mailbox.instructions.offset,
-                                  ),
-                                ],
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.lastNotificationReceived,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              ..._buildLastAccess(
+                                mailbox.id,
+                                AppLocalizations.of(context)!.info,
+                                null,
+                                mailbox.instructions.offset,
                               ),
                             ],
                           ),

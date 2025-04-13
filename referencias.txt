@@ -6,3 +6,6 @@ https://firebase.google.com/docs/functions/writing-and-viewing-logs?hl=es-419&ge
 
 FCM y cloud functions
 https://firebase.google.com/docs/database/extend-with-functions?hl=es-419&gen=2nd
+
+Internacionalizacion
+https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization

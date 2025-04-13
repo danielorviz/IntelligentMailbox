@@ -118,7 +118,7 @@
   "checking": "Checking ...",
   "connected": "Connected",
   "disconnected": "Disconnected",
-  "lastCheck": "Last check: ",
+  "lastCheck": "Checked: ",
   "notifications": "Notifications",
   "active": "Active",
   "inactive": "Inactive",
