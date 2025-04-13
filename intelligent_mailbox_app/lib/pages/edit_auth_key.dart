@@ -242,7 +242,7 @@ Future<void> _selectEndDate(BuildContext context) async {
                       ?  ("${DateTimeUtils.formatDate(_initDate!.toLocal())}   ${DateTimeUtils.formatTime(_initDate!.toLocal())}")
                       : AppLocalizations.of(context)!.selectDate,
                 ),
-                trailing: const Icon(Icons.calendar_month),
+                trailing: const Icon(Icons.event),
                 onTap: () => _selectStartDate(context),
               ),
               ListTile(
@@ -253,7 +253,7 @@ Future<void> _selectEndDate(BuildContext context) async {
                       ?  "${DateTimeUtils.formatDate(_finishDate!.toLocal())}   ${DateTimeUtils.formatTime(_finishDate!.toLocal())}"
                       : AppLocalizations.of(context)!.selectDate,
                 ),
-                trailing: const Icon(Icons.calendar_month),
+                trailing: const Icon(Icons.event_available),
                 onTap: _initDate == null
                     ? null
                     : () => _selectEndDate(context),

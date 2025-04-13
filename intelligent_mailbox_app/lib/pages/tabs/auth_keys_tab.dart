@@ -170,7 +170,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                             children: [
                               Column(
                                 children: [
-                                  const Icon(Icons.date_range, size: 18),
+                                  const Icon(Icons.event, size: 18),
                                   const SizedBox(width: 8),
                                   Column(
                                     crossAxisAlignment:
@@ -204,7 +204,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                               ),
                               Column(
                                 children: [
-                                  const Icon(Icons.date_range, size: 18),
+                                  const Icon(Icons.event_available, size: 18),
                                   const SizedBox(width: 8),
                                   Column(
                                     crossAxisAlignment:

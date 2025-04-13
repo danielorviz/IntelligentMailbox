@@ -328,7 +328,7 @@ class HomeTabState extends State<HomeTab> {
                               ..._buildLastAccess(
                                 mailbox.id,
                                 AppLocalizations.of(context)!.keyName,
-                                "KEY",
+                                MailboxNotification.typeKey,
                                 mailbox.instructions.offset,
                               ),
                             ],
@@ -352,7 +352,7 @@ class HomeTabState extends State<HomeTab> {
                               ..._buildLastAccess(
                                 mailbox.id,
                                 AppLocalizations.of(context)!.packageCode,
-                                "PACKAGE",
+                                MailboxNotification.typePackage,
                                 mailbox.instructions.offset,
                               ),
                             ],
@@ -363,7 +363,7 @@ class HomeTabState extends State<HomeTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 16,
                         children: [
-                          Icon(Icons.mail, size: 25),
+                          Icon(Icons.notifications, size: 25),
                           Column(
                             spacing: 8,
                             crossAxisAlignment: CrossAxisAlignment.start,

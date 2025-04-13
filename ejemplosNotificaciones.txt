@@ -1,0 +1,38 @@
+{
+    "time":1744556270,
+    "mailbox":"ardboxmail-7854",
+    "mensaje":"Puerta abierta con la clave: ",
+    "titulo":"Apertura del buzón",
+    "type":"KEY",
+    "typeInfo":"Mamá"
+
+}
+
+{
+    "time":1744567660,
+    "mailbox":"ardboxmail-7854",
+    "mensaje":"Puerta abierta con el paquete: ",
+    "titulo":"Paquete recibido",
+    "type":"PACKAGE",
+    "typeInfo":"Amazon - cámara"
+
+}
+
+{
+    "time":1744567785,
+    "mailbox":"ardboxmail-7854",
+    "mensaje":"Es posible que el buzón esté lleno o se haya atascado un correo",
+    "titulo":"Buzón lleno",
+    "type":"MAILBOX",
+    "typeInfo":""
+
+}
+{
+    "time":1744567736,
+    "mailbox":"ardboxmail-7854",
+    "mensaje":"Ha recibido un nuevo correo",
+    "titulo":"Nueva carta recibida",
+    "type":"LETTER",
+    "typeInfo":""
+
+}

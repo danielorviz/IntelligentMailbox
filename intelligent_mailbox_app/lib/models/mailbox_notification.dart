@@ -1,6 +1,11 @@
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 
 class MailboxNotification {
+  
+  static const String typeKey = 'KEY';
+  static const String typePackage = 'PACKAGE';
+  static const String typeLetter = 'LETTER';
+  static const String typeMailbox = 'MAILBOX';
 
   final String title;
   final String message;
