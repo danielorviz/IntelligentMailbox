@@ -69,7 +69,6 @@ class HomeTabState extends State<HomeTab> {
             child: Text(AppLocalizations.of(context)!.noMailboxSelected),
           );
         }
-        ;
         Provider.of<PreferencesProvider>(
           context,
           listen: false,

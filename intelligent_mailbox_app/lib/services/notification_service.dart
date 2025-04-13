@@ -196,4 +196,25 @@ class NotificationService {
       print('Permisos de notificaciones denegados.');
     }
   }
+  Future<void> markAllAsRead(String mailboxId) async {
+    try {
+      final notificationsRef = _database.child('notifications').child(mailboxId);
+
+      final snapshot = await notificationsRef.once();
+
+      if (snapshot.snapshot.value != null) {
+        final notificationsMap = snapshot.snapshot.value as Map<dynamic, dynamic>;
+
+        notificationsMap.forEach((key, value) async {
+          if (value['isRead'] != true) {
+            await notificationsRef.child(key).update({
+              'isRead': true,
+            });
+          }
+        });
+      } 
+    } catch (e) {
+      print('Error marking all notifications as read: $e');
+    }
+  }
 }

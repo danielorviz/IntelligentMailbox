@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
+import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavigation extends StatelessWidget {
   final int selectedIndex;
@@ -21,7 +23,34 @@ class BottomNavigation extends StatelessWidget {
           backgroundColor: CustomColors.primaryBlue,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.mail),
+          icon: Stack(
+            children: [
+              Icon(Icons.notifications),
+              Consumer<MailboxProvider>(
+                builder: (context, mailboxProvider, child) {
+                  return mailboxProvider.unreadNotifications <= 0
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            constraints: BoxConstraints(minWidth: 16, minHeight: 16),
+                            child: Text(
+                              mailboxProvider.unreadNotifications.toString(),
+                              style: TextStyle(color: Colors.white, fontSize: 8),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
+                },
+              ),
+            ],
+          ),
           label: AppLocalizations.of(context)!.mail,
           backgroundColor: CustomColors.primaryBlue,
         ),
@@ -30,7 +59,7 @@ class BottomNavigation extends StatelessWidget {
           label: AppLocalizations.of(context)!.keys,
           backgroundColor: CustomColors.primaryBlue,
         ),
-        
+
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
           label: AppLocalizations.of(context)!.packages,
@@ -39,7 +68,7 @@ class BottomNavigation extends StatelessWidget {
       ],
       currentIndex: selectedIndex,
       selectedItemColor: CustomColors.secondaryBlue,
-      unselectedItemColor:  CustomColors.unselectedItem,
+      unselectedItemColor: CustomColors.unselectedItem,
       onTap: onItemTapped,
     );
   }

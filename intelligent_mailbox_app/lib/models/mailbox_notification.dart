@@ -13,8 +13,10 @@ class MailboxNotification {
   final String mailboxId;
   final String type;
   final String typeInfo;
+  final bool isRead;
 
-  MailboxNotification({required this.title, required this.message, required this.time, required this.mailboxId, required this.type, required this.typeInfo});
+  MailboxNotification({required this.title, required this.message, required this.time, required this.mailboxId, 
+  required this.type, required this.typeInfo, required this.isRead});
 
   factory MailboxNotification.fromJson(Map<dynamic, dynamic> json) {
     return MailboxNotification(
@@ -24,6 +26,7 @@ class MailboxNotification {
       mailboxId: json['mailbox'],
       type: json['type']?? '',
       typeInfo: json['typeInfo'] ?? '',
+      isRead: json['isRead'] ?? false,
     );
   }
 

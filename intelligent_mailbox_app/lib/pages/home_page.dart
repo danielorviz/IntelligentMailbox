@@ -31,12 +31,31 @@ class _MyHomePageState extends State<MyHomePage> {
     AuthorizedKeysTab(key: ValueKey("keys_tab")),
     PackagesTab(key: ValueKey("packages_tab")),
   ];
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
+  bool markNotificationsAsRead = false;
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    MailboxProvider mailboxProvider = Provider.of<MailboxProvider>(context, listen: false);
+     if(index != 1 && markNotificationsAsRead) {
+      NotificationService().markAllAsRead(
+        mailboxProvider.selectedMailbox!.id,
+      );
+      setState(() {
+        markNotificationsAsRead = false;
+        _selectedIndex = index;
+      });
+    }
+    else if(mailboxProvider.unreadNotifications > 0 && index == 1) {
+      setState(() {
+        markNotificationsAsRead = true;
+        _selectedIndex = index;
+      });
+    }else{
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+   
   }
 
   Future<void> _signOut(BuildContext context) async {
@@ -68,10 +87,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     if (!context.mounted) return const SizedBox.shrink();
+
     return Scaffold(
       appBar: AppBar(
         title: Consumer<MailboxProvider>(
           builder: (context, mailboxProvider, child) {
+            if(mailboxProvider.unreadNotifications > 0 && _selectedIndex == 1) {
+                markNotificationsAsRead = true;
+            }
             return Text(
               mailboxProvider.selectedMailbox?.name ??
                   AppLocalizations.of(context)!.appTitle,

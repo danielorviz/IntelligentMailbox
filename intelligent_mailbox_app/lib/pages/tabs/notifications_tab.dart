@@ -12,8 +12,24 @@ class NotificationsTab extends StatefulWidget {
   NotificationsTabState createState() => NotificationsTabState();
 }
 
-class NotificationsTabState extends State<NotificationsTab> {
+class NotificationsTabState extends State<NotificationsTab>
+    with SingleTickerProviderStateMixin {
   final NotificationService _notificationsService = NotificationService();
+  late AnimationController _animationController;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true); // Repite la animación
+
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+  }
 
   Icon _getIconForType(String type) {
     switch (type) {
@@ -28,6 +44,13 @@ class NotificationsTabState extends State<NotificationsTab> {
       default:
         return const Icon(Icons.notifications);
     }
+  }
+
+  @override
+  void dispose() {
+    // Detener el controlador para evitar errores
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,78 +88,102 @@ class NotificationsTabState extends State<NotificationsTab> {
                   itemBuilder: (context, index) {
                     final notification = notifications[index];
                     return Card(
-                      child: ListTile(
-                        title: Row(
-                          spacing: 8,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(_getIconForType(notification.type).icon),
-                            Text(
-                              notification.title,
-                              style: Theme.of(context).textTheme.headlineSmall,
+                      child: Stack(
+                        children: [
+                          ListTile(
+                            title: Row(
+                              spacing: 8,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(_getIconForType(notification.type).icon),
+                                Text(
+                                  notification.title,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        subtitle: Padding(
-                          padding: EdgeInsets.only(left: 32.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                notification.message,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              if (notification.typeInfo != "") ...{
-                              Text(
-                                notification.typeInfo,
-                                style:
-                                    Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                      fontWeight: FontWeight.bold,
+                            subtitle: Padding(
+                              padding: EdgeInsets.only(left: 32.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    notification.message,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  if (notification.typeInfo != "") ...{
+                                    Text(
+                                      notification.typeInfo,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
+                                  },
+                                ],
                               ),
-                            },
-                            ],
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.calendar_month, size: 18),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      DateTimeUtils.formatDate(
+                                        notification.getTimeWithOffset(
+                                          mailbox.instructions.offset,
+                                        ),
+                                      ),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.access_time, size: 18),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      DateTimeUtils.formatTime(
+                                        notification.getTimeWithOffset(
+                                          mailbox.instructions.offset,
+                                        ),
+                                      ),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        trailing: Column(
-                          spacing: 8,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 8,
-                              children: [
-                                Icon(Icons.calendar_month, size: 18),
-                                Text(
-                                  DateTimeUtils.formatDate(
-                                    notification.getTimeWithOffset(
-                                      mailbox.instructions.offset,
-                                    ),
+                          if (!notification.isRead) ...{
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: FadeTransition(
+                                opacity: _opacityAnimation,
+                                child: Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
                                   ),
-                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
-                              ],
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 8,
-                              children: [
-                                Icon(Icons.access_time, size: 18),
-                                Text(
-                                  DateTimeUtils.formatTime(
-                                    notification.getTimeWithOffset(
-                                      mailbox.instructions.offset,
-                                    ),
-                                  ),
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          },
+                        ],
                       ),
                     );
                   },

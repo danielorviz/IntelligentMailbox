@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MailboxProvider with ChangeNotifier {
@@ -12,7 +13,8 @@ class MailboxProvider with ChangeNotifier {
 
   List<Mailbox> _mailboxes = [];
   Mailbox? _selectedMailbox;
-  final List<StreamSubscription> _subscriptions = []; 
+  int _unreadCount = 0;
+  final List<StreamSubscription> _subscriptions = [];
 
   MailboxProvider(this._userProvider) {
     _loadMailboxes();
@@ -20,6 +22,7 @@ class MailboxProvider with ChangeNotifier {
 
   List<Mailbox> get mailboxes => _mailboxes;
   Mailbox? get selectedMailbox => _selectedMailbox;
+  int get unreadNotifications => _unreadCount;
 
   Future<void> _loadMailboxes() async {
     final user = _userProvider.user;
@@ -35,7 +38,9 @@ class MailboxProvider with ChangeNotifier {
               return;
             }
 
-            final mailboxStreams = mailboxKeys.map((key) => _mailboxService.getMailboxDetails(key));
+            final mailboxStreams = mailboxKeys.map(
+              (key) => _mailboxService.getMailboxDetails(key),
+            );
             final combinedStream = CombineLatestStream.list(mailboxStreams);
 
             final combinedSubscription = combinedStream.listen((mailboxes) {
@@ -61,7 +66,25 @@ class MailboxProvider with ChangeNotifier {
       } catch (e) {
         print('Error loading mailboxes: $e');
       }
-    } 
+    }
+  }
+
+  Future<void> _countUnreadNotifications() async {
+    try {
+      final notifCountSubscription = NotificationService()
+          .getNotifications(_selectedMailbox?.id)
+          .listen((notifications) {
+            _unreadCount =
+                notifications
+                    .where((notification) => !notification.isRead)
+                    .length;
+            _safeNotifyListeners();
+          });
+      _subscriptions.add(notifCountSubscription);
+      print('Counting unread notifications...');
+    } catch (e) {
+      print('Error counting unread notifications: $e');
+    }
   }
 
   Future<void> selectMailbox(Mailbox? mailbox) async {
@@ -70,6 +93,8 @@ class MailboxProvider with ChangeNotifier {
         return;
       }
       _selectedMailbox = mailbox;
+      _countUnreadNotifications();
+
       _safeNotifyListeners();
     } catch (e) {
       print('Error selecting mailbox: $e');
@@ -89,14 +114,14 @@ class MailboxProvider with ChangeNotifier {
     for (final subscription in _subscriptions) {
       await subscription.cancel();
     }
-    _subscriptions.clear(); 
+    _subscriptions.clear();
   }
 
   void _safeNotifyListeners() {
-  if (hasListeners) {
-    notifyListeners();
+    if (hasListeners) {
+      notifyListeners();
+    }
   }
-}
 
   @override
   void dispose() {
