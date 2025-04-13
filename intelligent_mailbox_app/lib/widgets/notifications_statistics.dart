@@ -39,7 +39,7 @@ class _NotificationsStatisticsState extends State<NotificationsStatistics> {
         .getFirstNotificationTime(mailboxProvider.selectedMailbox?.id);
 
     final firstNotificationYear =
-        DateTime.fromMillisecondsSinceEpoch(firstNotificationTime * 1000).year;
+        DateTime.fromMillisecondsSinceEpoch(firstNotificationTime ).year;
     final currentYear = DateTime.now().year;
 
     setState(() {

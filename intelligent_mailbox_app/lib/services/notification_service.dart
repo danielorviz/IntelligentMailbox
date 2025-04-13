@@ -92,11 +92,10 @@ class NotificationService {
               .limitToFirst(1)
               .get();
       final data = snapshot.value as Map?;
-      if (data == null || data.isEmpty) return 0;
+      if (data == null || data.isEmpty) return DateTime.now().millisecondsSinceEpoch;
 
       final firstNotification = data.values.first as Map<dynamic, dynamic>;
-      return firstNotification['time'] as int? ??
-          DateTime.now().millisecondsSinceEpoch;
+      return (firstNotification['time'] as int?)! * 1000;
     } catch (error) {
       print('Error getting first notification time: $error');
       return 0;
