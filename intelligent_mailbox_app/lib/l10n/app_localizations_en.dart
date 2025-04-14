@@ -248,6 +248,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signup => 'Sign Up';
 
   @override
+  String get signout => 'Sign Out';
+
+  @override
+  String get signOutConfirm => 'Are you sure you want to sign out?';
+
+  @override
   String get signupSuccess => 'Account created successfully. Please log in.';
 
   @override
@@ -357,6 +363,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRecentInfo => 'No recent information';
+
+  @override
+  String get mailboxes => 'Mailboxes';
 
   @override
   String get system => 'Use system offset';

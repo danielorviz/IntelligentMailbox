@@ -90,6 +90,8 @@
   "welcome": "Bienvenido",
   "createAccount": "Crear cuenta",
   "signup": "Registrarse",
+  "signout": "Cerrar sesión",
+  "signOutConfirm": "¿Desea cerrar sesión?",
   "signupSuccess": "Cuenta creada con éxito. Por favor, inicie sesión.",
   "signupError": "Error al crear la cuenta. Por favor, inténtelo de nuevo.",
   "confirmPassword": "Confirmar contraseña",
@@ -127,6 +129,7 @@
   "lastScanAccess": "Último acceso por escaneo",
   "lastNotificationReceived": "Última notificación recibida",
   "noRecentInfo": "Sin información reciente",
+  "mailboxes": "Buzones",
 
   "system": "Usar el desfase del sistema",
   "utc12": "Honolulu (UTC-12:00)",

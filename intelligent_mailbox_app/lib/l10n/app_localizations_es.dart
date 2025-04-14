@@ -248,6 +248,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get signup => 'Registrarse';
 
   @override
+  String get signout => 'Cerrar sesión';
+
+  @override
+  String get signOutConfirm => '¿Desea cerrar sesión?';
+
+  @override
   String get signupSuccess => 'Cuenta creada con éxito. Por favor, inicie sesión.';
 
   @override
@@ -357,6 +363,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noRecentInfo => 'Sin información reciente';
+
+  @override
+  String get mailboxes => 'Buzones';
 
   @override
   String get system => 'Usar el desfase del sistema';

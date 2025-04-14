@@ -569,6 +569,18 @@ abstract class AppLocalizations {
   /// **'Sign Up'**
   String get signup;
 
+  /// No description provided for @signout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signout;
+
+  /// No description provided for @signOutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get signOutConfirm;
+
   /// No description provided for @signupSuccess.
   ///
   /// In en, this message translates to:
@@ -790,6 +802,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recent information'**
   String get noRecentInfo;
+
+  /// No description provided for @mailboxes.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailboxes'**
+  String get mailboxes;
 
   /// No description provided for @system.
   ///

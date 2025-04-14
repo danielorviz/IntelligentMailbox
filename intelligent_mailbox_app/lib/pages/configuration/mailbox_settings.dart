@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
@@ -8,7 +8,8 @@ import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 
 class MailboxSettingsScreen extends StatefulWidget {
-  const MailboxSettingsScreen({super.key});
+  final Mailbox mailbox;
+  const MailboxSettingsScreen({super.key, required this.mailbox});
 
   @override
   State<MailboxSettingsScreen> createState() => _MailboxSettingsScreenState();
@@ -31,24 +32,16 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   }
 
   Future<void> _initializeSettings() async {
-    final mailboxProvider = Provider.of<MailboxProvider>(
-      context,
-      listen: false,
-    );
-    final mailbox = mailboxProvider.selectedMailbox;
-
-    if (mailbox != null) {
       if (mounted) {
         setState(() {
-          _nameController.text = mailbox.name;
+          _nameController.text = widget.mailbox.name;
           _selectedOffset = DateTimeUtils.getOffsetStringValue(
             context,
-            mailbox.instructions.offset,
+            widget.mailbox.instructions.offset,
           );
         });
-      }
-      _mailboxId = mailbox.id;
-      await _loadPreferences(mailbox.id);
+      _mailboxId = widget.mailbox.id;
+      await _loadPreferences(widget.mailbox.id);
     }
   }
 
@@ -57,7 +50,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     await prefs.loadPreferences(userProvider.user!.uid, mailboxId);
     setState(() {
-      _notificationsEnabled = prefs.notificationsEnabled;
+      _notificationsEnabled = prefs.isNotificationEnabled(userProvider.user!.uid, mailboxId);
     });
   }
 

@@ -69,11 +69,12 @@ class HomeTabState extends State<HomeTab> {
             child: Text(AppLocalizations.of(context)!.noMailboxSelected),
           );
         }
+        final userUid = Provider.of<UserProvider>(context, listen: false).user!.uid;
         Provider.of<PreferencesProvider>(
           context,
           listen: false,
         ).loadPreferences(
-          Provider.of<UserProvider>(context, listen: false).user!.uid,
+          userUid,
           mailbox.id,
         );
 
@@ -111,7 +112,7 @@ class HomeTabState extends State<HomeTab> {
                                     MaterialPageRoute(
                                       builder:
                                           (context) =>
-                                              const MailboxSettingsScreen(),
+                                              MailboxSettingsScreen(mailbox: mailbox),
                                     ),
                                   ),
                             ),
@@ -218,7 +219,7 @@ class HomeTabState extends State<HomeTab> {
                                     spacing: 8,
                                     children: [
                                       Icon(
-                                        preferences.notificationsEnabled
+                                        preferences.isNotificationEnabled(userUid,mailbox.id)
                                             ? Icons.notifications_active
                                             : Icons.notifications_off,
                                         size: 20,
@@ -237,7 +238,7 @@ class HomeTabState extends State<HomeTab> {
                                             TextSpan(
                                               text:
                                                   preferences
-                                                          .notificationsEnabled
+                                                          .isNotificationEnabled(userUid,mailbox.id)
                                                       ? AppLocalizations.of(
                                                         context,
                                                       )!.active
@@ -249,7 +250,7 @@ class HomeTabState extends State<HomeTab> {
                                               ).textTheme.bodyMedium?.copyWith(
                                                 color:
                                                     preferences
-                                                            .notificationsEnabled
+                                                            .isNotificationEnabled(userUid,mailbox.id)
                                                         ? Colors.green
                                                         : Colors.red,
                                               ),

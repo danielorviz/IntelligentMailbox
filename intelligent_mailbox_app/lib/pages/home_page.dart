@@ -25,13 +25,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final AuthService _authService = AuthService();
+  final PageController _pageController = PageController();
+
   static const List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
     NotificationsTab(),
     AuthorizedKeysTab(key: ValueKey("keys_tab")),
     PackagesTab(key: ValueKey("packages_tab")),
   ];
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
   bool markNotificationsAsRead = false;
 
   void _onItemTapped(int index) {
@@ -55,6 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
         _selectedIndex = index;
       });
     }
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+    );
    
   }
 
@@ -104,7 +111,15 @@ class _MyHomePageState extends State<MyHomePage> {
         iconTheme: const IconThemeData(color: CustomColors.unselectedItem),
       ),
       drawer: DrawerMenu(onSignOut: () => _signOut(context)),
-      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: _widgetOptions,
+      ),
       bottomNavigationBar: BottomNavigation(
         selectedIndex: _selectedIndex,
         onItemTapped: _onItemTapped,

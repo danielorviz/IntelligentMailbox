@@ -24,7 +24,7 @@ class NotificationsTabState extends State<NotificationsTab>
     _animationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
-    )..repeat(reverse: true); // Repite la animación
+    )..repeat(reverse: true);
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
@@ -46,9 +46,16 @@ class NotificationsTabState extends State<NotificationsTab>
     }
   }
 
+  void _updateAnimationState(bool hasUnreadNotifications) {
+    if (hasUnreadNotifications) {
+      _animationController.repeat(reverse: true);
+    } else {
+      _animationController.stop(); 
+    }
+  }
+
   @override
   void dispose() {
-    // Detener el controlador para evitar errores
     _animationController.dispose();
     super.dispose();
   }
@@ -62,6 +69,7 @@ class NotificationsTabState extends State<NotificationsTab>
     if (mailbox == null) {
       return const Center(child: Text('No mailbox selected'));
     }
+    _updateAnimationState(mailboxProvider.unreadNotifications > 0);
     return StreamBuilder<List<MailboxNotification>>(
       stream: _notificationsService.getNotifications(mailbox.id),
       builder: (context, snapshot) {

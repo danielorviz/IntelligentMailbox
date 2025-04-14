@@ -95,7 +95,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
       await prefs.loadPreferences(userId, mailboxId);
       NotificationService().activateDeactivateMailboxNotifications(
         mailboxId,
-        prefs.notificationsEnabled,
+        prefs.isNotificationEnabled(userId,mailboxId),
       );
     }
   }
