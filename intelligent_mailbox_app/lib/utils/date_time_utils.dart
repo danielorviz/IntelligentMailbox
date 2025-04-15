@@ -16,31 +16,28 @@ class DateTimeUtils {
 
   static int getUnixTimestampWithoutTimezoneOffset(DateTime? date) {
     if (date == null) return 0;
-
-    final int timeZoneOffsetInSeconds = date.timeZoneOffset.inSeconds;
-
-    final DateTime utcDateTime = date.subtract(
-      Duration(seconds: timeZoneOffsetInSeconds),
-    );
+    final DateTime utcDateTime = date.toUtc();
 
     return utcDateTime.millisecondsSinceEpoch ~/ 1000;
   }
 
   static DateTime getDateTimeFromSecondsAndOffset(
-    int dateInSeconds,
-    int offsetInSeconds,
+    int seconds,
+    int timezoneOffsetSeconds,
   ) {
-    return DateTime.fromMillisecondsSinceEpoch(
-      dateInSeconds * 1000,
-    ).add(Duration(seconds: offsetInSeconds));
+    DateTime utcDateTime = DateTime.fromMillisecondsSinceEpoch(
+      seconds * 1000,
+      isUtc: true,
+    );
+
+    return utcDateTime.add(Duration(seconds: timezoneOffsetSeconds));
   }
 
   static bool hasExpired(int initDate, int finishDate, int offsetInSeconds) {
     final int currentTimeInSeconds =
-        DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final int adjustedCurrentTime = currentTimeInSeconds - offsetInSeconds;
+        DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
 
-    return adjustedCurrentTime > finishDate || adjustedCurrentTime < initDate;
+    return currentTimeInSeconds > finishDate || currentTimeInSeconds < initDate;
   }
 
   static List<Map<String, dynamic>> getOffsetOptions(BuildContext context) {

@@ -352,7 +352,7 @@ class _NewMailboxConfigurationScreenState
       await _mailboxService.createMailbox(
         mailboxIdController.text,
         _userProvider.user!.uid,
-        3600,
+        DateTime.now().timeZoneOffset.inSeconds,
       );
     } else if (_currentStep == 4) {
       Navigator.of(context).pop();

@@ -26,17 +26,18 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.keyData?.name ?? '');
     _valueController = TextEditingController(text: widget.keyData?.value ?? '');
-    _isPermanent = widget.keyData?.permanent ?? false;
+    _isPermanent = widget.keyData?.isKey ?? false;
   }
 
   void _saveKey() async {
     if (_formKey.currentState!.validate()) {
       if (widget.keyData != null) {
         final updatedKey = AuthorizedPackage(
-          permanent: _isPermanent,
+          isKey: _isPermanent,
           name: _nameController.text,
           value: _valueController.text,
           id: widget.keyData!.id,
+          received: false
         );
         await _mailboxService.updateAuthorizedPackage(
           widget.mailboxId,
@@ -44,12 +45,24 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
         );
       } else {
         final newKey = AuthorizedPackage(
-          permanent: _isPermanent,
+          isKey: _isPermanent,
           name: _nameController.text,
           value: _valueController.text,
           id: "newKey",
+          received: false
         );
+        try{
         await _mailboxService.createAuthorizedPackage(widget.mailboxId, newKey);
+        }catch(e){
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.name),
+              ),
+            );
+          }
+          return;
+        }
       }
       if (mounted) {
         Navigator.pop(context);
@@ -80,9 +93,10 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
+                maxLength: 20,
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.packageCode,
+                  labelText: AppLocalizations.of(context)!.packageName,
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
@@ -94,6 +108,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                maxLength: 20,
                 controller: _valueController,
                 obscureText: _isObscured,
                 decoration: InputDecoration(

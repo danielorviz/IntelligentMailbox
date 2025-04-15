@@ -164,7 +164,7 @@ abstract class AppLocalizations {
   /// No description provided for @permanentKey.
   ///
   /// In en, this message translates to:
-  /// **'Permanent key'**
+  /// **'Permanent access'**
   String get permanentKey;
 
   /// No description provided for @mustSelectStartDate.
@@ -266,43 +266,49 @@ abstract class AppLocalizations {
   /// No description provided for @haveNoPackages.
   ///
   /// In en, this message translates to:
-  /// **'Has no authorized packages'**
+  /// **'Has no authorized code'**
   String get haveNoPackages;
 
   /// No description provided for @confirmDeleteAuthPackage.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this authorized package?'**
+  /// **'Are you sure you want to delete this authorized code?'**
   String get confirmDeleteAuthPackage;
 
   /// No description provided for @authPackageDeleted.
   ///
   /// In en, this message translates to:
-  /// **'Authorized package removed'**
+  /// **'Authorized code removed'**
   String get authPackageDeleted;
 
   /// No description provided for @editPackage.
   ///
   /// In en, this message translates to:
-  /// **'Edit package'**
+  /// **'Edit code'**
   String get editPackage;
 
   /// No description provided for @newPackage.
   ///
   /// In en, this message translates to:
-  /// **'New package'**
+  /// **'New code'**
   String get newPackage;
+
+  /// No description provided for @packageName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get packageName;
 
   /// No description provided for @packageCode.
   ///
   /// In en, this message translates to:
-  /// **'Package code'**
+  /// **'Code'**
   String get packageCode;
 
   /// No description provided for @enterPackageCode.
   ///
   /// In en, this message translates to:
-  /// **'Please enter a package code'**
+  /// **'Please enter a code code'**
   String get enterPackageCode;
 
   /// No description provided for @permanentAccess.
@@ -310,6 +316,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Permanent access'**
   String get permanentAccess;
+
+  /// No description provided for @received.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get received;
+
+  /// No description provided for @packageAlreadyReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'The package has already been received'**
+  String get packageAlreadyReceived;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending reception'**
+  String get pending;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: '**
+  String get status;
 
   /// No description provided for @confirm.
   ///

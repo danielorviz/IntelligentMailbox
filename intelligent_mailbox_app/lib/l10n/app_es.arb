@@ -14,6 +14,16 @@
      }
     }
   },
+  "validationMaxLength": "",
+  "@validationMaxLength": {
+  "description": "Max length validation",
+  "placeholders": {
+    "max": {
+      "type": "int",
+      "example": "20"
+     }
+    }
+  },
   "home": "Inicio",
   "packages": "Paquetes",
   "keys":"Claves",
@@ -22,7 +32,7 @@
   "noMailboxSelected":"No hay un buzón seleccionado",
   "confirmDeleteAuthKey": "¿Seguro que desea eliminar la clave autorizada?",
   "authKeyDeleted": "Clave autorizada eliminada",
-  "permanentKey": "Clave permanente",
+  "permanentKey": "Acceso permanente",
   "mustSelectStartDate": "Debes seleccionar una fecha de inicio primero",
   "endDateAfterStartDate": "La fecha de finalización debe ser posterior a la fecha de inicio",
   "endDateAndStartDateMandatory": "Las fechas de inicio y finalización son obligatorias",
@@ -39,14 +49,19 @@
   "selectDate": "Seleccione una fecha",
   "save": "Guardar",
   "haveNoAuthKeys":"No tiene claves autorizadas",
-  "haveNoPackages":"No tiene paquetes autorizados",
-  "confirmDeleteAuthPackage": "¿Estás seguro de que deseas eliminar este paquete autorizado?",
-  "authPackageDeleted": "Paquete autorizado eliminado",
-  "editPackage":"Editar paquete",
-  "newPackage": "Nuevo paquete",
-  "packageCode": "Código del paquete",
-  "enterPackageCode": "Por favor, introduzca un código de paquete",
+  "haveNoPackages":"No tiene códigos autorizados",
+  "confirmDeleteAuthPackage": "¿Estás seguro de que deseas eliminar este código autorizado?",
+  "authPackageDeleted": "Paquete código eliminado",
+  "editPackage":"Editar código",
+  "newPackage": "Nuevo código",
+  "packageName": "Nombre",
+  "packageCode": "Código",
+  "status":"Estado: ",
+  "enterPackageCode": "Por favor, introduzca un código",
   "permanentAccess": "Acceso permanente",
+  "received": "Recibido",
+  "packageAlreadyReceived":"El paquete ya ha sido recibido",
+  "pending": "Pendiente recepción",
   "confirm": "Confirmar",
   "wifiDisabled": "Wi-Fi Desactivado",
   "wifiDisabledMessage": "El Wi-Fi está desactivado. Por favor, actívelo para continuar.",

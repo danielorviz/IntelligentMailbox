@@ -15,7 +15,6 @@ class AuthorizedKeysTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if(!context.mounted) return const SizedBox.shrink();
-    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
 
@@ -57,7 +56,7 @@ class AuthorizedKeysTab extends StatelessWidget {
               final key = mailbox.authorizedKeys[index];
               final bool isExpired =
                   key.permanent ? false : key.isExpired(offsetInSeconds);
-
+              print('Key: ${key.name}, isExpired: $isExpired');
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -72,14 +71,12 @@ class AuthorizedKeysTab extends StatelessWidget {
                   );
                 },
                 child: Card(
-                  color:
+                  color:key.permanent? Colors.white:
                       isExpired
-                          ? (isDarkTheme
-                              ? AppTheme.cardExpiredDark
-                              : AppTheme.cardExpiredLight)
-                          : (isDarkTheme
-                              ? AppTheme.cardActiveDark
-                              : AppTheme.cardActiveLight),
+                          ? (
+                              AppTheme.cardExpiredLight)
+                          : (
+                               AppTheme.cardActiveLight),
                   margin: const EdgeInsets.symmetric(
                     vertical: 8.0,
                     horizontal: 16.0,
@@ -103,8 +100,9 @@ class AuthorizedKeysTab extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Icon(
-                                  isExpired ? Icons.lock_open : Icons.lock,
-                                  color: isExpired ? Colors.red : Colors.green,
+                                  key.permanent? Icons.key:
+                                  isExpired ? Icons.timer : Icons.lock,
+                                  color:key.permanent? Colors.black: isExpired ? Colors.red : Colors.green,
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -243,7 +241,6 @@ class AuthorizedKeysTab extends StatelessWidget {
                         } else ...{
                           Row(
                             children: [
-                              const Icon(Icons.key, size: 16),
                               const SizedBox(width: 8),
                               Text(
                                 AppLocalizations.of(context)!.permanentKey,

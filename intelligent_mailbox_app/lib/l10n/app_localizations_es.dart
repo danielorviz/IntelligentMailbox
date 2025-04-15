@@ -44,7 +44,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authKeyDeleted => 'Clave autorizada eliminada';
 
   @override
-  String get permanentKey => 'Clave permanente';
+  String get permanentKey => 'Acceso permanente';
 
   @override
   String get mustSelectStartDate => 'Debes seleccionar una fecha de inicio primero';
@@ -95,28 +95,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get haveNoAuthKeys => 'No tiene claves autorizadas';
 
   @override
-  String get haveNoPackages => 'No tiene paquetes autorizados';
+  String get haveNoPackages => 'No tiene códigos autorizados';
 
   @override
-  String get confirmDeleteAuthPackage => '¿Estás seguro de que deseas eliminar este paquete autorizado?';
+  String get confirmDeleteAuthPackage => '¿Estás seguro de que deseas eliminar este código autorizado?';
 
   @override
-  String get authPackageDeleted => 'Paquete autorizado eliminado';
+  String get authPackageDeleted => 'Paquete código eliminado';
 
   @override
-  String get editPackage => 'Editar paquete';
+  String get editPackage => 'Editar código';
 
   @override
-  String get newPackage => 'Nuevo paquete';
+  String get newPackage => 'Nuevo código';
 
   @override
-  String get packageCode => 'Código del paquete';
+  String get packageName => 'Nombre';
 
   @override
-  String get enterPackageCode => 'Por favor, introduzca un código de paquete';
+  String get packageCode => 'Código';
+
+  @override
+  String get enterPackageCode => 'Por favor, introduzca un código';
 
   @override
   String get permanentAccess => 'Acceso permanente';
+
+  @override
+  String get received => 'Recibido';
+
+  @override
+  String get packageAlreadyReceived => 'El paquete ya ha sido recibido';
+
+  @override
+  String get pending => 'Pendiente recepción';
+
+  @override
+  String get status => 'Estado: ';
 
   @override
   String get confirm => 'Confirmar';

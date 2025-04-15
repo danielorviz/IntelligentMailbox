@@ -44,7 +44,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authKeyDeleted => 'Authorized key removed';
 
   @override
-  String get permanentKey => 'Permanent key';
+  String get permanentKey => 'Permanent access';
 
   @override
   String get mustSelectStartDate => 'You must select a start date first';
@@ -95,28 +95,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get haveNoAuthKeys => 'You have no authorized keys';
 
   @override
-  String get haveNoPackages => 'Has no authorized packages';
+  String get haveNoPackages => 'Has no authorized code';
 
   @override
-  String get confirmDeleteAuthPackage => 'Are you sure you want to delete this authorized package?';
+  String get confirmDeleteAuthPackage => 'Are you sure you want to delete this authorized code?';
 
   @override
-  String get authPackageDeleted => 'Authorized package removed';
+  String get authPackageDeleted => 'Authorized code removed';
 
   @override
-  String get editPackage => 'Edit package';
+  String get editPackage => 'Edit code';
 
   @override
-  String get newPackage => 'New package';
+  String get newPackage => 'New code';
 
   @override
-  String get packageCode => 'Package code';
+  String get packageName => 'Name';
 
   @override
-  String get enterPackageCode => 'Please enter a package code';
+  String get packageCode => 'Code';
+
+  @override
+  String get enterPackageCode => 'Please enter a code code';
 
   @override
   String get permanentAccess => 'Permanent access';
+
+  @override
+  String get received => 'Received';
+
+  @override
+  String get packageAlreadyReceived => 'The package has already been received';
+
+  @override
+  String get pending => 'Pending reception';
+
+  @override
+  String get status => 'Status: ';
 
   @override
   String get confirm => 'Confirm';

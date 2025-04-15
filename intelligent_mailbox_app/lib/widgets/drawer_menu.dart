@@ -69,6 +69,7 @@ class DrawerMenu extends StatelessWidget {
                     userProvider.user?.email ?? '',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),

@@ -1,20 +1,23 @@
 class AuthorizedPackage {
-  final bool permanent;
+  final bool isKey;
   final String name;
   final String id;
   final String value;
+  bool received = false;
 
   AuthorizedPackage({
-    required this.permanent,
+    required this.isKey,
     required this.name,
     required this.id,
     required this.value,
+    required this.received,
   });
 
   factory AuthorizedPackage.fromMap(Map<dynamic, dynamic> data, String documentId) {
     return AuthorizedPackage(
-      permanent: data['permanent'] ?? false,
+      isKey: data['isKey'] ?? false,
       name: data['name'] ?? '',
+      received: data['received'] ?? false,
       id: documentId,
       value: data['value'] ?? '',
     );
@@ -22,8 +25,9 @@ class AuthorizedPackage {
 
   Map<String, dynamic> toMap() {
     return {
-      'permanent': permanent,
+      'isKey': isKey,
       'name': name,
+      'received': received,
       'value': value,
     };
   }

@@ -35,6 +35,9 @@ class Mailbox {
             entry.key.toString(),
           );
         }).toList();
+        keys.sort(
+          (a, b) => a.permanent == b.permanent ? 0 : (a.permanent ? -1 : 1),
+        );
 
     final authorizedPackagesData =
         (data['authorizedPackages'] as Map<dynamic, dynamic>?) ?? {};
@@ -47,6 +50,9 @@ class Mailbox {
             entry.key.toString(),
           );
         }).toList();
+        packages.sort(
+          (a, b) => a.isKey == b.isKey ? 0 : (a.isKey ? -1 : 1),
+        );
 
     return Mailbox(
       id: documentId,

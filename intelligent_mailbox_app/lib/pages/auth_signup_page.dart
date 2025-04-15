@@ -99,6 +99,7 @@ class AuthSignupScreenState extends State<AuthSignupScreen> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      maxLength: 50,
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
@@ -114,6 +115,7 @@ class AuthSignupScreenState extends State<AuthSignupScreen> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      maxLength: 20,
                       controller: _nameController,
                       decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.name,

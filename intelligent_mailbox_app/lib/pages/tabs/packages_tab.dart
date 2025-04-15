@@ -3,6 +3,7 @@ import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/edit_package.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
 import 'package:intelligent_mailbox_app/widgets/custom_floating_button.dart';
 import 'package:provider/provider.dart';
@@ -10,9 +11,17 @@ import 'package:provider/provider.dart';
 class PackagesTab extends StatelessWidget {
   const PackagesTab({super.key});
 
+  Color _getCardColor(bool isKey, bool received) {
+    return isKey
+        ? Colors.white
+        : received
+        ? AppTheme.cardActiveLight
+        : Colors.yellow.shade50;
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(!context.mounted) return const SizedBox.shrink();
+    if (!context.mounted) return const SizedBox.shrink();
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
     if (mailbox == null) {
@@ -47,6 +56,16 @@ class PackagesTab extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
+                  if (key.received) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context)!.packageAlreadyReceived,
+                        ),
+                      ),
+                    );
+                    return;
+                  }
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
@@ -58,6 +77,7 @@ class PackagesTab extends StatelessWidget {
                   );
                 },
                 child: Card(
+                  color: _getCardColor(key.isKey, key.received),
                   margin: const EdgeInsets.symmetric(
                     vertical: 8.0,
                     horizontal: 16.0,
@@ -81,8 +101,10 @@ class PackagesTab extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Icon(
-                                  Icons.inventory_2_outlined,
-                                  color: Colors.green,
+                                  key.isKey
+                                      ? Icons.key
+                                      : Icons.inventory_2_outlined,
+                                  size: 25,
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -142,13 +164,22 @@ class PackagesTab extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        if (key.permanent) ...{
+                        if (key.isKey) ...{
                           Row(
                             children: [
-                              const Icon(Icons.key, size: 16),
-                              const SizedBox(width: 8),
                               Text(
                                 AppLocalizations.of(context)!.permanentKey,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        } else ...{
+                          Row(
+                            children: [
+                              Text(
+                                key.received
+                                    ? AppLocalizations.of(context)!.received
+                                    : AppLocalizations.of(context)!.pending,
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ],
