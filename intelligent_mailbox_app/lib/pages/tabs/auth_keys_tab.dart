@@ -101,7 +101,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                               children: [
                                 Icon(
                                   key.permanent? Icons.key:
-                                  isExpired ? Icons.timer : Icons.lock,
+                                  isExpired ? Icons.timer_off_sharp : Icons.timer_sharp,
                                   color:key.permanent? Colors.black: isExpired ? Colors.red : Colors.green,
                                 ),
                                 IconButton(

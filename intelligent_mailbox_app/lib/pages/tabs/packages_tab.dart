@@ -102,8 +102,10 @@ class PackagesTab extends StatelessWidget {
                               children: [
                                 Icon(
                                   key.isKey
-                                      ? Icons.key
-                                      : Icons.inventory_2_outlined,
+                                      ? Icons.key:
+                                      key.received
+                                          ? Icons.check_outlined
+                                      : Icons.local_shipping,
                                   size: 25,
                                 ),
                                 IconButton(
