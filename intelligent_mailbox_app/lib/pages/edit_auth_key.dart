@@ -7,13 +7,11 @@ import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 class EditAuthKeyScreen extends StatefulWidget {
   final AuthorizedKey? keyData;
   final String mailboxId;
-  final int offset;
 
   const EditAuthKeyScreen({
     super.key,
     this.keyData,
     required this.mailboxId,
-    required this.offset,
   });
 
   @override
@@ -49,8 +47,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
             )
             : null;
     _isPermanent = widget.keyData?.permanent ?? false;
-    _hasDifferentTimezone =
-        DateTime.now().timeZoneOffset.inSeconds != widget.offset;
   }
 
   Future<void> _selectStartDate(BuildContext context) async {
@@ -297,7 +293,7 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                             Icon(Icons.markunread_mailbox),
                             const SizedBox(width: 8),
                             Text(
-                              (" ${DateTimeUtils.formatDate(_initDate!.toUtc().add(Duration(seconds: widget.offset)))}   ${DateTimeUtils.formatTime(_initDate!.toUtc().add(Duration(seconds: widget.offset)))}"),
+                              (" ${DateTimeUtils.formatDate(_initDate!.toUtc())}   ${DateTimeUtils.formatTime(_initDate!.toUtc())}"),
                               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -341,7 +337,7 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                             Icon(Icons.markunread_mailbox),
                             const SizedBox(width: 8),
                             Text(
-                              (" ${DateTimeUtils.formatDate(_finishDate!.toUtc().add(Duration(seconds: widget.offset)))}   ${DateTimeUtils.formatTime(_finishDate!.toUtc().add(Duration(seconds: widget.offset)))}"),
+                              (" ${DateTimeUtils.formatDate(_finishDate!.toUtc())}   ${DateTimeUtils.formatTime(_finishDate!.toUtc())}"),
                               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),

@@ -262,37 +262,6 @@ class HomeTabState extends State<HomeTab> {
                                   );
                                 },
                               ),
-                              Row(
-                                spacing: 8,
-                                children: [
-                                  Icon(Icons.public, size: 20),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              '${AppLocalizations.of(context)!.timezone}: ',
-                                          style:
-                                              Theme.of(
-                                                context,
-                                              ).textTheme.labelLarge,
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              DateTimeUtils.getOffsetStringLabel(
-                                                context,
-                                                mailbox.instructions.offset,
-                                              ),
-                                          style:
-                                              Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ],
@@ -329,7 +298,6 @@ class HomeTabState extends State<HomeTab> {
                                 mailbox.id,
                                 AppLocalizations.of(context)!.keyName,
                                 MailboxNotification.typeKey,
-                                mailbox.instructions.offset,
                               ),
                             ],
                           ),
@@ -353,7 +321,6 @@ class HomeTabState extends State<HomeTab> {
                                 mailbox.id,
                                 AppLocalizations.of(context)!.packageCode,
                                 MailboxNotification.typePackage,
-                                mailbox.instructions.offset,
                               ),
                             ],
                           ),
@@ -379,7 +346,6 @@ class HomeTabState extends State<HomeTab> {
                                 mailbox.id,
                                 AppLocalizations.of(context)!.info,
                                 null,
-                                mailbox.instructions.offset,
                               ),
                             ],
                           ),
@@ -401,7 +367,6 @@ class HomeTabState extends State<HomeTab> {
     String mailboxId,
     String infoLabel,
     String? type,
-    int timezoneOffset,
   ) {
     return [
       StreamBuilder<MailboxNotification?>(
@@ -452,7 +417,7 @@ class HomeTabState extends State<HomeTab> {
                     ),
                     TextSpan(
                       text:
-                          '${DateTimeUtils.formatDate(notification.getTimeWithOffset(timezoneOffset))} ${DateTimeUtils.formatTime(notification.getTimeWithOffset(timezoneOffset))}',
+                          '${DateTimeUtils.formatDate(notification.getTimeWithOffset())} ${DateTimeUtils.formatTime(notification.getTimeWithOffset())}',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],

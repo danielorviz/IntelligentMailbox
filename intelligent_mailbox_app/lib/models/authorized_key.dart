@@ -38,15 +38,15 @@ class AuthorizedKey {
     };
   }
 
-  DateTime getInitDateWithOffset(int offsetInSeconds) {
-    return DateTimeUtils.getDateTimeFromSecondsAndOffset(initDate, offsetInSeconds);
+  DateTime getInitDateWithOffset() {
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(initDate);
   }
 
-  DateTime getFinishDateWithOffset(int offsetInSeconds) {
-    return DateTimeUtils.getDateTimeFromSecondsAndOffset(finishDate, offsetInSeconds);
+  DateTime getFinishDateWithOffset() {
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(finishDate);
   }
 
-  bool isExpired(int offsetInSeconds) {
-    return DateTimeUtils.hasExpired(initDate, finishDate, offsetInSeconds);
+  bool isExpired() {
+    return DateTimeUtils.hasExpired(initDate, finishDate);
   }
 }

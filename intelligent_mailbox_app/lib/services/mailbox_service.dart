@@ -149,15 +149,11 @@ class MailboxService {
   Future<void> saveSettings(
     String mailboxId,
     String mailboxName,
-    int offset,
   ) async {
     try {
       await FirebaseDatabase.instance
           .ref("mailbox/$mailboxId/name")
           .set(mailboxName);
-      await FirebaseDatabase.instance
-          .ref("mailbox/$mailboxId/instructions/offset")
-          .set(offset);
     } catch (error) {
       print('Failed to save settings: $error');
       rethrow;

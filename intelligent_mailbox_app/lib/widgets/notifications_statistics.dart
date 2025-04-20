@@ -130,7 +130,6 @@ class _NotificationsStatisticsState extends State<NotificationsStatistics> {
                       mailboxId: mailbox.id,
                       year: selectedYear ?? DateTime.now().year,
                       month: selectedMonth ?? DateTime.now().month,
-                      offset: mailbox.instructions.offset,
                     ),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

@@ -30,7 +30,7 @@ class MailboxNotification {
     );
   }
 
-  DateTime getTimeWithOffset(int offsetInSeconds) {
-    return DateTimeUtils.getDateTimeFromSecondsAndOffset(time, offsetInSeconds);
+  DateTime getTimeWithOffset() {
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(time);
   }
 }

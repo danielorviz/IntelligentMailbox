@@ -78,7 +78,6 @@ class Mailbox {
             : lastWifiStatusCheck;
     return DateTimeUtils.getDateTimeFromSecondsAndOffset(
       lastDate,
-      instructions.offset,
     );
   }
 }

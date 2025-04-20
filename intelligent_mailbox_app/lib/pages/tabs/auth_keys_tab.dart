@@ -18,9 +18,6 @@ class AuthorizedKeysTab extends StatelessWidget {
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
 
-    final int offsetInSeconds =
-        mailboxProvider.selectedMailbox?.instructions.offset ?? 0;
-
     if (mailbox == null) {
       return Center(
         child: Text(
@@ -42,7 +39,6 @@ class AuthorizedKeysTab extends StatelessWidget {
           pageBuilder:
               (context) => EditAuthKeyScreen(
                 mailboxId: mailbox.id,
-                offset: mailbox.instructions.offset,
               ),
         ),
       );
@@ -55,8 +51,7 @@ class AuthorizedKeysTab extends StatelessWidget {
             delegate: SliverChildBuilderDelegate((context, index) {
               final key = mailbox.authorizedKeys[index];
               final bool isExpired =
-                  key.permanent ? false : key.isExpired(offsetInSeconds);
-              print('Key: ${key.name}, isExpired: $isExpired');
+                  key.permanent ? false : key.isExpired();
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -65,7 +60,6 @@ class AuthorizedKeysTab extends StatelessWidget {
                           (context) => EditAuthKeyScreen(
                             mailboxId: mailbox.id,
                             keyData: key,
-                            offset: mailbox.instructions.offset,
                           ),
                     ),
                   );
@@ -177,7 +171,6 @@ class AuthorizedKeysTab extends StatelessWidget {
                                       Text(
                                         DateTimeUtils.formatDate(
                                           key.getInitDateWithOffset(
-                                            offsetInSeconds,
                                           ),
                                         ),
                                         style:
@@ -188,7 +181,6 @@ class AuthorizedKeysTab extends StatelessWidget {
                                       Text(
                                         DateTimeUtils.formatTime(
                                           key.getInitDateWithOffset(
-                                            offsetInSeconds,
                                           ),
                                         ),
                                         style:
@@ -211,7 +203,6 @@ class AuthorizedKeysTab extends StatelessWidget {
                                       Text(
                                         DateTimeUtils.formatDate(
                                           key.getFinishDateWithOffset(
-                                            offsetInSeconds,
                                           ),
                                         ),
                                         style:
@@ -222,7 +213,6 @@ class AuthorizedKeysTab extends StatelessWidget {
                                       Text(
                                         DateTimeUtils.formatTime(
                                           key.getFinishDateWithOffset(
-                                            offsetInSeconds,
                                           ),
                                         ),
                                         style:
@@ -263,7 +253,6 @@ class AuthorizedKeysTab extends StatelessWidget {
         pageBuilder:
             (context) => EditAuthKeyScreen(
               mailboxId: mailbox.id,
-              offset: mailbox.instructions.offset,
             ),
       ),
     );

@@ -106,7 +106,6 @@ class NotificationService {
     required String? mailboxId,
     required int year,
     required int month,
-    required int offset,
   }) {
     if (mailboxId == null || mailboxId.isEmpty) {
       return Stream.value(List<int>.filled(7, 0));
@@ -127,7 +126,7 @@ class NotificationService {
           .where((noti) {
             final date = DateTime.fromMillisecondsSinceEpoch(
               noti.time * 1000,
-            ).add(Duration(seconds: offset));
+            );
             return date.year == year && date.month == month;
           });
 
@@ -136,7 +135,7 @@ class NotificationService {
       for (final noti in notifications) {
         final date = DateTime.fromMillisecondsSinceEpoch(
           noti.time * 1000,
-        ).add(Duration(seconds: offset));
+        );
         int dayOfWeek = date.weekday - 1; // Lunes es 0, Domingo es 6
         dayCounts[dayOfWeek] = (dayCounts[dayOfWeek] ?? 0) + 1;
       }

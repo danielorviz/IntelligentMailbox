@@ -146,7 +146,6 @@ class NotificationsTabState extends State<NotificationsTab>
                                     Text(
                                       DateTimeUtils.formatDate(
                                         notification.getTimeWithOffset(
-                                          mailbox.instructions.offset,
                                         ),
                                       ),
                                       style:
@@ -163,7 +162,6 @@ class NotificationsTabState extends State<NotificationsTab>
                                     Text(
                                       DateTimeUtils.formatTime(
                                         notification.getTimeWithOffset(
-                                          mailbox.instructions.offset,
                                         ),
                                       ),
                                       style:

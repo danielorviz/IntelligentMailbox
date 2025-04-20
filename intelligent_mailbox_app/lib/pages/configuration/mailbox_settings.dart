@@ -20,7 +20,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   bool _notificationsEnabled = false;
   final MailboxService mailboxService = MailboxService();
   final NotificationService notificationService = NotificationService();
-  String _selectedOffset = '0';
   String? _mailboxId;
 
   @override
@@ -35,10 +34,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
       if (mounted) {
         setState(() {
           _nameController.text = widget.mailbox.name;
-          _selectedOffset = DateTimeUtils.getOffsetStringValue(
-            context,
-            widget.mailbox.instructions.offset,
-          );
         });
       _mailboxId = widget.mailbox.id;
       await _loadPreferences(widget.mailbox.id);
@@ -71,7 +66,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
       await mailboxService.saveSettings(
         _mailboxId!,
         _nameController.text,
-        _getOffset(),
       );
       if (mounted) {
         Navigator.pop(context);
@@ -88,17 +82,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     }
   }
 
-  int _getOffset() {
-    if (_selectedOffset == 'system') {
-      return DateTime.now().timeZoneOffset.inSeconds;
-    } else {
-      final offset = DateTimeUtils.getOffsetOptions(context).firstWhere(
-        (offset) => offset['value'].toString() == _selectedOffset,
-        orElse: () => {'value': 0},
-      );
-      return offset['value'];
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,32 +120,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                     },
                   ),
                 ],
-              ),
-              const SizedBox(height: 16),
-
-              // Dropdown para seleccionar el time offset
-              DropdownButtonFormField<String>(
-                value: _selectedOffset,
-                decoration: const InputDecoration(
-                  labelText: 'Seleccionar Time Offset',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedOffset = newValue!;
-                  });
-                },
-                items:
-                    DateTimeUtils.getOffsetOptions(
-                      context,
-                    ).map<DropdownMenuItem<String>>((
-                      Map<String, dynamic> offset,
-                    ) {
-                      return DropdownMenuItem<String>(
-                        value: offset['value'].toString(),
-                        child: Text(offset['label']),
-                      );
-                    }).toList(),
               ),
               const SizedBox(height: 32),
 
