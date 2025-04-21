@@ -3,13 +3,17 @@
 
 const bool notificationsActive= true;
 
-void sendNotification(String titulo,String mensaje){
+void sendNotification(String titulo,String mensaje, int type){
+  sendNotification(titulo,mensaje,type,"");
+}
+
+void sendNotification(String titulo,String mensaje, int type, String typeInfo){
   if(!notificationsActive){return;}
 
   unsigned long currentTime = timeClient.getEpochTime();
   int intentos = 5;
   Serial.println("Enviando notificacion");
-  Notification notificacion(ARDUINO_ID,titulo,mensaje,currentTime);
+  Notification notificacion(ARDUINO_ID,titulo,mensaje,currentTime,type, typeInfo);
   String jsonMensaje = notificacion.toJsonObject();
   String result = "";
   delay(200);
@@ -22,5 +26,5 @@ void sendNotification(String titulo,String mensaje){
 }
 
 void sendNotificationDoorOpenKO(){
-  sendNotification(NOTIFICACION_APERTURA_INCORRECTA,"Se ha intentado abrir la puerta");
+  sendNotification(NOTIFICACION_APERTURA_INCORRECTA,"Se ha intentado abrir la puerta",TYPE_KEY, "");
 }

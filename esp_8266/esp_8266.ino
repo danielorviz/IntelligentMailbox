@@ -82,7 +82,7 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
 }
 
 void updateTimeOffset(int offset) {
-  timeClient.setTimeOffset(offset);
+  //timeClient.setTimeOffset(offset);
   timeClient.update();
 }
 
@@ -91,6 +91,7 @@ void loop() {
   timeClient.update();
   app.loop();
   Database.loop();
+  //Serial.println("LOOOP");
   if (app.ready()) {
 
     if (!onetimeTest) {
@@ -106,7 +107,7 @@ void loop() {
       resetOpen = !result;
     }
     if (conectado && sendConnectedNotif) {
-      sendNotification(NOTIFICACION_CONEXION_CORRECTA, "Buzon conectado");
+      sendNotification(NOTIFICACION_CONEXION_CORRECTA, "Buzon conectado", TYPE_MAILBOX);
       sendConnectedNotif = false;
     }
   }

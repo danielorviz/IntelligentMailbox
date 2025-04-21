@@ -31,26 +31,28 @@ class NotificationsTabState extends State<NotificationsTab>
     );
   }
 
-  Icon _getIconForType(String type) {
-    switch (type) {
-      case MailboxNotification.typeKey:
-        return const Icon(Icons.dialpad, size: 25);
-      case MailboxNotification.typePackage:
-        return const Icon(Icons.nfc, size: 25);
-      case MailboxNotification.typeLetter:
-        return const Icon(Icons.mail, size: 25);
-      case MailboxNotification.typeMailbox:
-        return const Icon(Icons.markunread_mailbox);
-      default:
-        return const Icon(Icons.notifications);
+  Icon _getIconForType(int type) {
+    if (type == MailboxNotification.typeKey) {
+      return const Icon(Icons.dialpad, size: 25);
     }
+    if (type == MailboxNotification.typePackage) {
+      return const Icon(Icons.nfc, size: 25);
+    }
+    if (type == MailboxNotification.typeLetter) {
+      return const Icon(Icons.mail, size: 25);
+    }
+    if (type == MailboxNotification.typeMailbox) {
+      return const Icon(Icons.markunread_mailbox);
+    }
+
+    return const Icon(Icons.notifications);
   }
 
   void _updateAnimationState(bool hasUnreadNotifications) {
     if (hasUnreadNotifications) {
       _animationController.repeat(reverse: true);
     } else {
-      _animationController.stop(); 
+      _animationController.stop();
     }
   }
 
@@ -145,8 +147,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                     const SizedBox(width: 4),
                                     Text(
                                       DateTimeUtils.formatDate(
-                                        notification.getTimeWithOffset(
-                                        ),
+                                        notification.getTimeWithOffset(),
                                       ),
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
@@ -161,8 +162,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                     const SizedBox(width: 4),
                                     Text(
                                       DateTimeUtils.formatTime(
-                                        notification.getTimeWithOffset(
-                                        ),
+                                        notification.getTimeWithOffset(),
                                       ),
                                       style:
                                           Theme.of(context).textTheme.bodySmall,

@@ -27,10 +27,11 @@ export const sendNotification = onValueCreated('/notifications/{idbuzon}/{idnoti
     logger.log('Notificación recibida para buzón:', idbuzon);
     logger.log('Contenido de la notificación:', notificacion);
 	
-
+	const snapshot = await admin.database().ref('mailbox').child(idbuzon).child('name').once('value');
+	const mailboxName = snapshot.val();
     const message = {
       notification: {
-        title: `Nueva notificación en el buzón ${idbuzon}`,
+        title: `Nueva notificación en el buzón ${mailboxName}`,
         body: notificacion.mensaje,
       },
       topic: idbuzon,

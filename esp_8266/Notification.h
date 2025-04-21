@@ -10,16 +10,20 @@ private:
   const String TITULO_COL_NAME = "titulo";
   const String MENSAJE_COL_NAME = "mensaje";
   const String TIME_COL_NAME = "time";
+  const String TYPE_COL_NAME ="type";
+  const String TYPE_INF_COL_NAME= "typeInfo";
 
   String fid_;
   String mailbox_;
   String titulo_;
   String mensaje_;
   unsigned long time_;
+  int type_;
+  String typeInfo_;
 
 public:
   Notification();
-  Notification(String& mailbox, String& titulo, String& mensaje, unsigned long& actualTime);
+  Notification(String& mailbox, String& titulo, String& mensaje, unsigned long& actualTime, int& type, String& typeInfo);
   Notification(JsonObject& json);
 
   String getFid();
@@ -38,12 +42,14 @@ public:
 };
 Notification::Notification() {
 }
-Notification::Notification(String& mailbox, String& titulo, String& mensaje, unsigned long& actualTime) {
+Notification::Notification(String& mailbox, String& titulo, String& mensaje, unsigned long& actualTime, int& type, String& typeInfo) {
   fid_ = "fid";
   mailbox_ = mailbox;
   titulo_ = titulo;
   mensaje_ = mensaje;
   time_ = actualTime;
+  type_ = type;
+  typeInfo_ = typeInfo;
 }
 Notification::Notification(JsonObject& json) {
   fid_ = json[FID_COL_NAME].as<String>();
@@ -51,16 +57,18 @@ Notification::Notification(JsonObject& json) {
   titulo_ = json[TITULO_COL_NAME].as<String>();
   mensaje_ = json[MENSAJE_COL_NAME].as<String>();
   time_ = json[TIME_COL_NAME].as<unsigned long>();
+  type_ = json[TYPE_COL_NAME].as<int>();
 }
 
 String Notification::toJsonObject() {
-   String jsonString = "{\"" + String(FID_COL_NAME) + "\":\"" + fid_ + "\","
-                        "\"" + String(MAILBOX_COL_NAME) + "\":\"" + mailbox_ + "\","
-                        "\"" + String(TITULO_COL_NAME) + "\":\"" + titulo_ + "\","
-                        "\"" + String(MENSAJE_COL_NAME) + "\":\"" + mensaje_ + "\","
-                        "\"" + String(TIME_COL_NAME) + "\":" + String(time_) + "}";
+   return "{\"" + FID_COL_NAME + "\":\"" + fid_ + "\","
+                        "\"" + MAILBOX_COL_NAME + "\":\"" + mailbox_ + "\","
+                        "\"" + TITULO_COL_NAME + "\":\"" + titulo_ + "\","
+                        "\"" + MENSAJE_COL_NAME + "\":\"" + mensaje_ + "\","
+                        "\"" + TYPE_COL_NAME + "\":" + type_ + ","
+                         "\"" + TYPE_INF_COL_NAME + "\":\"" + typeInfo_ + "\","
+                        "\"" + TIME_COL_NAME + "\":" + String(time_) + "}";
 
-    return jsonString;
 }
 
 String Notification::getFid() {

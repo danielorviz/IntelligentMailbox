@@ -42,7 +42,7 @@ class NotificationService {
 
   Stream<MailboxNotification?> getLastNotificationByType(
     String? mailboxId,
-    String? type,
+    int? type,
   ) {
     if (mailboxId == null || mailboxId.isEmpty) return Stream.value(null);
     int limit = type != null ? 100 : 1;
@@ -56,7 +56,7 @@ class NotificationService {
           final data = event.snapshot.value as Map?;
           if (data == null) return null;
 
-          if (type == null || type.isEmpty) {
+          if (type == null) {
             final notificaciones =
                 data.entries
                     .map((entry) => Map<String, dynamic>.from(entry.value))

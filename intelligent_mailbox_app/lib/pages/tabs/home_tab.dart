@@ -366,7 +366,7 @@ class HomeTabState extends State<HomeTab> {
   List<Widget> _buildLastAccess(
     String mailboxId,
     String infoLabel,
-    String? type,
+    int? type,
   ) {
     return [
       StreamBuilder<MailboxNotification?>(

@@ -4,7 +4,6 @@ import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
-import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 
 class MailboxSettingsScreen extends StatefulWidget {

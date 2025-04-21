@@ -2,16 +2,16 @@ import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 
 class MailboxNotification {
   
-  static const String typeKey = 'KEY';
-  static const String typePackage = 'PACKAGE';
-  static const String typeLetter = 'LETTER';
-  static const String typeMailbox = 'MAILBOX';
+  static const int typeKey = 0;//'KEY';
+  static const int typePackage = 1;//'PACKAGE';
+  static const int typeLetter = 2;//'LETTER';
+  static const int typeMailbox = 3;//'MAILBOX';
 
   final String title;
   final String message;
   final int time;
   final String mailboxId;
-  final String type;
+  final int type;
   final String typeInfo;
   final bool isRead;
 
@@ -24,7 +24,7 @@ class MailboxNotification {
       message: json['mensaje'],
       time: json['time'] ?? 0,
       mailboxId: json['mailbox'],
-      type: json['type']?? '',
+      type: json['type']?? -1,
       typeInfo: json['typeInfo'] ?? '',
       isRead: json['isRead'] ?? false,
     );
