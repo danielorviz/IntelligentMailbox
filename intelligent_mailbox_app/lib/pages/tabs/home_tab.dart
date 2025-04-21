@@ -30,13 +30,13 @@ class HomeTabState extends State<HomeTab> {
   String lastCheckDate = "";
   bool checkingConnection = false;
 
-  Future<void> checkConnection(String mailboxId) async {
+  Future<void> checkConnection(String userId, String mailboxId) async {
     if (checkingConnection) return;
     setState(() {
       checkingConnection = true;
     });
     try {
-      await _mailboxService.checkMailboxConnection(mailboxId);
+      await _mailboxService.checkMailboxConnection(userId, mailboxId);
     } finally {
       setState(() {
         checkingConnection = false;
@@ -99,7 +99,7 @@ class HomeTabState extends State<HomeTab> {
                                 AppLocalizations.of(context)!.checkConnection,
                             child: IconButton(
                               icon: Icon(Icons.refresh, size: 20),
-                              onPressed: () => checkConnection(mailbox.id),
+                              onPressed: () => checkConnection(userUid,mailbox.id),
                             ),
                           ),
                           Tooltip(

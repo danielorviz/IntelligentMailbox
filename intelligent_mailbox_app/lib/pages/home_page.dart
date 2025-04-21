@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
+import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/auth_keys_tab.dart';
 import 'package:intelligent_mailbox_app/pages/tabs/home_tab.dart';
@@ -80,12 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
   Future<void> _updateNotificationsPreferences(String userId) async {
-    List<String> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
+    List<Mailbox> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
       userId,
     );
-    for (String mailboxId in mailboxes) {
+    for (Mailbox mailbox in mailboxes) {
       NotificationService().activateDeactivateMailboxNotifications(
-        mailboxId,
+        mailbox.id,
         false,
       );
     }

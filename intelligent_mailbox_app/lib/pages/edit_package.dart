@@ -5,9 +5,10 @@ import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 
 class EditPackageScreen extends StatefulWidget {
   final AuthorizedPackage? keyData;
+  final String userId;
   final String mailboxId;
 
-  const EditPackageScreen({super.key, this.keyData, required this.mailboxId});
+  const EditPackageScreen({super.key, this.keyData, required this.userId, required this.mailboxId});
 
   @override
   State<EditPackageScreen> createState() => _EditPackageScreenState();
@@ -40,6 +41,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
           received: false
         );
         await _mailboxService.updateAuthorizedPackage(
+          widget.userId,
           widget.mailboxId,
           updatedKey,
         );
@@ -52,7 +54,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
           received: false
         );
         try{
-        await _mailboxService.createAuthorizedPackage(widget.mailboxId, newKey);
+        await _mailboxService.createAuthorizedPackage(widget.userId,widget.mailboxId, newKey);
         }catch(e){
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(

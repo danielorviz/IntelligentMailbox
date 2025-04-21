@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
+import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/pages/auth_signup_page.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
@@ -88,14 +89,14 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
 
   Future<void> _updateNotificationsPreferences(String userId) async {
     final prefs = Provider.of<PreferencesProvider>(context, listen: false);
-    List<String> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
+    List<Mailbox> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
       userId,
     );
-    for (String mailboxId in mailboxes) {
-      await prefs.loadPreferences(userId, mailboxId);
+    for (Mailbox mailbox in mailboxes) {
+      await prefs.loadPreferences(userId, mailbox.id);
       NotificationService().activateDeactivateMailboxNotifications(
-        mailboxId,
-        prefs.isNotificationEnabled(userId,mailboxId),
+        mailbox.id,
+        prefs.isNotificationEnabled(userId,mailbox.id),
       );
     }
   }

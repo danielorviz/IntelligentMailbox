@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/edit_auth_key.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
@@ -17,8 +18,10 @@ class AuthorizedKeysTab extends StatelessWidget {
     if(!context.mounted) return const SizedBox.shrink();
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
+    final UserProvider userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
 
-    if (mailbox == null) {
+    if (mailbox == null || user == null) {
       return Center(
         child: Text(
           AppLocalizations.of(context)!.noMailboxSelected,
@@ -38,6 +41,7 @@ class AuthorizedKeysTab extends StatelessWidget {
         floatingActionButton: CustomFloatingActionButton(
           pageBuilder:
               (context) => EditAuthKeyScreen(
+                userId: user.uid,
                 mailboxId: mailbox.id,
               ),
         ),
@@ -58,6 +62,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (context) => EditAuthKeyScreen(
+                            userId: user.uid,
                             mailboxId: mailbox.id,
                             keyData: key,
                           ),
@@ -132,6 +137,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                                     if (confirm == true) {
                                       await MailboxService()
                                           .deleteAuthorizedKey(
+                                            user.uid,
                                             mailbox.id,
                                             key.id,
                                           );
@@ -252,6 +258,7 @@ class AuthorizedKeysTab extends StatelessWidget {
       floatingActionButton: CustomFloatingActionButton(
         pageBuilder:
             (context) => EditAuthKeyScreen(
+              userId: user.uid,
               mailboxId: mailbox.id,
             ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/edit_package.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/app_theme.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
@@ -24,7 +25,9 @@ class PackagesTab extends StatelessWidget {
     if (!context.mounted) return const SizedBox.shrink();
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
-    if (mailbox == null) {
+    final UserProvider userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+    if (mailbox == null || user == null) {
       return Center(
         child: Text(
           AppLocalizations.of(context)!.noMailboxSelected,
@@ -42,7 +45,7 @@ class PackagesTab extends StatelessWidget {
           ),
         ),
         floatingActionButton: CustomFloatingActionButton(
-          pageBuilder: (context) => EditPackageScreen(mailboxId: mailbox.id),
+          pageBuilder: (context) => EditPackageScreen(userId: user.uid, mailboxId: mailbox.id),
         ),
       );
     }
@@ -70,6 +73,7 @@ class PackagesTab extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (context) => EditPackageScreen(
+                            userId: user.uid,
                             mailboxId: mailbox.id,
                             keyData: key,
                           ),
@@ -142,6 +146,7 @@ class PackagesTab extends StatelessWidget {
                                     if (confirm == true) {
                                       await MailboxService()
                                           .deleteAuthorizedPackage(
+                                            user.uid,
                                             mailbox.id,
                                             key.id,
                                           );
@@ -198,7 +203,7 @@ class PackagesTab extends StatelessWidget {
         ],
       ),
       floatingActionButton: CustomFloatingActionButton(
-        pageBuilder: (context) => EditPackageScreen(mailboxId: mailbox.id),
+        pageBuilder: (context) => EditPackageScreen(userId: user.uid, mailboxId: mailbox.id),
       ),
     );
   }

@@ -6,11 +6,14 @@ import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 
 class EditAuthKeyScreen extends StatefulWidget {
   final AuthorizedKey? keyData;
+  final String userId;
   final String mailboxId;
+
 
   const EditAuthKeyScreen({
     super.key,
     this.keyData,
+    required this.userId,
     required this.mailboxId,
   });
 
@@ -27,7 +30,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
   DateTime? _finishDate;
   bool _isPermanent = false;
   bool _isObscured = true;
-  bool _hasDifferentTimezone = false;
 
   @override
   void initState() {
@@ -158,7 +160,7 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
             _finishDate,
           ),
         );
-        await _mailboxService.updateAuthorizedKey(widget.mailboxId, updatedKey);
+        await _mailboxService.updateAuthorizedKey(widget.userId ,widget.mailboxId, updatedKey);
       } else {
         final newKey = AuthorizedKey(
           initDate: DateTimeUtils.getUnixTimestampWithoutTimezoneOffset(
@@ -172,7 +174,7 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
             _finishDate,
           ),
         );
-        await _mailboxService.createAuthorizedKey(widget.mailboxId, newKey);
+        await _mailboxService.createAuthorizedKey(widget.userId ,widget.mailboxId, newKey);
       }
       if (mounted) {
         Navigator.pop(context);
@@ -274,11 +276,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          if (_hasDifferentTimezone) ...{
-                            Icon(Icons.smartphone),
-                            const SizedBox(width: 8),
-                          },
-
                           Text(
                             _initDate != null
                                 ? (" ${DateTimeUtils.formatDate(_initDate!)}   ${DateTimeUtils.formatTime(_initDate!)}")
@@ -287,20 +284,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                           ),
                         ],
                       ),
-                      if (_hasDifferentTimezone && _initDate != null) ...{
-                        Row(
-                          children: [
-                            Icon(Icons.markunread_mailbox),
-                            const SizedBox(width: 8),
-                            Text(
-                              (" ${DateTimeUtils.formatDate(_initDate!.toUtc())}   ${DateTimeUtils.formatTime(_initDate!.toUtc())}"),
-                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      },
                     ],
                   ),
                   trailing: const Icon(Icons.event),
@@ -318,11 +301,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          if (_hasDifferentTimezone) ...{
-                            Icon(Icons.smartphone),
-                            const SizedBox(width: 8),
-                          },
-
                           Text(
                             _finishDate != null
                                 ? (" ${DateTimeUtils.formatDate(_finishDate!)}   ${DateTimeUtils.formatTime(_finishDate!)}")
@@ -331,20 +309,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                           ),
                         ],
                       ),
-                      if (_hasDifferentTimezone && _finishDate != null) ...{
-                        Row(
-                          children: [
-                            Icon(Icons.markunread_mailbox),
-                            const SizedBox(width: 8),
-                            Text(
-                              (" ${DateTimeUtils.formatDate(_finishDate!.toUtc())}   ${DateTimeUtils.formatTime(_finishDate!.toUtc())}"),
-                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      },
                     ],
                   ),
                   trailing: const Icon(Icons.event_available),

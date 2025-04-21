@@ -5,7 +5,6 @@ import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
-import 'package:rxdart/rxdart.dart';
 
 class MailboxProvider with ChangeNotifier {
   final UserProvider _userProvider;
@@ -30,20 +29,14 @@ class MailboxProvider with ChangeNotifier {
       try {
         final mailboxKeysStream = _mailboxService.getUserMailboxKeys(user.uid);
         final mailboxKeysSubscription = mailboxKeysStream.listen(
-          (mailboxKeys) {
-            if (mailboxKeys.isEmpty && _mailboxes.isNotEmpty) {
+          (mailboxes) {
+            if (mailboxes.isEmpty && _mailboxes.isNotEmpty) {
               _mailboxes = [];
               _selectedMailbox = null;
               _safeNotifyListeners();
               return;
             }
 
-            final mailboxStreams = mailboxKeys.map(
-              (key) => _mailboxService.getMailboxDetails(key),
-            );
-            final combinedStream = CombineLatestStream.list(mailboxStreams);
-
-            final combinedSubscription = combinedStream.listen((mailboxes) {
               if (!hasListeners) return;
               _mailboxes = mailboxes.whereType<Mailbox>().toList();
               print('Cargando mailboxes: $mailboxes');
@@ -53,9 +46,7 @@ class MailboxProvider with ChangeNotifier {
                 _selectedMailbox = null;
               }
               _safeNotifyListeners();
-            });
 
-            _subscriptions.add(combinedSubscription);
           },
           onError: (error) {
             print('Error listening to mailbox keys: $error');

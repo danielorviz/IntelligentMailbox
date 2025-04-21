@@ -19,7 +19,7 @@ class MailboxService {
 
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
-  Stream<List<String>> getUserMailboxKeys(String userId) {
+  Stream<List<Mailbox>> getUserMailboxKeys(String userId) {
     try {
       return _database
           .child('users')
@@ -27,62 +27,30 @@ class MailboxService {
           .child('mailbox')
           .onValue
           .map((event) {
-            final mailboxesMap = event.snapshot.value as Map<dynamic, dynamic>?;
-            if (mailboxesMap == null) {
-              return <String>[];
-            }
-            List<String> mailboxKeys = [];
-            mailboxesMap.forEach((key, value) {
-              if (value == true) {
-                mailboxKeys.add(key);
-              }
-            });
-            return mailboxKeys;
+            final data = event.snapshot.value as Map?;
+          if (data == null) return [];
+            return data.entries
+                .map((entry) {
+                  final mailboxId = entry.key;
+                  final mailboxData = Map<String, dynamic>.from(
+                    entry.value as Map<dynamic, dynamic>,
+                  );
+                  return Mailbox.fromMap(mailboxData, mailboxId);
+                })
+                .toList();
           });
     } catch (error) {
       return Stream.value([]);
     }
   }
 
-  Future<List<String>> fetchUserMailboxKeysOnce(String userId) async {
+  Future<List<Mailbox>> fetchUserMailboxKeysOnce(String userId) async {
     return await getUserMailboxKeys(userId).first;
   }
 
-  Stream<Mailbox?> getMailboxDetails(String mailboxId) {
-    try {
-      return _database.child('mailbox').child(mailboxId).onValue.map((event) {
-        final value = event.snapshot.value;
 
-        if (value == null) {
-          return null;
-        }
-        final mailboxData = Map<String, dynamic>.from(
-          value as Map<dynamic, dynamic>,
-        );
-        return Mailbox.fromMap(mailboxData, mailboxId);
-      });
-    } catch (error) {
-      return Stream.value(null);
-    }
-  }
-
-  Future<Map<String, dynamic>> getMailboxContent(String mailboxId) async {
-    try {
-      final snapshot =
-          await _database.child('mailboxes').child(mailboxId).once();
-      final value = snapshot.snapshot.value;
-      if (value == null) {
-        return {};
-      }
-      return Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
-    } catch (error) {
-      print('Error getting mailbox content: $error');
-      return {};
-    }
-  }
-
-  Future<void> checkMailboxConnection(String mailboxId) async {
-    final mailboxRef = FirebaseDatabase.instance.ref('mailbox/$mailboxId');
+  Future<void> checkMailboxConnection(String userId, String mailboxId) async {
+    final mailboxRef = FirebaseDatabase.instance.ref('users/$userId/mailbox/$mailboxId');
 
     await mailboxRef.update({'wifiStatus': Constants.connectionChecking});
 
@@ -130,16 +98,13 @@ class MailboxService {
     int offset,
   ) async {
     try {
-      await FirebaseDatabase.instance.ref("mailbox/$mailboxId").update({
+      await FirebaseDatabase.instance.ref("users/$userId/mailbox/$mailboxId").update({
         "name": mailboxId,
         "id": mailboxId,
         "instructions/offset": offset,
         "instructions/open": false,
         "users": {userId: true},
       });
-      await FirebaseDatabase.instance
-          .ref("users/$userId/mailbox/$mailboxId")
-          .set(true);
     } catch (error) {
       print('Failed to save settings: $error');
       rethrow;
@@ -147,12 +112,13 @@ class MailboxService {
   }
 
   Future<void> saveSettings(
+    String userId,
     String mailboxId,
     String mailboxName,
   ) async {
     try {
       await FirebaseDatabase.instance
-          .ref("mailbox/$mailboxId/name")
+          .ref("users/$userId/mailbox/$mailboxId/name")
           .set(mailboxName);
     } catch (error) {
       print('Failed to save settings: $error');
@@ -161,11 +127,12 @@ class MailboxService {
   }
 
   Future<void> createAuthorizedKey(
+    String userId,
     String mailboxId,
     AuthorizedKey authorizedKey,
   ) async {
     DatabaseReference authKeys = FirebaseDatabase.instance.ref(
-      "mailbox/$mailboxId/authorizedkeys",
+      "users/$userId/mailbox/$mailboxId/authorizedkeys",
     );
     try {
       await authKeys.push().set(authorizedKey.toMap());
@@ -176,12 +143,13 @@ class MailboxService {
   }
 
   Future<void> updateAuthorizedKey(
+    String userId,
     String mailboxId,
     AuthorizedKey authorizedKey,
   ) async {
     try {
       await FirebaseDatabase.instance
-          .ref("mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}")
+          .ref("users/$userId/mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}")
           .update(authorizedKey.toMap());
     } catch (error) {
       print('Failed to update AuthorizedKey: $error');
@@ -190,12 +158,13 @@ class MailboxService {
   }
 
   Future<void> deleteAuthorizedKey(
+    String userId,
     String mailboxId,
     String authorizedKeyId,
   ) async {
     try {
       await _database
-          .child('mailbox/$mailboxId/authorizedkeys/$authorizedKeyId')
+          .child('users/$userId/mailbox/$mailboxId/authorizedkeys/$authorizedKeyId')
           .remove();
     } catch (error) {
       rethrow;
@@ -203,11 +172,12 @@ class MailboxService {
   }
 
   Future<void> createAuthorizedPackage(
+    String userId,
     String mailboxId,
     AuthorizedPackage authorizedPackage,
   ) async {
     final DatabaseReference authPackage = FirebaseDatabase.instance.ref(
-      "mailbox/$mailboxId/authorizedPackages",
+      "users/$userId/mailbox/$mailboxId/authorizedPackages",
     );
     try {
       await authPackage.push().set(authorizedPackage.toMap());
@@ -218,11 +188,12 @@ class MailboxService {
   }
 
   Future<void> updateAuthorizedPackage(
+    String userId,
     String mailboxId,
     AuthorizedPackage authorizedPackage,
   ) async {
     final DatabaseReference authPackage = FirebaseDatabase.instance.ref(
-      "mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}",
+      "users/$userId/mailbox/$mailboxId/authorizedPackages/${authorizedPackage.id}",
     );
     try {
       await authPackage.update(authorizedPackage.toMap());
@@ -233,12 +204,13 @@ class MailboxService {
   }
 
   Future<void> deleteAuthorizedPackage(
+    String userId,
     String mailboxId,
     String authorizedPackageId,
   ) async {
     try {
       await _database
-          .child('mailbox/$mailboxId/authorizedPackages/$authorizedPackageId')
+          .child('users/$userId/mailbox/$mailboxId/authorizedPackages/$authorizedPackageId')
           .remove();
     } catch (error) {
       rethrow;

@@ -95,14 +95,14 @@ void loop() {
   if (app.ready()) {
 
     if (!onetimeTest) {
-      Database.get(aClientStreamKeys, "mailbox/" + ARDUINO_ID, asyncCB, true, TASK_AUTH_KEYS);
+      Database.get(aClientStreamKeys, "users/" + app.getUid() + "/mailbox/" + ARDUINO_ID, asyncCB, true, TASK_AUTH_KEYS);
 
       onetimeTest = true;
     }
     
     if (resetOpen) {
       Serial.print("resetResult: ");
-      bool result = Database.set<bool>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/instructions/open", false);
+      bool result = Database.set<bool>(aClientGeneral, "users/" + app.getUid() + "mailbox/" + ARDUINO_ID + "/instructions/open", false);
       Serial.println(result);
       resetOpen = !result;
     }

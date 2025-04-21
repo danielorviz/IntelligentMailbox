@@ -63,6 +63,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     try {
       await notificationService.activateDeactivateMailboxNotifications(_mailboxId!, _notificationsEnabled);
       await mailboxService.saveSettings(
+        userProvider.user!.uid,
         _mailboxId!,
         _nameController.text,
       );
