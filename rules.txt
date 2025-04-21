@@ -1,0 +1,35 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "true",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "configuration":{".read":"auth != null",".write":"false"},
+    "Utils":{
+      ".read": "true",
+        ".write": "auth !== null"
+    },
+      "data":{
+        ".read": "auth !== null",
+          ".write": "auth !== null"
+      },
+      "mailbox":{
+       "$mailboxId":{
+        ".read": "root.child('mailbox').child($mailboxId).child('users').child(auth.uid).exists()",
+          ".write": "root.child('mailbox').child($mailboxId).child('users').child(auth.uid).exists()"
+       }
+      },
+      "notifications":{
+        ".read": "auth !== null",
+          ".write": "auth !== null",
+ 
+          	"$notifId":{
+              ".indexOn": ["time"]
+            }
+        
+        
+      }
+  }
+}
