@@ -56,9 +56,9 @@ void setup() {
   ssl_clientKeys.setBufferSizes(1024, 512);
   ssl_clientKeys.setTimeout(150);
 
-  Serial.print("conectando con credenciales: ");
+  Serial.print(F("conectando con credenciales: "));
   Serial.print(fireuser);
-  Serial.print(" ");
+  Serial.print(F(" "));
   Serial.println(firepass);
   UserAuth user_auth(FIREBASE_WEB_KEY, fireuser, firepass);
   initializeApp(aClientGeneral, app, getAuth(user_auth), asyncCB, "authTask");
@@ -74,7 +74,7 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
   DynamicJsonDocument doc(1024);
   DeserializationError error = deserializeJson(doc, firebaseData);
   if (error) {
-    Serial.println("Error al deserializar el JSON: ");
+    Serial.println(F("Error al deserializar el JSON: "));
     //Serial.println(error.c_str());
     return DynamicJsonDocument(0);
   }
@@ -166,7 +166,6 @@ void printResult(AsyncResult &aResult) {
             JsonObject instructions = doc["instructions"];
             onInstructionOpen(instructions["open"].as<bool>());
 
-            onInstructionOffset(instructions["offset"].as<int>());
           }
 
           conectado = true;
@@ -174,8 +173,6 @@ void printResult(AsyncResult &aResult) {
 
         } else if (path == "/instructions/open") {
           onInstructionOpen(RTDB.to<bool>());
-        } else if (path == "/instructions/offset") {
-          onInstructionOffset(RTDB.to<int>());
         } else if (path.startsWith("/authorizedkeys/")) {
           JsonObject root = doc.as<JsonObject>();
           String id = path.substring(strlen("/authorizedkeys/"));
@@ -188,24 +185,17 @@ void printResult(AsyncResult &aResult) {
         } else if (path.startsWith("/authorizedPackages/")) {
           JsonObject root = doc.as<JsonObject>();
           String id = path.substring(strlen("/authorizedPackages/"));
-          Serial.println(id);
+          //Serial.println(id);
           if (id.indexOf('/') != -1) {
             return;
           }
-          Serial.println("registrando paquete");
+          //Serial.println("registrando paquete");
           handlePackageEvent(id, root);
         }
 
-      } else if (TASK_OFFSET == aResult.uid().c_str()) {
       }
     }
   }
-}
-
-void onInstructionOffset(int offset) {
-  Serial.print("offset_");
-  Serial.println(offset);
-  updateTimeOffset(offset);
 }
 
 void onInstructionOpen(bool open) {

@@ -16,20 +16,20 @@ void initAuthorizedPackages(JsonObject data) {
     String id = String(kv.key().c_str());
     AuthorizedPackage k = AuthorizedPackage(id, keyData);
     authorizedPackages.push_back(k);
-    Serial.println(k.getValue());
+    //Serial.println(k.getValue());
   }
 }
 void handlePackageEvent(String id, JsonObject data) {
   bool exists = existsPackageById(id);
   Serial.println(exists);
   if (exists && data.isNull()) {
-    Serial.println("eliminando paquete");
+    Serial.println(F("eliminando paquete"));
     removePackageById(id);
   } else if (exists && !data.isNull()) {
-    Serial.println("actualizando paquete");
+    Serial.println(F("actualizando paquete"));
     updatePackage(id, data);
   } else if (!exists && !data.isNull()) {
-    Serial.println("creando paquete");
+    Serial.println(F("creando paquete"));
     createPackage(id, data);
   }
 }
@@ -48,7 +48,7 @@ int checkPackageAccess(String code) {
     AuthorizedPackage& key = authorizedPackages[i];
 
     if (key.isPermanent() && key.getValue().equals(code)) {
-      Serial.println("Package valida:" + key.getValue());
+      //Serial.println("Package valida:" + key.getValue());
       return i;
     } 
   }
@@ -80,14 +80,14 @@ void updatePackage(String id, JsonObject data) {
 }
 void createPackage(String& id, JsonObject& data) {
   AuthorizedPackage k = AuthorizedPackage(id, data);
-  Serial.println(k.getValue());
+  //Serial.println(k.getValue());
   authorizedPackages.push_back(k);
 }
 void removePackageById(String id) {
   for (auto it = authorizedPackages.begin(); it != authorizedPackages.end();) {
     if (it->getId() == id) {
       it = authorizedPackages.erase(it);
-      Serial.println("Paquete eliminado: " + id);
+      //Serial.println("Paquete eliminado: " + id);
       return;
     } else {
       ++it;

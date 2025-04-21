@@ -40,17 +40,17 @@ void processInstruction(char* message) {
           firepass = pass;
     }
   } else {
-    Serial.print("Validando instruccion: ");
+    Serial.print(F("Validando instruccion: "));
     Serial.println(instructions);
     if (instructions.startsWith("DOOR_")) {
       String key = instructions.substring(5);
       key.trim();
       int validKeyIndex = checkKeyboardAccess(key);
       if (validKeyIndex >= 0) {
-        Serial.println("DOOR_OK");
-        sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con la clave ",TYPE_KEY ,getAuthKeyName(validKeyIndex));
+        Serial.println(F("DOOR_OK"));
+        sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con la clave "),TYPE_KEY ,getAuthKeyName(validKeyIndex));
       } else {
-        Serial.println("DOOR_KO");
+        Serial.println(F("DOOR_KO"));
         sendNotificationDoorOpenKO();
       }
     } else if (instructions.startsWith("NOTIF_")) {
@@ -59,21 +59,21 @@ void processInstruction(char* message) {
       if (notification == "OPENKO") {
         sendNotificationDoorOpenKO();
       } else if (notification == "PACKAGE_PERM") {
-        sendNotification(NOTIFICACION_APERTURA_CORRECTA, "Puerta abierta con su llave de acceso",TYPE_PACKAGE);
+        sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con su llave de acceso"),TYPE_PACKAGE);
       } else if (notification == "LETTER") {
-        sendNotification(NOTIFICACION_CARTA_RECIBIDA, "Ha recibido un nuevo correo",TYPE_LETTER);
+        sendNotification(NOTIFICACION_CARTA_RECIBIDA, F("Ha recibido un nuevo correo"),TYPE_LETTER);
       } else if (notification == "FULL") {
-        sendNotification(NOTIFICACION_BUZON_LLENO, "Es posible que el buzón esté lleno o se haya atascado un correo",   TYPE_MAILBOX);
+        sendNotification(NOTIFICACION_BUZON_LLENO, F("Es posible que el buzón esté lleno o se haya atascado un correo"),   TYPE_MAILBOX);
       }
     } else if (instructions.startsWith("PACKAGE_")) {
       String package = instructions.substring(8);
       package.trim();
       int validPackageIndex = checkPackageAccess(package);
       if (validPackageIndex >= 0) {
-        Serial.println("DOOR_OK");
-        sendNotification(NOTIFICACION_PAQUETE_RECIBIDO, "Puerta abierta con el paquete ",TYPE_PACKAGE, getPackageKeyName(validPackageIndex));
+        Serial.println(F("DOOR_OK"));
+        sendNotification(NOTIFICACION_PAQUETE_RECIBIDO, F("Puerta abierta con el paquete "),TYPE_PACKAGE, getPackageKeyName(validPackageIndex));
       } else {
-        Serial.println("DOOR_KO");
+        Serial.println(F("DOOR_KO"));
         sendNotificationDoorOpenKO();
       }
     }

@@ -33,10 +33,10 @@ int checkKeyboardAccess(String clave) {
     AuthorizedKey& key = authorizedKeys[i];
 
     if (key.isPermanent() && key.getValue().equals(clave)) {
-      Serial.println("key valida:" + key.getValue());
+      //Serial.println("key valida:" + key.getValue());
       return i;
     } else if (!key.isPermanent() && key.getValue() == clave && key.checkDateInRange(timeClient.getEpochTime())) {
-      Serial.println("key invalida:" + key.getValue());
+      //Serial.println("key invalida:" + key.getValue());
       return i;
     }
   }
@@ -46,13 +46,13 @@ void handleKeyEvent(String id, JsonObject data) {
   bool exists = existsById(id);
   Serial.println(exists);
   if (exists && data.isNull()) {
-    Serial.println("eliminando");
+    Serial.println(F("eliminando"));
     removeKeyById(id);
   }else if(exists && !data.isNull()){
-    Serial.println("actualizando");
+    Serial.println(F("actualizando"));
     updateKey(id,data);
   }else if (!exists && !data.isNull()){
-    Serial.println("creando");
+    Serial.println(F("creando"));
     createKey(id, data);
   }
 }
@@ -81,14 +81,14 @@ void updateKey(String id, JsonObject data) {
 }
 void createKey(String& id, JsonObject& data) {
     AuthorizedKey k = AuthorizedKey(id, data);
-    Serial.println(k.getValue());
+    //Serial.println(k.getValue());
     authorizedKeys.push_back(k);
 }
 void removeKeyById(String id) {
   for (auto it = authorizedKeys.begin(); it != authorizedKeys.end(); ) {
     if (it->getId() == id) {
       it = authorizedKeys.erase(it);
-      Serial.println("Clave eliminada: " + id);
+      //Serial.println("Clave eliminada: " + id);
       return;
     } else {
       ++it;
