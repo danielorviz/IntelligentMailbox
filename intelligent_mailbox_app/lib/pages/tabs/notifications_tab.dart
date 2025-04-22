@@ -102,19 +102,28 @@ class NotificationsTabState extends State<NotificationsTab>
                         children: [
                           ListTile(
                             title: Row(
-                              spacing: 8,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Icon(_getIconForType(notification.type).icon),
-                                Text(
-                                  notification.title,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
+                                const SizedBox(
+                                  width: 8,
+                                ), // Espaciado entre el icono y el texto
+                                Expanded(
+                                  // Permite que el título se ajuste al espacio disponible
+                                  child: Text(
+                                    notification.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.headlineSmall,
+                                  ),
                                 ),
                               ],
                             ),
                             subtitle: Padding(
-                              padding: EdgeInsets.only(left: 32.0),
+                              padding: const EdgeInsets.only(left: 32.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -123,7 +132,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),
-                                  if (notification.typeInfo != "") ...{
+                                  if (notification.typeInfo != "") ...[
                                     Text(
                                       notification.typeInfo,
                                       style: Theme.of(
@@ -132,7 +141,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  },
+                                  ],
                                 ],
                               ),
                             ),
@@ -172,7 +181,7 @@ class NotificationsTabState extends State<NotificationsTab>
                               ],
                             ),
                           ),
-                          if (!notification.isRead) ...{
+                          if (!notification.isRead) ...[
                             Positioned(
                               top: 8,
                               right: 8,
@@ -188,7 +197,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                 ),
                               ),
                             ),
-                          },
+                          ],
                         ],
                       ),
                     );
