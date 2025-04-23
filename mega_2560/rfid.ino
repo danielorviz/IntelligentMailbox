@@ -12,19 +12,24 @@ void setupRFID() {
 }
 
 String escanearRFID() {
-  //Seleccionamos una tarjeta
   String codigoTarjeta;
 
-  // Enviamos serialemente su UID
+  // Recorremos cada byte del UID
   for (byte i = 0; i < mfrc522.uid.size; i++) {
-    //s+= mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ";
-    codigoTarjeta += String(mfrc522.uid.uidByte[i], HEX);
+    char hexValue[3]; // Espacio para dos dígitos hex y el terminador nulo
+    sprintf(hexValue, "%02X", mfrc522.uid.uidByte[i]); // Formato en hexadecimal con ceros iniciales
+    codigoTarjeta += String(hexValue); // Añadimos el valor al código
   }
-  // Terminamos la lectura de la tarjeta  actual
+
+  // Terminamos la lectura de la tarjeta actual
   mfrc522.PICC_HaltA();
-  codigoTarjeta.toUpperCase();
+  
+  // Aseguramos que todo esté en mayúsculas
+  //codigoTarjeta.toUpperCase();
+
   return codigoTarjeta;
 }
+
 
 void checkPackageToScan(){
   // Revisamos si hay nuevas tarjetas  presentes
@@ -38,10 +43,10 @@ void checkPackageToScan(){
    }
 }
 void checkPacakageCode(String codigo){
-    if(PERMANENT_RFID_KEY == codigo){
-      actionAbrirPuerta=true;
-      Serial3.println("NOTIF_PACKAGE_PERM");
-      return;
-    }
+    //if(PERMANENT_RFID_KEY == codigo){
+    //  actionAbrirPuerta=true;
+    //  Serial3.println("NOTIF_PACKAGE_PERM");
+    //  return;
+    //}
     Serial3.println("PACKAGE_" + codigo);
    }

@@ -17,13 +17,15 @@ void processMessage(char* message) {
     }
 
   }else if (dataFromESP.startsWith("FIRE_READ")) {
-    String pass = readFirebasePass();
+    const char* pass = readFirebasePass();
     String user = readFirebaseUser();
     Serial.println("Enviando datos firebase" );
 
     Serial3.println("USER_"+user);
     delay(100);
-    Serial3.println("PASS_"+pass);
+    const char* passSend = concatenateWithPrefix("PASS_", pass);
+    Serial.println(passSend);
+    Serial3.println(passSend);
     delay(100);
     
   }else if (dataFromESP.startsWith("FIRE_WRITE_U_")) {

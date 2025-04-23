@@ -9,7 +9,7 @@
 
 // Step 2
 void asyncCB(AsyncResult &aResult);
-void printResult(AsyncResult &aResult);
+//void handleAsyncResult(AsyncResult &aResult);
 
 //FIREBASE CONFIGURATION
 DefaultNetwork network;
@@ -41,7 +41,7 @@ int contador = 0;
 String firepass="";
 String fireuser="";
 void setup() {
-  Serial.begin(9600);  // Comunicación con ATmega2560
+  Serial.begin(2400);  // Comunicación con ATmega2560
   delay(2000);
   
   while (!Serial) {}
@@ -49,12 +49,12 @@ void setup() {
 
   // SETUP FIREBASE
   ssl_clientGeneral.setInsecure();
-  ssl_clientGeneral.setBufferSizes(1024, 510);
-  ssl_clientGeneral.setTimeout(150);
+  ssl_clientGeneral.setBufferSizes(1024, 512);
+  //ssl_clientGeneral.setTimeout(150);
 
   ssl_clientKeys.setInsecure();
   ssl_clientKeys.setBufferSizes(1024, 512);
-  ssl_clientKeys.setTimeout(150);
+  //ssl_clientKeys.setTimeout(150);
 
   Serial.print(F("conectando con credenciales: "));
   Serial.print(fireuser);
@@ -91,12 +91,15 @@ void loop() {
   timeClient.update();
   app.loop();
   Database.loop();
-  //Serial.println("LOOOP");
+  if(!conectado){
+  Serial.println(app.ready());
+  }
   if (app.ready()) {
 
     if (!onetimeTest) {
+      Serial.println(F("subscripcion"));
       Database.get(aClientStreamKeys, "mailbox/" + ARDUINO_ID, asyncCB, true, TASK_AUTH_KEYS);
-
+      Serial.println(F("suscrito"));
       onetimeTest = true;
     }
     
@@ -108,6 +111,7 @@ void loop() {
     }
     if (conectado && sendConnectedNotif) {
       sendNotification(NOTIFICACION_CONEXION_CORRECTA, "Buzon conectado", TYPE_MAILBOX);
+      sendWifiStatusSuccess();
       sendConnectedNotif = false;
     }
   }
@@ -115,10 +119,10 @@ void loop() {
 }
 
 void asyncCB(AsyncResult &aResult) {
-  printResult(aResult);
+  handleAsyncResult(aResult);
 }
 
-void printResult(AsyncResult &aResult) {
+void handleAsyncResult(AsyncResult &aResult) {
   if (aResult.isEvent()) {
     Firebase.printf("Event task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.appEvent().message().c_str(), aResult.appEvent().code());
     Serial.println();
@@ -167,6 +171,12 @@ void printResult(AsyncResult &aResult) {
             onInstructionOpen(instructions["open"].as<bool>());
 
           }
+          if(doc["wifiStatus"].is<const char*>()){
+            const char* status = doc["wifiStatus"].as<const char*>();
+            if( strcmp(status, "CHECKING") == 0)
+              sendWifiStatusSuccess();
+
+          }
 
           conectado = true;
           Serial.println(app.getUid().c_str());
@@ -198,6 +208,9 @@ void printResult(AsyncResult &aResult) {
   }
 }
 
+void sendWifiStatusSuccess(){
+  Database.set<string_t>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/wifiStatus/" , string_t("SUCCESS"));
+}
 void onInstructionOpen(bool open) {
   if (open) {
     Serial.println("DOOR_OK");

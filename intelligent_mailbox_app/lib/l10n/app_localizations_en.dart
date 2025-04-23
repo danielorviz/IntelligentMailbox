@@ -383,79 +383,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mailboxes => 'Mailboxes';
 
   @override
-  String get system => 'Use system offset';
+  String get nfcError => 'Error scaning';
 
   @override
-  String get utc12 => 'Honolulu (UTC-12:00)';
+  String get nfcNotDetected => 'No NFC tag detected';
 
   @override
-  String get utc11 => 'Pago Pago (UTC-11:00)';
+  String get scanNfc => 'Scan NFC';
 
   @override
-  String get utc10 => 'Anchorage (UTC-10:00)';
+  String get scanning => 'Scanning ...';
 
   @override
-  String get utc09 => 'Los Angeles (UTC-09:00)';
-
-  @override
-  String get utc08 => 'Vancouver (UTC-08:00)';
-
-  @override
-  String get utc07 => 'Denver (UTC-07:00)';
-
-  @override
-  String get utc06 => 'Mexico City (UTC-06:00)';
-
-  @override
-  String get utc05 => 'New York (UTC-05:00)';
-
-  @override
-  String get utc04 => 'Caracas (UTC-04:00)';
-
-  @override
-  String get utc03 => 'Buenos Aires (UTC-03:00)';
-
-  @override
-  String get utc02 => 'Fernando de Noronha (UTC-02:00)';
-
-  @override
-  String get utc00 => 'Lisbon (UTC+00:00)';
-
-  @override
-  String get utc01 => 'Madrid (UTC+01:00)';
-
-  @override
-  String get utc02_2 => 'Madrid (UTC+02:00, Summer)';
-
-  @override
-  String get utc03_2 => 'Moscow (UTC+03:00)';
-
-  @override
-  String get utc04_2 => 'Dubai (UTC+04:00)';
-
-  @override
-  String get utc05_2 => 'Karachi (UTC+05:00)';
-
-  @override
-  String get utc06_2 => 'Almaty (UTC+06:00)';
-
-  @override
-  String get utc07_2 => 'Bangkok (UTC+07:00)';
-
-  @override
-  String get utc08_2 => 'Shanghai (UTC+08:00)';
-
-  @override
-  String get utc09_2 => 'Tokyo (UTC+09:00)';
-
-  @override
-  String get utc10_2 => 'Sydney (UTC+10:00)';
-
-  @override
-  String get utc11_2 => 'Honiara (UTC+11:00)';
-
-  @override
-  String get utc12_2 => 'Auckland (UTC+12:00)';
+  String get nfcNotAvailable => 'NFC not available';
 
   @override
   String get january => 'January';

@@ -38,20 +38,31 @@ String readFirebaseUser() {
   return readUser;
 }
 
-String readFirebasePass() {
-  String readPassword = "";
+char* readFirebasePass() {
+  static char readPassword[PASSWORD_SIZE + 1]; // +1 para el carácter nulo
+  int index = 0;
+
+  // Leer los caracteres desde EEPROM
   for (int i = 0; i < PASSWORD_SIZE; i++) {
     char c = char(EEPROM.read(USER_SIZE + i));
     if (c != '\0') {
-      readPassword += c;
+      readPassword[index++] = c; // Añade el carácter si no es nulo
     }
   }
-  Serial.println("Contraseña: " + readPassword);
-   if(readPassword == ""){
-    return "break;";
+
+  readPassword[index] = '\0'; // Termina la cadena con un carácter nulo
+
+  Serial.print("Contraseña: ");
+  Serial.println(readPassword);
+
+  // Devuelve una cadena "break;" si la contraseña está vacía
+  if (index == 0) {
+    strcpy(readPassword, "break;");
   }
+
   return readPassword;
 }
+
 
 void clearFirebaseUser(){
   for (int i = 0; i < USER_SIZE; i++) {

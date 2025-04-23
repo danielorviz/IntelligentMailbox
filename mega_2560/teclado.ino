@@ -11,7 +11,7 @@ char teclas[nfilas][ncolumnas] = {
 byte pcolumnas[nfilas] = {22,23,24,25};  // Filas
 byte pfilas[ncolumnas] = {26,27,28,29};
 
-const String notification_open_ko ="OPENKO";
+const char* notification_open_ko ="OPENKO";
 
 //VARIABLES TECLADO
 int TECLADO_START_COUNT = 0;

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
@@ -20,6 +23,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
   late TextEditingController _valueController;
   bool _isPermanent = false;
   bool _isObscured = true;
+  bool _isScanning = false;
 
   @override
   void initState() {
@@ -29,7 +33,64 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
     _isPermanent = widget.keyData?.isKey ?? false;
   }
 
+  Future<void> _scanNFC() async {
+    if (_isScanning) return;
+
+    try {
+      final availability = await FlutterNfcKit.nfcAvailability;
+      if (availability != NFCAvailability.available && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.nfcNotAvailable),
+          ),
+        );
+        return;
+      }
+
+      bool nfcScanned = false;
+      setState(() {
+        _isScanning = true;
+        _valueController.clear();
+      });
+
+      final nfcScanFuture = FlutterNfcKit.poll().then((nfcTag) {
+        nfcScanned = true;
+        setState(() {
+          _valueController.text = nfcTag.id;
+          _isScanning = false;
+        });
+        FlutterNfcKit.finish();
+      });
+
+      await Future.any([
+        nfcScanFuture,
+        Future.delayed(Duration(seconds: 10), () {
+          if (!nfcScanned) {
+            FlutterNfcKit.finish();
+            throw TimeoutException("Tiempo de escaneo NFC excedido");
+          }
+        }),
+      ]);
+    } catch (e) {
+      if(!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e is TimeoutException
+                ? AppLocalizations.of(context)!.nfcNotDetected
+                : AppLocalizations.of(context)!.nfcError,
+          ),
+        ),
+      );
+    } finally {
+      setState(() {
+        _isScanning = false;
+      });
+    }
+  }
+
   void _saveKey() async {
+    if (_isScanning) return;
     if (_formKey.currentState!.validate()) {
       if (widget.keyData != null) {
         final updatedKey = AuthorizedPackage(
@@ -37,7 +98,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
           name: _nameController.text,
           value: _valueController.text,
           id: widget.keyData!.id,
-          received: false
+          received: false,
         );
         await _mailboxService.updateAuthorizedPackage(
           widget.mailboxId,
@@ -49,16 +110,17 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
           name: _nameController.text,
           value: _valueController.text,
           id: "newKey",
-          received: false
+          received: false,
         );
-        try{
-        await _mailboxService.createAuthorizedPackage(widget.mailboxId, newKey);
-        }catch(e){
+        try {
+          await _mailboxService.createAuthorizedPackage(
+            widget.mailboxId,
+            newKey,
+          );
+        } catch (e) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppLocalizations.of(context)!.name),
-              ),
+              SnackBar(content: Text(AppLocalizations.of(context)!.name)),
             );
           }
           return;
@@ -132,6 +194,23 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 8),
+
+              ElevatedButton.icon(
+                onPressed: _scanNFC,
+                icon:
+                    _isScanning
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(color: Colors.white,),
+                        )
+                        : Icon(Icons.nfc, color: Colors.white, size: 20),
+                label: Text(_isScanning?
+                AppLocalizations.of(context)!.scanning
+                : AppLocalizations.of(context)!.scanNfc),
+              ),
+
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

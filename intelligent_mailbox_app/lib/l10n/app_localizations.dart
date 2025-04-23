@@ -839,155 +839,35 @@ abstract class AppLocalizations {
   /// **'Mailboxes'**
   String get mailboxes;
 
-  /// No description provided for @system.
+  /// No description provided for @nfcError.
   ///
   /// In en, this message translates to:
-  /// **'Use system offset'**
-  String get system;
+  /// **'Error scaning'**
+  String get nfcError;
 
-  /// No description provided for @utc12.
+  /// No description provided for @nfcNotDetected.
   ///
   /// In en, this message translates to:
-  /// **'Honolulu (UTC-12:00)'**
-  String get utc12;
+  /// **'No NFC tag detected'**
+  String get nfcNotDetected;
 
-  /// No description provided for @utc11.
+  /// No description provided for @scanNfc.
   ///
   /// In en, this message translates to:
-  /// **'Pago Pago (UTC-11:00)'**
-  String get utc11;
+  /// **'Scan NFC'**
+  String get scanNfc;
 
-  /// No description provided for @utc10.
+  /// No description provided for @scanning.
   ///
   /// In en, this message translates to:
-  /// **'Anchorage (UTC-10:00)'**
-  String get utc10;
+  /// **'Scanning ...'**
+  String get scanning;
 
-  /// No description provided for @utc09.
+  /// No description provided for @nfcNotAvailable.
   ///
   /// In en, this message translates to:
-  /// **'Los Angeles (UTC-09:00)'**
-  String get utc09;
-
-  /// No description provided for @utc08.
-  ///
-  /// In en, this message translates to:
-  /// **'Vancouver (UTC-08:00)'**
-  String get utc08;
-
-  /// No description provided for @utc07.
-  ///
-  /// In en, this message translates to:
-  /// **'Denver (UTC-07:00)'**
-  String get utc07;
-
-  /// No description provided for @utc06.
-  ///
-  /// In en, this message translates to:
-  /// **'Mexico City (UTC-06:00)'**
-  String get utc06;
-
-  /// No description provided for @utc05.
-  ///
-  /// In en, this message translates to:
-  /// **'New York (UTC-05:00)'**
-  String get utc05;
-
-  /// No description provided for @utc04.
-  ///
-  /// In en, this message translates to:
-  /// **'Caracas (UTC-04:00)'**
-  String get utc04;
-
-  /// No description provided for @utc03.
-  ///
-  /// In en, this message translates to:
-  /// **'Buenos Aires (UTC-03:00)'**
-  String get utc03;
-
-  /// No description provided for @utc02.
-  ///
-  /// In en, this message translates to:
-  /// **'Fernando de Noronha (UTC-02:00)'**
-  String get utc02;
-
-  /// No description provided for @utc00.
-  ///
-  /// In en, this message translates to:
-  /// **'Lisbon (UTC+00:00)'**
-  String get utc00;
-
-  /// No description provided for @utc01.
-  ///
-  /// In en, this message translates to:
-  /// **'Madrid (UTC+01:00)'**
-  String get utc01;
-
-  /// No description provided for @utc02_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Madrid (UTC+02:00, Summer)'**
-  String get utc02_2;
-
-  /// No description provided for @utc03_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Moscow (UTC+03:00)'**
-  String get utc03_2;
-
-  /// No description provided for @utc04_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Dubai (UTC+04:00)'**
-  String get utc04_2;
-
-  /// No description provided for @utc05_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Karachi (UTC+05:00)'**
-  String get utc05_2;
-
-  /// No description provided for @utc06_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Almaty (UTC+06:00)'**
-  String get utc06_2;
-
-  /// No description provided for @utc07_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Bangkok (UTC+07:00)'**
-  String get utc07_2;
-
-  /// No description provided for @utc08_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Shanghai (UTC+08:00)'**
-  String get utc08_2;
-
-  /// No description provided for @utc09_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Tokyo (UTC+09:00)'**
-  String get utc09_2;
-
-  /// No description provided for @utc10_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Sydney (UTC+10:00)'**
-  String get utc10_2;
-
-  /// No description provided for @utc11_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Honiara (UTC+11:00)'**
-  String get utc11_2;
-
-  /// No description provided for @utc12_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Auckland (UTC+12:00)'**
-  String get utc12_2;
+  /// **'NFC not available'**
+  String get nfcNotAvailable;
 
   /// No description provided for @january.
   ///

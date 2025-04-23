@@ -47,7 +47,7 @@ int checkPackageAccess(String code) {
   for (int i = 0; i < authorizedPackages.size(); i++) {
     AuthorizedPackage& key = authorizedPackages[i];
 
-    if (key.isPermanent() && key.getValue().equals(code)) {
+    if (!key.isReceived() && key.getValue().equals(code)) {
       //Serial.println("Package valida:" + key.getValue());
       return i;
     } 
@@ -69,7 +69,7 @@ void updatePackage(String id, JsonObject data) {
         package.setInitDate(data["initDate"].as<unsigned long>());
       }
       if (data.containsKey("permanent")) {
-        package.setPermanent(data["permanent"].as<bool>());
+        package.setIsKey(data["permanent"].as<bool>());
       }
       if (data.containsKey("name")) {
         package.setName(data["name"].as<String>());
@@ -100,4 +100,10 @@ String getPackageKeyName(int validPackageIndex){
     return authorizedPackages[validPackageIndex].getName();
   }
   return "";
+}
+bool getPackageIsKey(int validPackageIndex){
+  if(validPackageIndex>= 0 && validPackageIndex < authorizedPackages.size()){
+    return authorizedPackages[validPackageIndex].isKey();
+  }
+  return false;
 }

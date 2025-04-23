@@ -6,6 +6,7 @@
 
 #define NOTIFICACION_INTENTO_ENTREGA_PAQUETE "Paquete no reconocido"
 #define NOTIFICACION_PAQUETE_RECIBIDO "Paquete autorizado recibido"
+#define NOTIFICACION_ACCESO_LLAVE_NFC "Acceso por llave NFC"
 #define NOTIFICACION_CARTA_RECIBIDA "Nueva carta recibida"
 #define NOTIFICACION_BUZON_LLENO "Buzón lleno"
 

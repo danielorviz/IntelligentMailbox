@@ -10,7 +10,8 @@ private:
   String value_;
   unsigned long initDate_;
   unsigned long finishDate_;
-  bool permanent_;
+  bool isKey_;
+  bool isReceived_;
 
 public:
 
@@ -28,7 +29,9 @@ public:
 
   unsigned long getFinishDate();
 
-  bool isPermanent();
+  bool isKey();
+
+  bool isReceived();
 
   bool checkDateInRange(unsigned long date);
 
@@ -38,7 +41,8 @@ public:
   void setValue(const String& value);
   void setInitDate(unsigned long initDate);
   void setFinishDate(unsigned long finishDate);
-  void setPermanent(bool permanent);
+  void setIsKey(bool isKey);
+  void setIsReceived(bool isReceived);
 };
 
 AuthorizedPackage::AuthorizedPackage() {}
@@ -47,7 +51,8 @@ AuthorizedPackage::AuthorizedPackage(String& idSt, JsonObject& json) {
   name_ = json["name"].as<String>();
   value_ = json["value"].as<String>();
   initDate_ = json["initDate"].as<unsigned long>();
-  permanent_ = json["permanent"].as<bool>();
+  isKey_ = json["isKey"].as<bool>();
+  isReceived_ = json["received"].as<bool>();
   finishDate_ = json["finishDate"].as<unsigned long>();
 }
 
@@ -71,8 +76,12 @@ unsigned long AuthorizedPackage::getInitDate() {
 unsigned long AuthorizedPackage::getFinishDate() {
   return (finishDate_);
 }
-bool AuthorizedPackage::isPermanent() {
-  return (permanent_);
+bool AuthorizedPackage::isKey() {
+  return (isKey_);
+}
+
+bool AuthorizedPackage::isReceived() {
+  return (isReceived_);
 }
 
 void AuthorizedPackage::setName(const String& name) {
@@ -91,8 +100,12 @@ void AuthorizedPackage::setFinishDate(unsigned long finishDate) {
   finishDate_ = finishDate;
 }
 
-void AuthorizedPackage::setPermanent(bool permanent) {
-  permanent_ = permanent;
+void AuthorizedPackage::setIsKey(bool isKey) {
+  isKey_ = isKey;
+}
+
+void AuthorizedPackage::setIsReceived(bool isReceived) {
+  isReceived_ = isReceived;
 }
 
 bool AuthorizedPackage::checkDateInRange(unsigned long date) {
