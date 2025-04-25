@@ -104,7 +104,7 @@ void loop() {
     }
     
     if (resetOpen) {
-      Serial.print("resetResult: ");
+      Serial.println(F("resetResult: "));
       bool result = Database.set<bool>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/instructions/open", false);
       Serial.println(result);
       resetOpen = !result;

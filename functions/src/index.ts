@@ -14,7 +14,7 @@ import * as logger from "firebase-functions/logger";
 // https://firebase.google.com/docs/functions/typescript
 
 //import * as functions from 'firebase-functions/v2';
-const {onValueCreated} = require("firebase-functions/v2/database");
+const {onValueCreated, onValueWritten} = require("firebase-functions/v2/database");
 
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -48,4 +48,14 @@ export const sendNotification = onValueCreated('/notifications/{idbuzon}/{idnoti
     } catch (error) {
       logger.error(`Error al enviar la notificación:`, error);
     }
+  });
+  
+  export const updateOpenDoor = onValueWritten('/mailbox/{idbuzon}/instructions/open', async (event: any) => {
+    const idbuzon = event.params.idbuzon;
+    
+	await new Promise((resolve) => setTimeout(resolve, 5000));
+	
+	await admin.database().ref('mailbox').child(idbuzon).child('instructions/open').set(false);
+	
+   
   });

@@ -8,6 +8,7 @@ import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
+import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
 import 'package:intelligent_mailbox_app/widgets/notifications_statistics.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
@@ -29,6 +30,7 @@ class HomeTabState extends State<HomeTab> {
   String lastPackageScanned = "";
   String lastCheckDate = "";
   bool checkingConnection = false;
+  bool isOpening = false;
 
   Future<void> checkConnection(String mailboxId) async {
     if (checkingConnection) return;
@@ -37,6 +39,7 @@ class HomeTabState extends State<HomeTab> {
     });
     try {
       await _mailboxService.checkMailboxConnection(mailboxId);
+      
     } finally {
       setState(() {
         checkingConnection = false;
@@ -44,11 +47,26 @@ class HomeTabState extends State<HomeTab> {
     }
   }
 
-  void openMailbox() {
-    // Lógica para abrir el buzón
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Buzón abierto")));
+  Future<void> openMailbox(String mailboxId) async {
+    setState(() {
+      isOpening = true;
+    });
+    try {
+      MailboxService().openDoor(mailboxId);
+      await Future.delayed(Duration(seconds: 5));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.instructionSent),
+          ),
+        );
+      }
+    } finally {
+      setState(() {
+        isOpening = false;
+      });
+    }
   }
 
   @override
@@ -122,7 +140,7 @@ class HomeTabState extends State<HomeTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(Icons.markunread_mailbox, size: 25),
-                          SizedBox(width: 16), // Espaciado entre Icon y Column
+                          SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,9 +151,7 @@ class HomeTabState extends State<HomeTab> {
                                       Theme.of(context).textTheme.headlineSmall,
                                   softWrap: true,
                                 ),
-                                SizedBox(
-                                  height: 8,
-                                ), // Espaciado entre elementos
+                                SizedBox(height: 8),
                                 Row(
                                   children: [
                                     if (checkingConnection) ...{
@@ -291,6 +307,104 @@ class HomeTabState extends State<HomeTab> {
                                       ],
                                     );
                                   },
+                                ),
+                                SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.door_front_door_outlined,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  ' ${AppLocalizations.of(context)!.door}: ',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.labelLarge,
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  mailbox.getDoorStatusBool()
+                                                      ? AppLocalizations.of(
+                                                        context,
+                                                      )!.opened
+                                                      : AppLocalizations.of(
+                                                        context,
+                                                      )!.closed,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium!.copyWith(
+                                                color:
+                                                    mailbox.getDoorStatusBool()
+                                                        ? Colors.red
+                                                        : Colors.green,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        softWrap: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    ElevatedButton.icon(
+                                      onPressed: () async {
+                                        if (isOpening || mailbox.getDoorStatusBool()) return;
+                                        final bool? confirm =
+                                            await showDialog<bool>(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return ConfirmationDialog(
+                                                  title:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.openDoor,
+                                                  content:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.confirmOpenDoor,
+                                                  cancelText:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.cancel,
+                                                  confirmText:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.confirm,
+                                                );
+                                              },
+                                            );
+
+                                        if (confirm == true) {
+                                          openMailbox(mailbox.id);
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.lock_open,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                      label: Text(
+                                        AppLocalizations.of(context)!.openDoor,
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

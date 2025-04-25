@@ -38,6 +38,7 @@ void checkCloseDoor(){
 void cerrarPuerta() {
   PUERTA_ABIERTA = 0;
   servo1.write(50);
+  Serial3.println("DOOR_CLOSED");
 }
 
 int isSensorPuertaColisionado() {

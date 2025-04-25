@@ -398,6 +398,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nfcNotAvailable => 'NFC no está activo';
 
   @override
+  String get door => 'Puerta';
+
+  @override
+  String get openDoor => 'Abrir puerta';
+
+  @override
+  String get opened => 'Abierta';
+
+  @override
+  String get closed => 'Cerrada';
+
+  @override
+  String get instructionSent => 'Instrucción enviada';
+
+  @override
+  String get confirmOpenDoor => '¿Seguro que quiere abrir la puerta?';
+
+  @override
   String get january => 'Enero';
 
   @override

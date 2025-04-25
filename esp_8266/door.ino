@@ -104,3 +104,12 @@ String getAuthKeyId(int validKeyIndex){
   }
   return "";
 }
+
+void updateDoorStatus(int status){
+    Serial.print(F("doorstatus: "));
+    Serial.println(status);
+    bool result = Database.set<int>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/doorStatus", status);
+    Serial.println(result);
+    resetOpen = !result;
+    
+}

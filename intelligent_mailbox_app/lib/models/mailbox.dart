@@ -12,6 +12,7 @@ class Mailbox {
   List<AuthorizedPackage> authorizedPackages = [];
   final String wifiStatus;
   final int lastWifiStatusCheck;
+  final int doorStatus;
 
   Mailbox({
     required this.id,
@@ -21,6 +22,8 @@ class Mailbox {
     this.authorizedPackages = const [],
     this.wifiStatus = Constants.connectionFailed,
     this.lastWifiStatusCheck = 0,
+    this.doorStatus = Constants.doorClosed,
+
   });
 
   factory Mailbox.fromMap(Map<String, dynamic> data, String documentId) {
@@ -62,6 +65,7 @@ class Mailbox {
       authorizedPackages: packages,
       wifiStatus: data['wifiStatus'] ?? Constants.connectionFailed,
       lastWifiStatusCheck: data['lastWifiStatusCheck'] ?? 0,
+      doorStatus: data['doorStatus'] ?? Constants.doorClosed,
     );
   }
 
@@ -79,5 +83,9 @@ class Mailbox {
     return DateTimeUtils.getDateTimeFromSecondsAndOffset(
       lastDate,
     );
+  }
+
+  bool getDoorStatusBool() {
+    return doorStatus == Constants.doorOpened;
   }
 }

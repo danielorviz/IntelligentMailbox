@@ -869,6 +869,42 @@ abstract class AppLocalizations {
   /// **'NFC not available'**
   String get nfcNotAvailable;
 
+  /// No description provided for @door.
+  ///
+  /// In en, this message translates to:
+  /// **'Door'**
+  String get door;
+
+  /// No description provided for @openDoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Open door'**
+  String get openDoor;
+
+  /// No description provided for @opened.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened'**
+  String get opened;
+
+  /// No description provided for @closed.
+  ///
+  /// In en, this message translates to:
+  /// **'closed'**
+  String get closed;
+
+  /// No description provided for @instructionSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Instruction sent'**
+  String get instructionSent;
+
+  /// No description provided for @confirmOpenDoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to open the door?'**
+  String get confirmOpenDoor;
+
   /// No description provided for @january.
   ///
   /// In en, this message translates to:

@@ -142,6 +142,12 @@
   "scanning": "Scanning ...",
   "nfcNotAvailable":"NFC not available",
 
+  "door": "Door",
+  "openDoor": "Open door",
+  "opened":"Opened",
+  "closed": "closed",
+  "instructionSent": "Instruction sent",
+  "confirmOpenDoor": "Are you sure you want to open the door?",
   
   "january": "January",
   "february": "February",

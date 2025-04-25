@@ -42,7 +42,13 @@ void processInstruction(char* message) {
   } else {
     Serial.print(F("Validando instruccion: "));
     Serial.println(instructions);
-    if (instructions.startsWith("DOOR_")) {
+    if (instructions.startsWith("DOOR_OPENED")) {
+      updateDoorStatus(1);
+    }
+    else if(instructions.startsWith("DOOR_CLOSED")){
+      updateDoorStatus(0);
+    }
+    else if (instructions.startsWith("DOOR_")) {
       String key = instructions.substring(5);
       key.trim();
       int validKeyIndex = checkKeyboardAccess(key);

@@ -160,6 +160,17 @@ class MailboxService {
     }
   }
 
+  Future<void> openDoor(String mailboxId) async {
+    try {
+      await FirebaseDatabase.instance
+          .ref("mailbox/$mailboxId/instructions/open")
+          .set(true);
+    } catch (error) {
+      print('Failed to open door: $error');
+      rethrow;
+    }
+  }
+
   Future<void> createAuthorizedKey(
     String mailboxId,
     AuthorizedKey authorizedKey,

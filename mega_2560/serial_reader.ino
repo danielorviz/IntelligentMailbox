@@ -11,9 +11,11 @@ void processMessage(char* message) {
     String action = dataFromESP.substring(5);
     action.trim();
     actionAbrirPuerta = (action == "OK");
-
+    
     if(!actionAbrirPuerta){
       keySoundWrong();
+    }else{
+      Serial3.println("DOOR_OPENED");
     }
 
   }else if (dataFromESP.startsWith("FIRE_READ")) {

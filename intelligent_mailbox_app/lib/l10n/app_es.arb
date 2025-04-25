@@ -152,6 +152,13 @@
   "scanning": "Escaneando ...",
   "nfcNotAvailable":"NFC no está activo",
   
+  "door": "Puerta",
+  "openDoor": "Abrir puerta",
+  "opened":"Abierta",
+  "closed": "Cerrada",
+  "instructionSent": "Instrucción enviada",
+  "confirmOpenDoor": "¿Seguro que quiere abrir la puerta?",
+
   "january": "Enero",
   "february": "Febrero",
   "march": "Marzo",
