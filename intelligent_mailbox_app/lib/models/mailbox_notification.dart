@@ -33,4 +33,11 @@ class MailboxNotification {
   DateTime getTimeWithOffset() {
     return DateTimeUtils.getDateTimeFromSecondsAndOffset(time);
   }
+
+  String getTypeInfoName(){
+    if(typeInfo.contains('.;.')){
+      return typeInfo.split('.;.')[1];
+    }
+    return typeInfo;
+  }
 }

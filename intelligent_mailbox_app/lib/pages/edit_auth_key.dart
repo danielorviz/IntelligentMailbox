@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
@@ -8,11 +9,7 @@ class EditAuthKeyScreen extends StatefulWidget {
   final AuthorizedKey? keyData;
   final String mailboxId;
 
-  const EditAuthKeyScreen({
-    super.key,
-    this.keyData,
-    required this.mailboxId,
-  });
+  const EditAuthKeyScreen({super.key, this.keyData, required this.mailboxId});
 
   @override
   State<EditAuthKeyScreen> createState() => _EditKeyScreenState();
@@ -209,6 +206,11 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                   labelText: AppLocalizations.of(context)!.keyName,
                   border: OutlineInputBorder(),
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(
+                    RegExp(r'[.;]'),
+                  ),
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!.enterName;
@@ -294,9 +296,8 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                             const SizedBox(width: 8),
                             Text(
                               (" ${DateTimeUtils.formatDate(_initDate!.toUtc())}   ${DateTimeUtils.formatTime(_initDate!.toUtc())}"),
-                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge!
+                                  .copyWith(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -338,9 +339,8 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                             const SizedBox(width: 8),
                             Text(
                               (" ${DateTimeUtils.formatDate(_finishDate!.toUtc())}   ${DateTimeUtils.formatTime(_finishDate!.toUtc())}"),
-                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge!
+                                  .copyWith(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),

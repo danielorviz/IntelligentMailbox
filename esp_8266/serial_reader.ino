@@ -48,7 +48,7 @@ void processInstruction(char* message) {
       int validKeyIndex = checkKeyboardAccess(key);
       if (validKeyIndex >= 0) {
         Serial.println(F("DOOR_OK"));
-        sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con la clave "), TYPE_KEY, getAuthKeyName(validKeyIndex));
+        sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con la clave "), TYPE_KEY, getAuthKeyId(validKeyIndex));
       } else {
         Serial.println(F("DOOR_KO"));
         sendNotificationDoorOpenKO(TYPE_KEY);
@@ -72,9 +72,9 @@ void processInstruction(char* message) {
       if (validPackageIndex >= 0) {
         Serial.println(F("DOOR_OK"));
         if(getPackageIsKey(validPackageIndex)){
-          sendNotification(NOTIFICACION_ACCESO_LLAVE_NFC, F("Puerta abierta con llave NFC"), TYPE_PACKAGE, getPackageKeyName(validPackageIndex));
+          sendNotification(NOTIFICACION_ACCESO_LLAVE_NFC, F("Puerta abierta con llave NFC"), TYPE_PACKAGE, getPackageKeyId(validPackageIndex));
         }else{
-          sendNotification(NOTIFICACION_PAQUETE_RECIBIDO, F("Puerta abierta con el paquete "), TYPE_PACKAGE, getPackageKeyName(validPackageIndex));
+          sendNotification(NOTIFICACION_PAQUETE_RECIBIDO, F("Puerta abierta con el paquete "), TYPE_PACKAGE, getPackageKeyId(validPackageIndex));
         }
       } else {
         Serial.println(F("DOOR_KO"));

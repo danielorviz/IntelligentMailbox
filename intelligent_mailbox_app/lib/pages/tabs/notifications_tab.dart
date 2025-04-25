@@ -134,7 +134,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                   ),
                                   if (notification.typeInfo != "") ...[
                                     Text(
-                                      notification.typeInfo,
+                                      notification.getTypeInfoName(),
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodyMedium!.copyWith(

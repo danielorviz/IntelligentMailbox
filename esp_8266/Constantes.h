@@ -14,6 +14,7 @@
 #define TYPE_PACKAGE 1
 #define TYPE_LETTER  2
 #define TYPE_MAILBOX 3
+#define TYPE_SEPARATOR ".;."
 
 String ARDUINO_ID ="ardboxmail-7854";
 String MAILBOX_PATH="/mailbox/"+ARDUINO_ID;

@@ -69,14 +69,12 @@ class HomeTabState extends State<HomeTab> {
             child: Text(AppLocalizations.of(context)!.noMailboxSelected),
           );
         }
-        final userUid = Provider.of<UserProvider>(context, listen: false).user!.uid;
+        final userUid =
+            Provider.of<UserProvider>(context, listen: false).user!.uid;
         Provider.of<PreferencesProvider>(
           context,
           listen: false,
-        ).loadPreferences(
-          userUid,
-          mailbox.id,
-        );
+        ).loadPreferences(userUid, mailbox.id);
 
         bool wifiStatus = mailbox.getWifiStatusBool();
 
@@ -111,8 +109,9 @@ class HomeTabState extends State<HomeTab> {
                                   () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder:
-                                          (context) =>
-                                              MailboxSettingsScreen(mailbox: mailbox),
+                                          (context) => MailboxSettingsScreen(
+                                            mailbox: mailbox,
+                                          ),
                                     ),
                                   ),
                             ),
@@ -121,115 +120,92 @@ class HomeTabState extends State<HomeTab> {
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 16,
                         children: [
                           Icon(Icons.markunread_mailbox, size: 25),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.mailboxStatus,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              Row(
-                                spacing: 8,
-                                children: [
-                                  if (checkingConnection) ...{
-                                    const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.checkingConnection,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(color: Colors.orange),
-                                    ),
-                                  } else ...{
-                                    Icon(
-                                      wifiStatus ? Icons.wifi : Icons.wifi_off,
-                                      color:
-                                          wifiStatus
-                                              ? Colors.green
-                                              : Colors.red,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      wifiStatus
-                                          ? AppLocalizations.of(
+                          SizedBox(width: 16), // Espaciado entre Icon y Column
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.mailboxStatus,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                  softWrap: true,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ), // Espaciado entre elementos
+                                Row(
+                                  children: [
+                                    if (checkingConnection) ...{
+                                      const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          AppLocalizations.of(
                                             context,
-                                          )!.connected
-                                          : AppLocalizations.of(
-                                            context,
-                                          )!.disconnected,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium!.copyWith(
+                                          )!.checkingConnection,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(color: Colors.orange),
+                                          softWrap: true,
+                                        ),
+                                      ),
+                                    } else ...{
+                                      Icon(
+                                        wifiStatus
+                                            ? Icons.wifi
+                                            : Icons.wifi_off,
                                         color:
                                             wifiStatus
                                                 ? Colors.green
                                                 : Colors.red,
-                                      ),
-                                    ),
-                                  },
-                                ],
-                              ),
-                              Row(
-                                spacing: 8,
-                                children: [
-                                  Icon(Icons.access_time, size: 20),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.lastCheck,
-                                          style:
-                                              Theme.of(
-                                                context,
-                                              ).textTheme.labelLarge,
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              checkingConnection
-                                                  ? AppLocalizations.of(
-                                                    context,
-                                                  )!.checking
-                                                  : '${DateTimeUtils.formatDate(mailbox.getLastWifiStatusCheckWithOffset())} ${DateTimeUtils.formatTime(mailbox.getLastWifiStatusCheckWithOffset())}',
-                                          style:
-                                              Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Consumer<PreferencesProvider>(
-                                builder: (context, preferences, child) {
-                                  return Row(
-                                    spacing: 8,
-                                    children: [
-                                      Icon(
-                                        preferences.isNotificationEnabled(userUid,mailbox.id)
-                                            ? Icons.notifications_active
-                                            : Icons.notifications_off,
                                         size: 20,
                                       ),
-                                      Text.rich(
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          wifiStatus
+                                              ? AppLocalizations.of(
+                                                context,
+                                              )!.connected
+                                              : AppLocalizations.of(
+                                                context,
+                                              )!.disconnected,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium!.copyWith(
+                                            color:
+                                                wifiStatus
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                          ),
+                                          softWrap: true,
+                                        ),
+                                      ),
+                                    },
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Icon(Icons.access_time, size: 20),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text.rich(
                                         TextSpan(
                                           children: [
                                             TextSpan(
                                               text:
-                                                  '${AppLocalizations.of(context)!.notifications}: ',
+                                                  AppLocalizations.of(
+                                                    context,
+                                                  )!.lastCheck,
                                               style:
                                                   Theme.of(
                                                     context,
@@ -237,32 +213,87 @@ class HomeTabState extends State<HomeTab> {
                                             ),
                                             TextSpan(
                                               text:
-                                                  preferences
-                                                          .isNotificationEnabled(userUid,mailbox.id)
+                                                  checkingConnection
                                                       ? AppLocalizations.of(
                                                         context,
-                                                      )!.active
-                                                      : AppLocalizations.of(
-                                                        context,
-                                                      )!.inactive,
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium?.copyWith(
-                                                color:
-                                                    preferences
-                                                            .isNotificationEnabled(userUid,mailbox.id)
-                                                        ? Colors.green
-                                                        : Colors.red,
-                                              ),
+                                                      )!.checking
+                                                      : '${DateTimeUtils.formatDate(mailbox.getLastWifiStatusCheckWithOffset())} ${DateTimeUtils.formatTime(mailbox.getLastWifiStatusCheckWithOffset())}',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium,
                                             ),
                                           ],
                                         ),
+                                        softWrap: true,
                                       ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Consumer<PreferencesProvider>(
+                                  builder: (context, preferences, child) {
+                                    return Row(
+                                      children: [
+                                        Icon(
+                                          preferences.isNotificationEnabled(
+                                                userUid,
+                                                mailbox.id,
+                                              )
+                                              ? Icons.notifications_active
+                                              : Icons.notifications_off,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      '${AppLocalizations.of(context)!.notifications}: ',
+                                                  style:
+                                                      Theme.of(
+                                                        context,
+                                                      ).textTheme.labelLarge,
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      preferences
+                                                              .isNotificationEnabled(
+                                                                userUid,
+                                                                mailbox.id,
+                                                              )
+                                                          ? AppLocalizations.of(
+                                                            context,
+                                                          )!.active
+                                                          : AppLocalizations.of(
+                                                            context,
+                                                          )!.inactive,
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium?.copyWith(
+                                                    color:
+                                                        preferences
+                                                                .isNotificationEnabled(
+                                                                  userUid,
+                                                                  mailbox.id,
+                                                                )
+                                                            ? Colors.green
+                                                            : Colors.red,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            softWrap: true,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -276,78 +307,85 @@ class HomeTabState extends State<HomeTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    spacing: 16,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 16,
                         children: [
                           Icon(Icons.dialpad, size: 25),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 8,
-                            children: [
-                              Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.lastKeyboardAccess,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              ..._buildLastAccess(
-                                mailbox.id,
-                                AppLocalizations.of(context)!.keyName,
-                                MailboxNotification.typeKey,
-                              ),
-                            ],
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.lastKeyboardAccess,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                  softWrap: true,
+                                ),
+                                ..._buildLastAccess(
+                                  mailbox.id,
+                                  AppLocalizations.of(context)!.keyName,
+                                  MailboxNotification.typeKey,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                      SizedBox(height: 16), // Espaciado entre filas
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 16,
                         children: [
                           Icon(Icons.nfc, size: 25),
-                          Column(
-                            spacing: 8,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.lastScanAccess,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              ..._buildLastAccess(
-                                mailbox.id,
-                                AppLocalizations.of(context)!.packageCode,
-                                MailboxNotification.typePackage,
-                              ),
-                            ],
+                          SizedBox(width: 16), // Espaciado entre Icon y Column
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.lastScanAccess,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                  softWrap: true,
+                                ),
+                                ..._buildLastAccess(
+                                  mailbox.id,
+                                  AppLocalizations.of(context)!.packageCode,
+                                  MailboxNotification.typePackage,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                      SizedBox(height: 16),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 16,
                         children: [
                           Icon(Icons.notifications, size: 25),
-                          Column(
-                            spacing: 8,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.lastNotificationReceived,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              ..._buildLastAccess(
-                                mailbox.id,
-                                AppLocalizations.of(context)!.info,
-                                null,
-                              ),
-                            ],
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.lastNotificationReceived,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                  softWrap: true,
+                                ),
+                                ..._buildLastAccess(
+                                  mailbox.id,
+                                  AppLocalizations.of(context)!.info,
+                                  null,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -355,6 +393,7 @@ class HomeTabState extends State<HomeTab> {
                   ),
                 ),
               ),
+
               NotificationsStatistics(),
             ],
           ),
@@ -363,11 +402,7 @@ class HomeTabState extends State<HomeTab> {
     );
   }
 
-  List<Widget> _buildLastAccess(
-    String mailboxId,
-    String infoLabel,
-    int? type,
-  ) {
+  List<Widget> _buildLastAccess(String mailboxId, String infoLabel, int? type) {
     return [
       StreamBuilder<MailboxNotification?>(
         stream: _notificationsService.getLastNotificationByType(
@@ -383,6 +418,7 @@ class HomeTabState extends State<HomeTab> {
             return Text(
               AppLocalizations.of(context)!.noRecentInfo,
               style: Theme.of(context).textTheme.bodyMedium,
+              softWrap: true,
             );
           }
 
@@ -392,6 +428,7 @@ class HomeTabState extends State<HomeTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text.rich(
+                softWrap: true,
                 TextSpan(
                   children: [
                     TextSpan(
@@ -401,7 +438,7 @@ class HomeTabState extends State<HomeTab> {
                     TextSpan(
                       text:
                           type != null
-                              ? notification.typeInfo
+                              ? notification.getTypeInfoName()
                               : notification.title,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),

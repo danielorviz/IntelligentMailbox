@@ -92,17 +92,16 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Campo para el nombre del buzón
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Nombre del Buzón',
                   border: OutlineInputBorder(),
                 ),
+                maxLength: 10,
               ),
               const SizedBox(height: 16),
 
-              // Activar/desactivar notificaciones
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -122,7 +121,6 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Botón para guardar los cambios
               ElevatedButton(
                 onPressed: _saveSettings,
                 style: ElevatedButton.styleFrom(

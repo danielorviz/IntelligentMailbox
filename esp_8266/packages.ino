@@ -95,9 +95,12 @@ void removePackageById(String id) {
   }
 }
 
-String getPackageKeyName(int validPackageIndex){
+String getPackageKeyId(int validPackageIndex){
   if(validPackageIndex>= 0 && validPackageIndex < authorizedPackages.size()){
-    return authorizedPackages[validPackageIndex].getName();
+    String result = authorizedPackages[validPackageIndex].getId();
+    result.concat(TYPE_SEPARATOR);
+    result.concat(authorizedPackages[validPackageIndex].getName());
+    return result;
   }
   return "";
 }

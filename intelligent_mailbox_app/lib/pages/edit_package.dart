@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
@@ -161,6 +162,11 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
                   labelText: AppLocalizations.of(context)!.packageName,
                   border: OutlineInputBorder(),
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(
+                    RegExp(r'[.;]'),
+                  ),
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!.enterPackageCode;

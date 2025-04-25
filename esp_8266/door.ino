@@ -95,9 +95,12 @@ void removeKeyById(String id) {
     }
   }
 }
-String getAuthKeyName(int validKeyIndex){
+String getAuthKeyId(int validKeyIndex){
   if(validKeyIndex>= 0 && validKeyIndex < authorizedKeys.size()){
-    return authorizedKeys[validKeyIndex].getName();
+    String result = authorizedKeys[validKeyIndex].getId();
+    result.concat(TYPE_SEPARATOR);
+    result.concat(authorizedKeys[validKeyIndex].getName());
+    return result;
   }
   return "";
 }
