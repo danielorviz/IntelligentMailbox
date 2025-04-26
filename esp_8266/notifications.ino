@@ -26,5 +26,5 @@ void sendNotification(String titulo,String mensaje, int type, String typeInfo){
 }
 
 void sendNotificationDoorOpenKO(int type){
-  sendNotification(NOTIFICACION_APERTURA_INCORRECTA, F("Se ha intentado abrir la puerta"),type, "");
+  sendNotification(NOTIFICACION_APERTURA_INCORRECTA, F("mailboxOpenFailedMessage"),type, "");
 }

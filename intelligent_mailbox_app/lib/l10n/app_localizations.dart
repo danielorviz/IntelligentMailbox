@@ -1036,6 +1036,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications Statistics'**
   String get notificationsStatistics;
+
+  /// Notificación de nuevo correo
+  ///
+  /// In en, this message translates to:
+  /// **'{title, select, packageNotRecognize{Package not recognized} packageRecived{Authorized package received} keyNFCAccess{NFC key access} newLetter{New letter received} mailboxFull{Mailbox full} mailboxOpened{Mailbox opened} mailboxOpenFailed{Mailbox opening attempt failed} mailboxConnected{Mailbox connected} doorOpened{The door is open} other{Notification}}'**
+  String notificationTitle(String title);
+
+  /// Notificación de nuevo correo
+  ///
+  /// In en, this message translates to:
+  /// **'{message, select, packageNotRecognizeMessage{An attempt was made to open the door} packageRecivedMessage{Door opened with the package} keyNFCAccessMessage{Door opened with NFC key} newLetterMessage{You have received new mail} mailboxFullMessage{The mailbox might be full or mail has gotten stuck} mailboxOpenedMessage{Door opened with the key} mailboxOpenFailedMessage{An attempt was made to open the door} mailboxConnectedMessage{Mailbox connected to Wi-Fi network} doorOpened{The door is open} other{Notification}}'**
+  String notificationMessage(String message);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

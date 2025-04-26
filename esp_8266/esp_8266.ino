@@ -110,7 +110,7 @@ void loop() {
       resetOpen = !result;
     }
     if (conectado && sendConnectedNotif) {
-      sendNotification(NOTIFICACION_CONEXION_CORRECTA, "Buzon conectado", TYPE_MAILBOX);
+      sendNotification(NOTIFICACION_CONEXION_CORRECTA, "mailboxConnectedMessage", TYPE_MAILBOX);
       sendWifiStatusSuccess();
       sendConnectedNotif = false;
     }

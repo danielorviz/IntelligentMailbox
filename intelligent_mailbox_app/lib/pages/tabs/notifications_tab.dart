@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
@@ -105,13 +106,12 @@ class NotificationsTabState extends State<NotificationsTab>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Icon(_getIconForType(notification.type).icon),
-                                const SizedBox(
-                                  width: 8,
-                                ), // Espaciado entre el icono y el texto
+                                const SizedBox(width: 8),
                                 Expanded(
-                                  // Permite que el título se ajuste al espacio disponible
                                   child: Text(
-                                    notification.title,
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.notificationTitle(notification.title),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style:
@@ -128,7 +128,9 @@ class NotificationsTabState extends State<NotificationsTab>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    notification.message,
+                                     AppLocalizations.of(
+                                      context,
+                                    )!.notificationMessage(notification.message),
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),

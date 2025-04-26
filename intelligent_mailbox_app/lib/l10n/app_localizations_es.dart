@@ -480,4 +480,44 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notificationsStatistics => 'Estadísticas de Notificaciones';
+
+  @override
+  String notificationTitle(String title) {
+    String _temp0 = intl.Intl.selectLogic(
+      title,
+      {
+        'packageNotRecognize': 'Paquete no reconocido',
+        'packageRecived': 'Paquete autorizado recibido',
+        'keyNFCAccess': 'Acceso por llave NFC',
+        'newLetter': 'Nueva carta recibida',
+        'mailboxFull': 'Buzón lleno',
+        'mailboxOpened': 'Apertura del buzón',
+        'mailboxOpenFailed': 'Intento apertura buzón fallido',
+        'mailboxConnected': 'Buzón conectado',
+        'doorOpened': 'La puerta está abierta',
+        'other': 'Notification',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notificationMessage(String message) {
+    String _temp0 = intl.Intl.selectLogic(
+      message,
+      {
+        'packageNotRecognizeMessage': 'Se ha intentado abrir la puerta',
+        'packageRecivedMessage': 'Puerta abierta con el paquete',
+        'keyNFCAccessMessage': 'Puerta abierta con llave NFC',
+        'newLetterMessage': 'Ha recibido un nuevo correo',
+        'mailboxFullMessage': 'Es posible que el buzón esté lleno o se haya atascado un correo',
+        'mailboxOpenedMessage': 'Puerta abierta con la clave',
+        'mailboxOpenFailedMessage': 'Se ha intentado abrir la puerta',
+        'mailboxConnectedMessage': 'Buzón conectado a red wifi',
+        'doorOpened': 'La puerta está abierta',
+        'other': 'Notification',
+      },
+    );
+    return '$_temp0';
+  }
 }

@@ -54,7 +54,7 @@ void processInstruction(char* message) {
       int validKeyIndex = checkKeyboardAccess(key);
       if (validKeyIndex >= 0) {
         Serial.println(F("DOOR_OK"));
-        sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con la clave "), TYPE_KEY, getAuthKeyId(validKeyIndex));
+        sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("mailboxOpenedMessage"), TYPE_KEY, getAuthKeyId(validKeyIndex));
       } else {
         Serial.println(F("DOOR_KO"));
         sendNotificationDoorOpenKO(TYPE_KEY);
@@ -67,9 +67,9 @@ void processInstruction(char* message) {
       } else if (notification == "PACKAGE_PERM") {
         sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con su llave de acceso"), TYPE_PACKAGE);
       } else if (notification == "LETTER") {
-        sendNotification(NOTIFICACION_CARTA_RECIBIDA, F("Ha recibido un nuevo correo"), TYPE_LETTER);
+        sendNotification(NOTIFICACION_CARTA_RECIBIDA, F("newLetterMessage"), TYPE_LETTER);
       } else if (notification == "FULL") {
-        sendNotification(NOTIFICACION_BUZON_LLENO, F("Es posible que el buzón esté lleno o se haya atascado un correo"), TYPE_MAILBOX);
+        sendNotification(NOTIFICACION_BUZON_LLENO, F("mailboxFullMessage"), TYPE_MAILBOX);
       }
     } else if (instructions.startsWith("PACKAGE_")) {
       String package = instructions.substring(8);
@@ -78,9 +78,9 @@ void processInstruction(char* message) {
       if (validPackageIndex >= 0) {
         Serial.println(F("DOOR_OK"));
         if(getPackageIsKey(validPackageIndex)){
-          sendNotification(NOTIFICACION_ACCESO_LLAVE_NFC, F("Puerta abierta con llave NFC"), TYPE_PACKAGE, getPackageKeyId(validPackageIndex));
+          sendNotification(NOTIFICACION_ACCESO_LLAVE_NFC, F("keyNFCAccessMessage"), TYPE_PACKAGE, getPackageKeyId(validPackageIndex));
         }else{
-          sendNotification(NOTIFICACION_PAQUETE_RECIBIDO, F("Puerta abierta con el paquete "), TYPE_PACKAGE, getPackageKeyId(validPackageIndex));
+          sendNotification(NOTIFICACION_PAQUETE_RECIBIDO, F("packageRecivedMessage"), TYPE_PACKAGE, getPackageKeyId(validPackageIndex));
         }
       } else {
         Serial.println(F("DOOR_KO"));

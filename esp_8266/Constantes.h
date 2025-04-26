@@ -1,14 +1,14 @@
 
-#define NOTIFICACION_APERTURA_CORRECTA "Apertura del buzon"
-#define NOTIFICACION_APERTURA_INCORRECTA "Intento apertura buzon fallido"
-#define NOTIFICACION_CONEXION_CORRECTA "Buzón conectado a red WiFi"
-#define NOTIFICACION_PUERTA_ABIERTA "La puerta está abierta"
+#define NOTIFICACION_APERTURA_CORRECTA "mailboxOpened"
+#define NOTIFICACION_APERTURA_INCORRECTA "mailboxOpenFailed"
+#define NOTIFICACION_CONEXION_CORRECTA "mailboxConnected"
+#define NOTIFICACION_PUERTA_ABIERTA "doorOpened"
 
-#define NOTIFICACION_INTENTO_ENTREGA_PAQUETE "Paquete no reconocido"
-#define NOTIFICACION_PAQUETE_RECIBIDO "Paquete autorizado recibido"
-#define NOTIFICACION_ACCESO_LLAVE_NFC "Acceso por llave NFC"
-#define NOTIFICACION_CARTA_RECIBIDA "Nueva carta recibida"
-#define NOTIFICACION_BUZON_LLENO "Buzón lleno"
+#define NOTIFICACION_INTENTO_ENTREGA_PAQUETE "packageNotRecognize"
+#define NOTIFICACION_PAQUETE_RECIBIDO "packageRecived"
+#define NOTIFICACION_ACCESO_LLAVE_NFC "keyNFCAccess"
+#define NOTIFICACION_CARTA_RECIBIDA "newLetter"
+#define NOTIFICACION_BUZON_LLENO "mailboxFull"
 
 #define TYPE_KEY 0
 #define TYPE_PACKAGE 1

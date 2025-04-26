@@ -480,4 +480,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationsStatistics => 'Notifications Statistics';
+
+  @override
+  String notificationTitle(String title) {
+    String _temp0 = intl.Intl.selectLogic(
+      title,
+      {
+        'packageNotRecognize': 'Package not recognized',
+        'packageRecived': 'Authorized package received',
+        'keyNFCAccess': 'NFC key access',
+        'newLetter': 'New letter received',
+        'mailboxFull': 'Mailbox full',
+        'mailboxOpened': 'Mailbox opened',
+        'mailboxOpenFailed': 'Mailbox opening attempt failed',
+        'mailboxConnected': 'Mailbox connected',
+        'doorOpened': 'The door is open',
+        'other': 'Notification',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notificationMessage(String message) {
+    String _temp0 = intl.Intl.selectLogic(
+      message,
+      {
+        'packageNotRecognizeMessage': 'An attempt was made to open the door',
+        'packageRecivedMessage': 'Door opened with the package',
+        'keyNFCAccessMessage': 'Door opened with NFC key',
+        'newLetterMessage': 'You have received new mail',
+        'mailboxFullMessage': 'The mailbox might be full or mail has gotten stuck',
+        'mailboxOpenedMessage': 'Door opened with the key',
+        'mailboxOpenFailedMessage': 'An attempt was made to open the door',
+        'mailboxConnectedMessage': 'Mailbox connected to Wi-Fi network',
+        'doorOpened': 'The door is open',
+        'other': 'Notification',
+      },
+    );
+    return '$_temp0';
+  }
 }
