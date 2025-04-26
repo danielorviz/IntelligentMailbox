@@ -27,7 +27,7 @@ export const sendNotification = onValueCreated('/notifications/{idbuzon}/{idnoti
     logger.log('Notificación recibida para buzón:', idbuzon);
     logger.log('Contenido de la notificación:', notificacion);
 	
-	if(notificacion.type == 1){
+	if(notificacion.type == 1 && !notificacion.isKey){
 		const typeInfoUuid = notificacion.typeInfo.split(".;.")[0];
 		admin.database().ref('mailbox').child(idbuzon).child('authorizedPackages').child(typeInfoUuid).child('received').set(true);
 	}

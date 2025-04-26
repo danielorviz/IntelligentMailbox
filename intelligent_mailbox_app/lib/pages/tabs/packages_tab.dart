@@ -56,7 +56,7 @@ class PackagesTab extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  if (key.received) {
+                  if (key.received && !key.isKey) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(

@@ -35,7 +35,7 @@ class DrawerMenu extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 250,
+            height: 270,
             child: DrawerHeader(
               decoration: BoxDecoration(color: CustomColors.primaryBlue),
               child: Column(

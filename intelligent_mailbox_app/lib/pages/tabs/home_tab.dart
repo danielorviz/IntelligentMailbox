@@ -53,7 +53,6 @@ class HomeTabState extends State<HomeTab> {
     });
     try {
       MailboxService().openDoor(mailboxId);
-      await Future.delayed(Duration(seconds: 5));
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -62,6 +61,7 @@ class HomeTabState extends State<HomeTab> {
           ),
         );
       }
+      await Future.delayed(Duration(seconds: 5));
     } finally {
       setState(() {
         isOpening = false;
@@ -103,7 +103,7 @@ class HomeTabState extends State<HomeTab> {
             children: [
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 32.0),
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 32.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
