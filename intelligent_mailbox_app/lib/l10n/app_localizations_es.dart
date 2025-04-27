@@ -550,10 +550,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationLanguageLabel => 'Idioma de notificaciones';
 
   @override
-  String get saveSettingsButton => 'Guardar Configuración';
+  String get saveSettingsButton => 'Guardar configuración';
 
   @override
-  String get settingsSavedSuccess => 'Configuración guardada exitosamente';
+  String get settingsSavedSuccess => 'Configuración guardada';
 
   @override
   String get settingsSavedError => 'Error al guardar la configuración';

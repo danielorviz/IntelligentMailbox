@@ -553,7 +553,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveSettingsButton => 'Save settings';
 
   @override
-  String get settingsSavedSuccess => 'Settings saved successfully';
+  String get settingsSavedSuccess => 'Settings saved';
 
   @override
   String get settingsSavedError => 'Error saving settings';

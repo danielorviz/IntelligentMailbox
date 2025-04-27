@@ -210,6 +210,6 @@
   "notificationsEnabledLabel": "Notifications enabled",
   "notificationLanguageLabel": "Notification language",
   "saveSettingsButton": "Save settings",
-  "settingsSavedSuccess": "Settings saved successfully",
+  "settingsSavedSuccess": "Settings saved",
   "settingsSavedError": "Error saving settings"
 }

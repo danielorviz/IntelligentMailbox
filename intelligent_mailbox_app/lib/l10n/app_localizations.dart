@@ -1094,7 +1094,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSavedSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Settings saved successfully'**
+  /// **'Settings saved'**
   String get settingsSavedSuccess;
 
   /// No description provided for @settingsSavedError.
