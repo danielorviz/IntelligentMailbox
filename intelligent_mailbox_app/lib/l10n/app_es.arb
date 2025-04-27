@@ -219,7 +219,7 @@
   "mailboxNameHint": "Por favor ingresa un nombre",
   "notificationsEnabledLabel": "Notificaciones activadas",
   "notificationLanguageLabel": "Idioma de notificaciones",
-  "saveSettingsButton": "Guardar Configuración",
+  "saveSettingsButton": "Guardar configuración",
   "settingsSavedSuccess": "Configuración guardada exitosamente",
   "settingsSavedError": "Error al guardar la configuración"
 }
