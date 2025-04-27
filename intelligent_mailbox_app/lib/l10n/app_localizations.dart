@@ -1054,6 +1054,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{lang, select, es{Spanish} en{English} other{English}}'**
   String language(String lang);
+
+  /// No description provided for @mailboxSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox settings'**
+  String get mailboxSettingsTitle;
+
+  /// No description provided for @mailboxNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mailbox Name'**
+  String get mailboxNameLabel;
+
+  /// No description provided for @mailboxNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name'**
+  String get mailboxNameHint;
+
+  /// No description provided for @notificationsEnabledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications enabled'**
+  String get notificationsEnabledLabel;
+
+  /// No description provided for @notificationLanguageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification language'**
+  String get notificationLanguageLabel;
+
+  /// No description provided for @saveSettingsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save settings'**
+  String get saveSettingsButton;
+
+  /// No description provided for @settingsSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings saved successfully'**
+  String get settingsSavedSuccess;
+
+  /// No description provided for @settingsSavedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving settings'**
+  String get settingsSavedError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

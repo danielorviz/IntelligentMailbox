@@ -20,10 +20,10 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   final TextEditingController _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _notificationsEnabled = false;
+  String _selectedLanguage = Constants.languageDefault;
   final MailboxService mailboxService = MailboxService();
   final NotificationService notificationService = NotificationService();
   String? _mailboxId;
-  String _selectedLanguage = Constants.languageDefault;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     if (_mailboxId == null) {
       return;
     }
-    if(!_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
     final prefs = Provider.of<PreferencesProvider>(context, listen: false);
@@ -76,17 +76,25 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
         _mailboxId!,
         _notificationsEnabled,
       );
-      await mailboxService.saveSettings(_mailboxId!, _nameController.text, _selectedLanguage);
+      await mailboxService.saveSettings(
+        _mailboxId!,
+        _nameController.text,
+        _selectedLanguage,
+      );
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Configuración guardada exitosamente')),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.settingsSavedSuccess),
+          ),
         );
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al guardar la configuración')),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.settingsSavedError),
+          ),
         );
       }
     }
@@ -95,7 +103,9 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Configuración del Buzón')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.mailboxSettingsTitle),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -106,27 +116,26 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre del Buzón',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.mailboxNameLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   maxLength: 10,
                   validator:
                       (value) =>
                           value == null || value.isEmpty
-                              ? 'Por favor ingresa un nombre'
+                              ? AppLocalizations.of(context)!.mailboxNameHint
                               : null,
                 ),
                 const SizedBox(height: 16),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Icon(Icons.notifications),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Notificaciones Activadas',
-                      style: TextStyle(fontSize: 16),
+                    Text(
+                      AppLocalizations.of(context)!.notificationsEnabledLabel,
+                      style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 24),
                     Switch(
@@ -145,17 +154,22 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                   children: [
                     const Icon(Icons.language),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Idioma de Notificaciones',
-                      style: TextStyle(fontSize: 16),
+                    Text(
+                      AppLocalizations.of(context)!.notificationLanguageLabel,
+                      style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(width: 24),
                     DropdownButton<String>(
                       value: _selectedLanguage,
-                      items: Constants.supportedLanguages.map((language) {
+                      items:
+                          Constants.supportedLanguages.map((language) {
                             return DropdownMenuItem<String>(
                               value: language,
-                              child: Text(AppLocalizations.of(context)!.language(language)),
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.language(language),
+                              ),
                             );
                           }).toList(),
                       onChanged: (value) {
@@ -167,15 +181,14 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                   ],
                 ),
                 const SizedBox(height: 32),
-
                 ElevatedButton(
                   onPressed: _saveSettings,
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                   ),
-                  child: const Text(
-                    'Guardar Configuración',
-                    style: TextStyle(fontSize: 18),
+                  child: Text(
+                    AppLocalizations.of(context)!.saveSettingsButton,
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ),
               ],

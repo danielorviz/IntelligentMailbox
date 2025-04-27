@@ -533,4 +533,28 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get mailboxSettingsTitle => 'Mailbox settings';
+
+  @override
+  String get mailboxNameLabel => 'Mailbox Name';
+
+  @override
+  String get mailboxNameHint => 'Please enter a name';
+
+  @override
+  String get notificationsEnabledLabel => 'Notifications enabled';
+
+  @override
+  String get notificationLanguageLabel => 'Notification language';
+
+  @override
+  String get saveSettingsButton => 'Save settings';
+
+  @override
+  String get settingsSavedSuccess => 'Settings saved successfully';
+
+  @override
+  String get settingsSavedError => 'Error saving settings';
 }

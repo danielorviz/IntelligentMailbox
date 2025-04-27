@@ -202,5 +202,14 @@
           "type": "String"
         }
     }
-  }
+  },
+
+  "mailboxSettingsTitle": "Mailbox settings",
+  "mailboxNameLabel": "Mailbox Name",
+  "mailboxNameHint": "Please enter a name",
+  "notificationsEnabledLabel": "Notifications enabled",
+  "notificationLanguageLabel": "Notification language",
+  "saveSettingsButton": "Save settings",
+  "settingsSavedSuccess": "Settings saved successfully",
+  "settingsSavedError": "Error saving settings"
 }

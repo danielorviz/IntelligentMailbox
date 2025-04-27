@@ -533,4 +533,28 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get mailboxSettingsTitle => 'Configuración del buzón';
+
+  @override
+  String get mailboxNameLabel => 'Nombre del buzón';
+
+  @override
+  String get mailboxNameHint => 'Por favor ingresa un nombre';
+
+  @override
+  String get notificationsEnabledLabel => 'Notificaciones activadas';
+
+  @override
+  String get notificationLanguageLabel => 'Idioma de notificaciones';
+
+  @override
+  String get saveSettingsButton => 'Guardar Configuración';
+
+  @override
+  String get settingsSavedSuccess => 'Configuración guardada exitosamente';
+
+  @override
+  String get settingsSavedError => 'Error al guardar la configuración';
 }

@@ -212,5 +212,14 @@
           "type": "String"
         }
     }
-  }
+  },
+
+  "mailboxSettingsTitle": "Configuración del buzón",
+  "mailboxNameLabel": "Nombre del buzón",
+  "mailboxNameHint": "Por favor ingresa un nombre",
+  "notificationsEnabledLabel": "Notificaciones activadas",
+  "notificationLanguageLabel": "Idioma de notificaciones",
+  "saveSettingsButton": "Guardar Configuración",
+  "settingsSavedSuccess": "Configuración guardada exitosamente",
+  "settingsSavedError": "Error al guardar la configuración"
 }
