@@ -130,7 +130,7 @@ class NotificationsTabState extends State<NotificationsTab>
                                   Text(
                                      AppLocalizations.of(
                                       context,
-                                    )!.notificationMessage(notification.message),
+                                    )!.notificationMessage(notification.message), 
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                   ),

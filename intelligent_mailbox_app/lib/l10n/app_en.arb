@@ -192,5 +192,15 @@
           "type": "String"
         }
     }
+  },
+
+  "language": "{lang, select, es{Spanish} en{English} other{English}}",
+  "@language": {
+      "description": "Selected language",
+      "placeholders": {
+        "lang": {
+          "type": "String"
+        }
+    }
   }
 }

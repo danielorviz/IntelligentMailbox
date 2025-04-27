@@ -136,6 +136,8 @@ class MailboxService {
         "instructions/offset": offset,
         "instructions/open": false,
         "users": {userId: true},
+        "language": Constants.languageDefault,
+        "doorStatus": Constants.doorClosed,
       });
       await FirebaseDatabase.instance
           .ref("users/$userId/mailbox/$mailboxId")
@@ -149,11 +151,15 @@ class MailboxService {
   Future<void> saveSettings(
     String mailboxId,
     String mailboxName,
+    String language,
   ) async {
     try {
       await FirebaseDatabase.instance
           .ref("mailbox/$mailboxId/name")
           .set(mailboxName);
+      await FirebaseDatabase.instance
+          .ref("mailbox/$mailboxId/language")
+          .set(language);
     } catch (error) {
       print('Failed to save settings: $error');
       rethrow;

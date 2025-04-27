@@ -520,4 +520,17 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String language(String lang) {
+    String _temp0 = intl.Intl.selectLogic(
+      lang,
+      {
+        'es': 'Español',
+        'en': 'Inglés',
+        'other': 'Inglés',
+      },
+    );
+    return '$_temp0';
+  }
 }

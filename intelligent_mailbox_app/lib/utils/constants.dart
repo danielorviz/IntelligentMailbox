@@ -5,4 +5,13 @@ class Constants {
 
   static const int doorClosed = 0;
   static const int doorOpened = 1;
+
+
+  static const String languageSpanish= 'es';
+  static const String languageEnglish = 'en';
+  static const String languageDefault = languageEnglish;
+  static const List<String> supportedLanguages = [
+    languageSpanish,
+    languageEnglish,
+  ];
 }

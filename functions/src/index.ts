@@ -41,7 +41,7 @@ export const sendNotification = onValueCreated('/notifications/{idbuzon}/{idnoti
 	
 	const langTranslations = mailboxLanguage == "es" ? translationsEs : translationsEn;
 	const newNotification = langTranslations["newNotification"];
-	const bodyMessage = langTranslations[notificacion.mensaje] + ( (notificacion.type ==1 || notificacion.type == 0) ? notificacion.typeInfo : "");
+	const bodyMessage = langTranslations[notificacion.mensaje] + ( (notificacion.type ==1 || notificacion.type == 0) ? notificacion.typeInfo.split(".;.")[1] : "");
     const message = {
       notification: {
         title: `${newNotification} ${mailboxName}`,

@@ -1048,6 +1048,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{message, select, packageNotRecognizeMessage{An attempt was made to open the door} packageRecivedMessage{Door opened with the package} keyNFCAccessMessage{Door opened with NFC key} newLetterMessage{You have received new mail} mailboxFullMessage{The mailbox might be full or mail has gotten stuck} mailboxOpenedMessage{Door opened with the key} mailboxOpenFailedMessage{An attempt was made to open the door} mailboxConnectedMessage{Mailbox connected to Wi-Fi network} doorOpened{The door is open} other{Notification}}'**
   String notificationMessage(String message);
+
+  /// Selected language
+  ///
+  /// In en, this message translates to:
+  /// **'{lang, select, es{Spanish} en{English} other{English}}'**
+  String language(String lang);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

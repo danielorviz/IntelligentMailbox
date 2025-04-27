@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
+import 'package:intelligent_mailbox_app/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class MailboxSettingsScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   final MailboxService mailboxService = MailboxService();
   final NotificationService notificationService = NotificationService();
   String? _mailboxId;
+  String _selectedLanguage = Constants.languageDefault;
 
   @override
   void initState() {
@@ -34,6 +37,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     if (mounted) {
       setState(() {
         _nameController.text = widget.mailbox.name;
+        _selectedLanguage = widget.mailbox.language;
       });
       _mailboxId = widget.mailbox.id;
       await _loadPreferences(widget.mailbox.id);
@@ -72,7 +76,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
         _mailboxId!,
         _notificationsEnabled,
       );
-      await mailboxService.saveSettings(_mailboxId!, _nameController.text);
+      await mailboxService.saveSettings(_mailboxId!, _nameController.text, _selectedLanguage);
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,17 +120,47 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                 const SizedBox(height: 16),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    const Icon(Icons.notifications),
+                    const SizedBox(width: 8),
                     const Text(
                       'Notificaciones Activadas',
                       style: TextStyle(fontSize: 16),
                     ),
+                    const SizedBox(width: 24),
                     Switch(
                       value: _notificationsEnabled,
                       onChanged: (value) {
                         setState(() {
                           _notificationsEnabled = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.language),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Idioma de Notificaciones',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 24),
+                    DropdownButton<String>(
+                      value: _selectedLanguage,
+                      items: Constants.supportedLanguages.map((language) {
+                            return DropdownMenuItem<String>(
+                              value: language,
+                              child: Text(AppLocalizations.of(context)!.language(language)),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedLanguage = value!;
                         });
                       },
                     ),

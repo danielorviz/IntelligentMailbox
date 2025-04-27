@@ -13,6 +13,7 @@ class Mailbox {
   final String wifiStatus;
   final int lastWifiStatusCheck;
   final int doorStatus;
+  final String language;
 
   Mailbox({
     required this.id,
@@ -23,7 +24,7 @@ class Mailbox {
     this.wifiStatus = Constants.connectionFailed,
     this.lastWifiStatusCheck = 0,
     this.doorStatus = Constants.doorClosed,
-
+    this.language = Constants.languageDefault,
   });
 
   factory Mailbox.fromMap(Map<String, dynamic> data, String documentId) {
@@ -66,6 +67,7 @@ class Mailbox {
       wifiStatus: data['wifiStatus'] ?? Constants.connectionFailed,
       lastWifiStatusCheck: data['lastWifiStatusCheck'] ?? 0,
       doorStatus: data['doorStatus'] ?? Constants.doorClosed,
+      language: data['language'] ?? Constants.languageDefault,
     );
   }
 
