@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 import 'package:flutter/services.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
@@ -12,8 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -21,12 +20,11 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  await Firebase.initializeApp();
+   await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, 
+  );
   runApp(const MyApp());
- 
   await NotificationService().initFirebaseMessaging();
-  
 }
 
 class MyApp extends StatelessWidget {

@@ -175,7 +175,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(height: 40),
-                    Image.asset('assets/images/logo.png', height: 100),
+                    Image.asset('assets/images/logo1.png', height: 100),
                     const SizedBox(height: 20),
                     Text(
                       AppLocalizations.of(context)!.appTitle,

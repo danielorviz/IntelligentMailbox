@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,31 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>intelligent_mailbox_app</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
+  <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"></script>
   <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCIuJPcFRlLSvh_xEBIRhW0BdRF7EsmRLo",
+      authDomain: "intelligentmail-e552d.firebaseapp.com",
+      databaseURL: "https://intelligentmail-e552d.firebaseio.com",
+      projectId: "intelligentmail-e552d",
+      storageBucket: "intelligentmail-e552d.firebasestorage.app",
+      messagingSenderId: "899790660849",
+      appId: "1:899790660849:web:e713fa3c4d83718911b550"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </body>
+
 </html>

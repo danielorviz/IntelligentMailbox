@@ -94,7 +94,7 @@ class AuthSignupScreenState extends State<AuthSignupScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/logo.png', // Reemplaza con la ruta de tu imagen
+                      'assets/images/logo1.png',
                       height: 120,
                     ),
                     const SizedBox(height: 20),
