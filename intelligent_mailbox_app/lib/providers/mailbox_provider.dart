@@ -41,7 +41,11 @@ class MailboxProvider with ChangeNotifier {
             final mailboxStreams = mailboxKeys.map(
               (key) => _mailboxService.getMailboxDetails(key),
             );
-            final combinedStream = CombineLatestStream.list(mailboxStreams);
+            final combinedStream = CombineLatestStream.list(
+              mailboxStreams,
+            ).handleError((error) {
+              print('Error in combined stream: $error');
+            });
 
             final combinedSubscription = combinedStream.listen((mailboxes) {
               if (!hasListeners) return;

@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await _updateNotificationsPreferences(
       Provider.of<UserProvider>(context, listen: false).user!.uid,
     );
-    Provider.of<MailboxProvider>(context, listen: false).signOut();
+    await Provider.of<MailboxProvider>(context, listen: false).signOut();
     Provider.of<UserProvider>(context, listen: false).setUser(null);
     
     await _authService.signOut();
