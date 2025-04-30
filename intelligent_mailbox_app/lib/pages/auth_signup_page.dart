@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
+import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
 
 class AuthSignupScreen extends StatefulWidget {
   const AuthSignupScreen({super.key});
@@ -35,11 +37,14 @@ class AuthSignupScreenState extends State<AuthSignupScreen> {
       );
 
       if (user != null) {
-        if(context.mounted){
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.signupSuccess)),
-        );}
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.signupSuccess),
+            ),
+          );
+        }
       }
     } on Exception catch (e) {
       if (context.mounted) {
@@ -79,132 +84,140 @@ class AuthSignupScreenState extends State<AuthSignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.createAccount),
-        centerTitle: true,
-      ),
+      appBar:
+          !kIsWeb
+              ? AppBar(
+                title: Text(AppLocalizations.of(context)!.createAccount),
+                centerTitle: true,
+              )
+              : null,
       body: Stack(
         children: [
           Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo1.png',
-                      height: 120,
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      maxLength: 50,
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email,
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
+            child: ResponsiveWrapper(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/logo1.png', height: 120),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        maxLength: 50,
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.email,
+                          prefixIcon: const Icon(Icons.email),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        validator: (value) {
+                          return _validateEmail(value!);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        maxLength: 20,
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.name,
+                          prefixIcon: const Icon(Icons.person),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.nameCannotBeEmpty;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        maxLength: 20,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.password,
+                          prefixIcon: const Icon(Icons.lock),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.passwordCannotBeEmpty;
+                          }
+                          if (value.length < 6) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.passwordTooShort;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                        maxLength: 20,
+                        decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.confirmPassword,
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value != _passwordController.text) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.passwordMismatch;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton.icon(
+                        onPressed: () => _signUp(context),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 14,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.signup,
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ),
-                      validator: (value) {
-                        return _validateEmail(value!);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      maxLength: 20,
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.name,
-                        prefixIcon: const Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
+                      const SizedBox(height: 20),
+                      Text(
+                        AppLocalizations.of(context)!.alreadyHaveAccount,
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          AppLocalizations.of(context)!.login,
+                          style: TextStyle(color: Colors.blue[800]),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppLocalizations.of(
-                            context,
-                          )!.nameCannotBeEmpty;
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.password,
-                        prefixIcon: const Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppLocalizations.of(
-                            context,
-                          )!.passwordCannotBeEmpty;
-                        }
-                        if (value.length < 6) {
-                          return AppLocalizations.of(context)!.passwordTooShort;
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText:
-                            AppLocalizations.of(context)!.confirmPassword,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value != _passwordController.text) {
-                          return AppLocalizations.of(context)!.passwordMismatch;
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton.icon(
-                      onPressed: () => _signUp(context),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 14,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      label: Text(
-                        AppLocalizations.of(context)!.signup,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      AppLocalizations.of(context)!.alreadyHaveAccount,
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(
-                        AppLocalizations.of(context)!.login,
-                        style: TextStyle(color: Colors.blue[800]),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

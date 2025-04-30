@@ -5,6 +5,7 @@ import 'package:intelligent_mailbox_app/providers/preferences_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
+import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:intelligent_mailbox_app/pages/home_page.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
@@ -95,7 +96,7 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
       await prefs.loadPreferences(userId, mailboxId);
       NotificationService().activateDeactivateMailboxNotifications(
         mailboxId,
-        prefs.isNotificationEnabled(userId,mailboxId),
+        prefs.isNotificationEnabled(userId, mailboxId),
       );
     }
   }
@@ -167,133 +168,136 @@ class AuthLoginScreenState extends State<AuthLoginScreen> {
       body: Stack(
         children: [
           Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40),
-                    Image.asset('assets/images/logo1.png', height: 100),
-                    const SizedBox(height: 20),
-                    Text(
-                      AppLocalizations.of(context)!.appTitle,
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Text(
-                        AppLocalizations.of(context)!.manageSmartMailboxes,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email,
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
+            child: ResponsiveWrapper(
+              maxWidth: 500,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+                      Image.asset('assets/images/logo1.png', height: 100),
+                      const SizedBox(height: 20),
+                      Text(
+                        AppLocalizations.of(context)!.appTitle,
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      validator: (value) {
-                        return _validateEmail(value);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.password,
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.manageSmartMailboxes,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 50),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.email,
+                          prefixIcon: const Icon(Icons.email),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        validator: (value) {
+                          return _validateEmail(value);
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppLocalizations.of(
-                            context,
-                          )!.passwordCannotBeEmpty;
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () => _signInWithEmailAndPassword(context),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(width: 8),
-                          Text(
-                            AppLocalizations.of(context)!.login,
-                            style: TextStyle(fontSize: 16),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: !_isPasswordVisible,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.password,
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const AuthSignupScreen(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                        );
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.createAccount,
-                        style: TextStyle(color: Colors.blue),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.passwordCannotBeEmpty;
+                          }
+                          return null;
+                        },
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () => _sendPasswordResetEmail(context),
-                      child: Text(
-                        AppLocalizations.of(context)!.forgotPassword,
-                        style: TextStyle(color: Colors.blue),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => _signInWithEmailAndPassword(context),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(width: 8),
+                            Text(
+                              AppLocalizations.of(context)!.login,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        AppLocalizations.of(context)!.copyright,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const AuthSignupScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.createAccount,
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: () => _sendPasswordResetEmail(context),
+                        child: Text(
+                          AppLocalizations.of(context)!.forgotPassword,
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.copyright,
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

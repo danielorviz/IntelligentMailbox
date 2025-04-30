@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -145,6 +146,7 @@ class NotificationService {
   }
 
   Future<void> activateDeactivateMailboxNotifications(String? mailboxId, bool active) async {
+    if (kIsWeb) return;
     if (mailboxId == null || mailboxId.isEmpty) return;
     try {
       if (active) {

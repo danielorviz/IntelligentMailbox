@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/auth_login_page.dart';
@@ -13,6 +14,8 @@ import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/widgets/drawer_menu.dart';
 import 'package:intelligent_mailbox_app/widgets/bottom_navigation.dart';
+import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
+import 'package:intelligent_mailbox_app/widgets/top_navigation.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -37,22 +40,22 @@ class _MyHomePageState extends State<MyHomePage> {
   bool markNotificationsAsRead = false;
 
   void _onItemTapped(int index) {
-    MailboxProvider mailboxProvider = Provider.of<MailboxProvider>(context, listen: false);
-     if(index != 1 && markNotificationsAsRead) {
-      NotificationService().markAllAsRead(
-        mailboxProvider.selectedMailbox!.id,
-      );
+    MailboxProvider mailboxProvider = Provider.of<MailboxProvider>(
+      context,
+      listen: false,
+    );
+    if (index != 1 && markNotificationsAsRead) {
+      NotificationService().markAllAsRead(mailboxProvider.selectedMailbox!.id);
       setState(() {
         markNotificationsAsRead = false;
         _selectedIndex = index;
       });
-    }
-    else if(mailboxProvider.unreadNotifications > 0 && index == 1) {
+    } else if (mailboxProvider.unreadNotifications > 0 && index == 1) {
       setState(() {
         markNotificationsAsRead = true;
         _selectedIndex = index;
       });
-    }else{
+    } else {
       setState(() {
         _selectedIndex = index;
       });
@@ -62,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
     );
-   
   }
 
   Future<void> _signOut(BuildContext context) async {
@@ -71,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     await Provider.of<MailboxProvider>(context, listen: false).signOut();
     Provider.of<UserProvider>(context, listen: false).setUser(null);
-    
+
     await _authService.signOut();
     if (context.mounted) {
       Navigator.of(context).pushReplacement(
@@ -79,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
   }
+
   Future<void> _updateNotificationsPreferences(String userId) async {
     List<String> mailboxes = await MailboxService().fetchUserMailboxKeysOnce(
       userId,
@@ -94,23 +97,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     if (!context.mounted) return const SizedBox.shrink();
-
     return Scaffold(
       appBar: AppBar(
         title: Consumer<MailboxProvider>(
           builder: (context, mailboxProvider, child) {
-            if(mailboxProvider.unreadNotifications > 0 && _selectedIndex == 1) {
-                markNotificationsAsRead = true;
+            if (mailboxProvider.unreadNotifications > 0 &&
+                _selectedIndex == 1) {
+              markNotificationsAsRead = true;
             }
-            return Text(
-              mailboxProvider.selectedMailbox?.name ??
-                  AppLocalizations.of(context)!.appTitle,
-            );
+            return !kIsWeb
+                ? Text(
+                  mailboxProvider.selectedMailbox?.name ??
+                      AppLocalizations.of(context)!.appTitle,
+                )
+                :TopNavigation(
+                onSignOut: ()=> _signOut(context),
+                selectedIndex: _selectedIndex,
+                onItemTapped: _onItemTapped,
+                titleWidget: Text(
+                  mailboxProvider.selectedMailbox?.name ??
+                      AppLocalizations.of(context)!.appTitle,
+                ),
+              );
           },
         ),
         iconTheme: const IconThemeData(color: CustomColors.unselectedItem),
       ),
-      drawer: DrawerMenu(onSignOut: () => _signOut(context)),
+      drawer: !kIsWeb ? DrawerMenu(onSignOut: () => _signOut(context)) : null,
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -118,12 +131,25 @@ class _MyHomePageState extends State<MyHomePage> {
             _selectedIndex = index;
           });
         },
-        children: _widgetOptions,
+        children:
+            _widgetOptions.map((page) {
+              return Center(
+                child: ResponsiveWrapper(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: page,
+                  ),
+                ),
+              );
+            }).toList(),
       ),
-      bottomNavigationBar: BottomNavigation(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
-      ),
+      bottomNavigationBar:
+          !kIsWeb
+              ? BottomNavigation(
+                selectedIndex: _selectedIndex,
+                onItemTapped: _onItemTapped,
+              )
+              : null,
     );
   }
 }
