@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox.dart';
@@ -6,6 +7,7 @@ import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/constants.dart';
+import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
 import 'package:provider/provider.dart';
 
 class MailboxSettingsScreen extends StatefulWidget {
@@ -104,10 +106,13 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: kIsWeb,
+        automaticallyImplyLeading: !kIsWeb,
         title: Text(AppLocalizations.of(context)!.mailboxSettingsTitle),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0), 
+        child: ResponsiveWrapper(
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -180,21 +185,47 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: _saveSettings,
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.saveSettingsButton,
-                    style: const TextStyle(fontSize: 18),
-                  ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        textStyle: const TextStyle(fontSize: 16),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.cancel,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _saveSettings,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        textStyle: const TextStyle(fontSize: 16),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.saveSettingsButton,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
+      ),
       ),
     );
   }

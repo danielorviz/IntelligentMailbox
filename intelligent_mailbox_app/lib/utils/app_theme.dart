@@ -134,7 +134,7 @@ class AppTheme {
  
   static ThemeData lightTheme = ThemeData(
     primaryColor: primaryBlue,
-    scaffoldBackgroundColor: backgroundLight,
+    scaffoldBackgroundColor: const Color.fromARGB(255, 234, 240, 247),
     appBarTheme: AppBarTheme(
       backgroundColor: primaryBlue,
       iconTheme: const IconThemeData(color: textOnPrimaryBlue),
@@ -150,7 +150,7 @@ class AppTheme {
       primary: primaryBlue,
       secondary: secondaryBlue,
       surface: Colors.white,
-      error: accentOrange,
+      error: Colors.red,
       onPrimary: textOnPrimaryBlue,
       onSecondary: textOnSecondaryBlue,
       onSurface: textOnSecondaryBlue,
