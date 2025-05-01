@@ -863,6 +863,24 @@ abstract class AppLocalizations {
   /// **'Choose a name for your mailbox'**
   String get chooseMailboxName;
 
+  /// No description provided for @registeringMailbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Register mailbox'**
+  String get registeringMailbox;
+
+  /// No description provided for @registeringMailboxDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'The mailbox data is being registered'**
+  String get registeringMailboxDetails;
+
+  /// No description provided for @mailboxRegistrationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error registering the mailbox'**
+  String get mailboxRegistrationError;
+
   /// No description provided for @nfcError.
   ///
   /// In en, this message translates to:

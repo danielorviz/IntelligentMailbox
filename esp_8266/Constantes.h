@@ -18,7 +18,9 @@
 #define TYPE_PACKAGE_FAILED 5
 #define TYPE_SEPARATOR ".;."
 
-String ARDUINO_ID ="ardboxmail-7854";
+String ARDUINO_ID ="test-1";
+const char* WIFI_MANAGER_PASSW ="123456789";
+
 String MAILBOX_PATH="/mailbox/"+ARDUINO_ID;
 String NOTIFICATION_PATH = "notifications/";
 
@@ -26,5 +28,4 @@ String TASK_OFFSET="offsetTask";
 String TASK_AUTH_KEYS="authKeysTask";
 
 String TASK_INS_OPEN="insOpenTask";
-const char* WIFI_MANAGER_SSID ="ardboxmail-7854_1";
-const char* WIFI_MANAGER_PASSW ="123456789";
+

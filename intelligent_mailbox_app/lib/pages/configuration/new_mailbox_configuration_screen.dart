@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
+import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
 import 'package:intelligent_mailbox_app/providers/user_provider.dart';
 import 'package:intelligent_mailbox_app/services/auth_service.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
@@ -64,8 +65,6 @@ class _NewMailboxConfigurationScreenState
       _userProvider = Provider.of<UserProvider>(context, listen: false);
       setState(() {
         _emailController.text = _userProvider.user!.email!;
-        mailboxIdController.text = 'ardboxmail-7854';
-        mailboxKeyController.text = 'abc\$123';
         isMailboxIdValid = true;
       });
     });
@@ -311,6 +310,28 @@ class _NewMailboxConfigurationScreenState
     }
   }
 
+  Future<void> _registerMailbox() async {
+    setState(() {
+      isLoadingPrincipal = true;
+    });
+    try {
+      await _mailboxService.createMailbox(
+        mailboxIdController.text,
+        _userProvider.user!.uid,
+        mailboxNameController.text,
+        _selectedLanguage,
+      );
+      Provider.of<MailboxProvider>(context, listen: false).loadMailboxes();
+    } catch (e) {
+      print('Error registering mailbox: $e');
+      _showMessage(_getAppLocalizations()?.mailboxRegistrationError ?? '');
+    } finally {
+      setState(() {
+        isLoadingPrincipal = false;
+      });
+    }
+  }
+
   IconData _getSignalIcon(int level) {
     if (level >= -80) {
       return Icons.signal_wifi_4_bar;
@@ -356,13 +377,11 @@ class _NewMailboxConfigurationScreenState
       if (!isMailboxConnected) {
         return;
       }
-      await _mailboxService.createMailbox(
-        mailboxIdController.text,
-        _userProvider.user!.uid,
-        _selectedLanguage,
-        mailboxNameController.text,
-      );
-    } else if (_currentStep == 4) {
+      setState(() {
+        _currentStep += 1;
+      });
+      await _registerMailbox();
+    } else if (_currentStep == 5) {
       Navigator.of(context).pop();
       return;
     }
@@ -377,6 +396,8 @@ class _NewMailboxConfigurationScreenState
     } else if (_currentStep == 2) {
       return AppLocalizations.of(context)!.connect;
     } else if (_currentStep == 3) {
+      return AppLocalizations.of(context)!.send;
+    }else if (_currentStep == 4) {
       return AppLocalizations.of(context)!.send;
     } else {
       return AppLocalizations.of(context)!.finish;
@@ -528,7 +549,9 @@ class _NewMailboxConfigurationScreenState
                         value: _selectedLanguage,
                         decoration: InputDecoration(
                           labelText:
-                              AppLocalizations.of(context)!.notificationLanguageLabel,
+                              AppLocalizations.of(
+                                context,
+                              )!.notificationLanguageLabel,
                           border: OutlineInputBorder(),
                         ),
                         items:
@@ -542,7 +565,8 @@ class _NewMailboxConfigurationScreenState
                                 ),
                               );
                             }).toList(),
-                        onChanged: (value) {;
+                        onChanged: (value) {
+                          ;
                           setState(() {
                             _selectedLanguage = value!;
                           });
@@ -658,6 +682,23 @@ class _NewMailboxConfigurationScreenState
                       onPressed: _startScan,
                       child: Text(AppLocalizations.of(context)!.scanNetworks),
                     ),
+                  ],
+                ),
+              ),
+              Step(
+                title: Text(
+                  AppLocalizations.of(context)!.registeringMailbox,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.registeringMailboxDetails,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    SizedBox(height: 8),
                   ],
                 ),
               ),

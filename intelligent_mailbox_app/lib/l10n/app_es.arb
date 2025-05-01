@@ -150,6 +150,10 @@
   "addMailboxFromApp":"Para añadir un buzón, acceda a la app móvil",
   "chooseMailboxName":"Elija un nombre para su buzón",
 
+  "registeringMailbox":"Registrar buzón",
+  "registeringMailboxDetails":"Se están registrando los datos del buzón",
+  "mailboxRegistrationError":"Error registrando el buzón",
+
   "nfcError":"Error escaneando",
   "nfcNotDetected":"No se ha detectado ninguna etiqueta NFC",
   "scanNfc":"Escanear NFC",

@@ -395,6 +395,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get chooseMailboxName => 'Elija un nombre para su buzón';
 
   @override
+  String get registeringMailbox => 'Registrar buzón';
+
+  @override
+  String get registeringMailboxDetails => 'Se están registrando los datos del buzón';
+
+  @override
+  String get mailboxRegistrationError => 'Error registrando el buzón';
+
+  @override
   String get nfcError => 'Error escaneando';
 
   @override

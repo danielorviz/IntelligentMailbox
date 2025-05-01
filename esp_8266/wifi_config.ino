@@ -5,10 +5,6 @@ IPAddress local_IP(192, 168, 4, 1);  // IP que tendrá el Arduino
 IPAddress gateway(192, 168, 4, 1);   // Gateway
 IPAddress subnet(255, 255, 255, 0);
 
-
-const char* apssid = "ardboxmail-7854";
-const char* apPassword = "123456789";
-
 void setupWiFiModule() {
 
   Serial.println(F("SETUP WIFI"));
@@ -45,7 +41,7 @@ void setupWiFiModule() {
     Serial.println(F("Configuración de IP estática exitosa"));
   }
 
-  WiFi.softAP(apssid, apPassword);
+  WiFi.softAP(ARDUINO_ID, WIFI_MANAGER_PASSW);
 
   Serial.print(F("IP del AP: "));
   Serial.println(WiFi.softAPIP());
@@ -58,7 +54,7 @@ void setupWiFiModule() {
     server.handleClient();
     delay(10);
   }
-  Serial.println(F("Servidor web iniciado."));
+  delay(5000); // Se esperan 5 segundos a que cargue todo en bd.
 }
 bool connectToWiFi() {
   int intentos = 10;

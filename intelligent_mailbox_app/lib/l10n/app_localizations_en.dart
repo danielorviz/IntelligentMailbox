@@ -395,6 +395,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseMailboxName => 'Choose a name for your mailbox';
 
   @override
+  String get registeringMailbox => 'Register mailbox';
+
+  @override
+  String get registeringMailboxDetails => 'The mailbox data is being registered';
+
+  @override
+  String get mailboxRegistrationError => 'Error registering the mailbox';
+
+  @override
   String get nfcError => 'Error scaning';
 
   @override

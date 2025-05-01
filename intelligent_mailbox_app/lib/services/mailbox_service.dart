@@ -130,7 +130,12 @@ class MailboxService {
     String mailboxName,
     String language,
   ) async {
+
     try {
+       await FirebaseDatabase.instance
+          .ref("users/$userId/mailbox/$mailboxId")
+          .set(true);
+          
       await FirebaseDatabase.instance.ref("mailbox/$mailboxId").update({
         "name": mailboxName,
         "id": mailboxId,
@@ -139,9 +144,7 @@ class MailboxService {
         "users": {userId: true},
         "doorStatus": Constants.doorClosed,
       });
-      await FirebaseDatabase.instance
-          .ref("users/$userId/mailbox/$mailboxId")
-          .set(true);
+     
     } catch (error) {
       print('Failed to save settings: $error');
       rethrow;

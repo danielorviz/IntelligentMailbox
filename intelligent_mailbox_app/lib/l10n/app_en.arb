@@ -140,6 +140,10 @@
   "addMailboxFromApp": "To add a mailbox, access the mobile app",
   "chooseMailboxName":"Choose a name for your mailbox",
 
+  "registeringMailbox":"Register mailbox",
+  "registeringMailboxDetails":"The mailbox data is being registered",
+  "mailboxRegistrationError":"Error registering the mailbox",
+
   "nfcError":"Error scaning",
   "nfcNotDetected":"No NFC tag detected",
   "scanNfc":"Scan NFC",

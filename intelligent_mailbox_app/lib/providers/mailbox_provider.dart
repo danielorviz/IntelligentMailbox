@@ -17,14 +17,14 @@ class MailboxProvider with ChangeNotifier {
   final List<StreamSubscription> _subscriptions = [];
 
   MailboxProvider(this._userProvider) {
-    _loadMailboxes();
+    loadMailboxes();
   }
 
   List<Mailbox> get mailboxes => _mailboxes;
   Mailbox? get selectedMailbox => _selectedMailbox;
   int get unreadNotifications => _unreadCount;
 
-  Future<void> _loadMailboxes() async {
+  Future<void> loadMailboxes() async {
     final user = _userProvider.user;
     if (user != null) {
       try {
@@ -52,7 +52,9 @@ class MailboxProvider with ChangeNotifier {
               _mailboxes = mailboxes.whereType<Mailbox>().toList();
               print('Cargando mailboxes: $mailboxes');
               if (_mailboxes.isNotEmpty) {
-                selectMailbox(_mailboxes.first);
+                if(selectedMailbox == null) {
+                  selectMailbox(_mailboxes.first);
+                }
               } else if (_mailboxes.isEmpty) {
                 _selectedMailbox = null;
               }
