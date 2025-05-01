@@ -16,7 +16,7 @@ class SaveActionsButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return kIsWeb
         ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ElevatedButton(
               onPressed: () {

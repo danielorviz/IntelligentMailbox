@@ -5,6 +5,7 @@ import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
+import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
 import 'package:intelligent_mailbox_app/widgets/save_actions_buttons.dart';
 
 class EditAuthKeyScreen extends StatefulWidget {
@@ -201,134 +202,138 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                maxLength: 15,
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.keyName,
-                  border: OutlineInputBorder(),
+      body: ResponsiveWrapper(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  maxLength: 15,
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.keyName,
+                    border: OutlineInputBorder(),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r'[.;]')),
+                  ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppLocalizations.of(context)!.enterName;
+                    }
+                    return null;
+                  },
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(RegExp(r'[.;]')),
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enterName;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                maxLength: 5,
-                controller: _valueController,
-                obscureText: _isObscured,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.password,
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isObscured ? Icons.visibility : Icons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isObscured = !_isObscured;
-                      });
-                    },
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enterValue;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.permanentKey,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  Switch(
-                    value: _isPermanent,
-                    onChanged: (value) {
-                      setState(() {
-                        _isPermanent = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              if (!_isPermanent) ...[
                 const SizedBox(height: 16),
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.startDate,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  subtitle: Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            _initDate != null
-                                ? (" ${DateTimeUtils.formatDate(_initDate!)}   ${DateTimeUtils.formatTime(_initDate!)}")
-                                : AppLocalizations.of(context)!.selectDate,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
+                TextFormField(
+                  maxLength: 5,
+                  controller: _valueController,
+                  obscureText: _isObscured,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.password,
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isObscured ? Icons.visibility : Icons.visibility_off,
                       ),
-                    ],
+                      onPressed: () {
+                        setState(() {
+                          _isObscured = !_isObscured;
+                        });
+                      },
+                    ),
                   ),
-                  trailing: const Icon(Icons.event),
-                  onTap: () => _selectStartDate(context),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppLocalizations.of(context)!.enterValue;
+                    }
+                    return null;
+                  },
                 ),
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.endDate,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.permanentKey,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    Switch(
+                      value: _isPermanent,
+                      onChanged: (value) {
+                        setState(() {
+                          _isPermanent = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                if (!_isPermanent) ...[
+                  const SizedBox(height: 16),
+                  ListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.startDate,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    subtitle: Column(
+                      spacing: 8,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Text(
+                              _initDate != null
+                                  ? (" ${DateTimeUtils.formatDate(_initDate!)}   ${DateTimeUtils.formatTime(_initDate!)}")
+                                  : AppLocalizations.of(context)!.selectDate,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    trailing: const Icon(Icons.event),
+                    onTap: () => _selectStartDate(context),
                   ),
-                  subtitle: Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            _finishDate != null
-                                ? (" ${DateTimeUtils.formatDate(_finishDate!)}   ${DateTimeUtils.formatTime(_finishDate!)}")
-                                : AppLocalizations.of(context)!.selectDate,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
-                    ],
+                  ListTile(
+                    title: Text(
+                      AppLocalizations.of(context)!.endDate,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    subtitle: Column(
+                      spacing: 8,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Text(
+                              _finishDate != null
+                                  ? (" ${DateTimeUtils.formatDate(_finishDate!)}   ${DateTimeUtils.formatTime(_finishDate!)}")
+                                  : AppLocalizations.of(context)!.selectDate,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    trailing: const Icon(Icons.event_available),
+                    onTap:
+                        _initDate == null
+                            ? null
+                            : () => _selectEndDate(context),
                   ),
-                  trailing: const Icon(Icons.event_available),
-                  onTap:
-                      _initDate == null ? null : () => _selectEndDate(context),
+                ],
+                const SizedBox(height: 32),
+                SaveActionsButtons(
+                  onSave: _saveKey,
+                  saveText: AppLocalizations.of(context)!.save,
                 ),
               ],
-              const SizedBox(height: 32),
-              SaveActionsButtons(
-                onSave: _saveKey,
-                saveText: AppLocalizations.of(context)!.save,
-              ),
-            ],
+            ),
           ),
         ),
       ),

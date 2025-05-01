@@ -7,6 +7,7 @@ import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
 import 'package:intelligent_mailbox_app/widgets/save_actions_buttons.dart';
 
 class EditPackageScreen extends StatefulWidget {
@@ -75,7 +76,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
         }),
       ]);
     } catch (e) {
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -151,110 +152,110 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
             widget.keyData != null
                 ? Text(AppLocalizations.of(context)!.editPackage)
                 : Text(AppLocalizations.of(context)!.newPackage),
-                actions: [
+        actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16.0), 
-            child: Icon(
-              Icons.nfc,
-              size: 25,
-              color: Colors.white,
-            ),
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Icon(Icons.nfc, size: 25, color: Colors.white),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                maxLength: 20,
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.packageName,
-                  border: OutlineInputBorder(),
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(
-                    RegExp(r'[.;]'),
+      body: ResponsiveWrapper(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  maxLength: 20,
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.packageName,
+                    border: OutlineInputBorder(),
                   ),
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enterPackageCode;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                maxLength: 20,
-                controller: _valueController,
-                obscureText: _isObscured,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.packageCode,
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _isObscured ? Icons.visibility : Icons.visibility_off,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r'[.;]')),
+                  ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppLocalizations.of(context)!.enterPackageCode;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  maxLength: 20,
+                  controller: _valueController,
+                  obscureText: _isObscured,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.packageCode,
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isObscured ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isObscured = !_isObscured;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isObscured = !_isObscured;
-                      });
-                    },
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppLocalizations.of(context)!.enterPackageCode;
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+
+                ElevatedButton.icon(
+                  onPressed: _scanNFC,
+                  icon:
+                      _isScanning
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                          : Icon(Icons.nfc, color: Colors.white, size: 20),
+                  label: Text(
+                    _isScanning
+                        ? AppLocalizations.of(context)!.scanning
+                        : AppLocalizations.of(context)!.scanNfc,
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enterPackageCode;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
 
-              ElevatedButton.icon(
-                onPressed: _scanNFC,
-                icon:
-                    _isScanning
-                        ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(color: Colors.white,),
-                        )
-                        : Icon(Icons.nfc, color: Colors.white, size: 20),
-                label: Text(_isScanning?
-                AppLocalizations.of(context)!.scanning
-                : AppLocalizations.of(context)!.scanNfc),
-              ),
-
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.permanentAccess,
-                    style:  Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  Switch(
-                    value: _isPermanent,
-                    onChanged: (value) {
-                      setState(() {
-                        _isPermanent = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              SaveActionsButtons(
-                    onSave: _saveKey,
-                    saveText: AppLocalizations.of(context)!.save,
-                  ),
-            ],
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.permanentAccess,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    Switch(
+                      value: _isPermanent,
+                      onChanged: (value) {
+                        setState(() {
+                          _isPermanent = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                SaveActionsButtons(
+                  onSave: _saveKey,
+                  saveText: AppLocalizations.of(context)!.save,
+                ),
+              ],
+            ),
           ),
         ),
       ),
