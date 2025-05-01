@@ -57,7 +57,7 @@ void processInstruction(char* message) {
         sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("mailboxOpenedMessage"), TYPE_KEY, getAuthKeyId(validKeyIndex));
       } else {
         Serial.println(F("DOOR_KO"));
-        sendNotificationDoorOpenKO(TYPE_KEY);
+        sendNotificationDoorOpenKO(TYPE_KEY_FAILED);
       }
     } else if (instructions.startsWith("NOTIF_")) {
       String notification = instructions.substring(6);
@@ -84,7 +84,7 @@ void processInstruction(char* message) {
         }
       } else {
         Serial.println(F("DOOR_KO"));
-        sendNotificationDoorOpenKO(TYPE_PACKAGE);
+        sendNotificationDoorOpenKO(TYPE_PACKAGE_FAILED);
       }
     }
   }

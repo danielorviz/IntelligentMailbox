@@ -14,6 +14,8 @@
 #define TYPE_PACKAGE 1
 #define TYPE_LETTER  2
 #define TYPE_MAILBOX 3
+#define TYPE_KEY_FAILED 4
+#define TYPE_PACKAGE_FAILED 5
 #define TYPE_SEPARATOR ".;."
 
 String ARDUINO_ID ="ardboxmail-7854";
