@@ -21,15 +21,15 @@ void initAuthorizedPackages(JsonObject data) {
 }
 void handlePackageEvent(String id, JsonObject data) {
   bool exists = existsPackageById(id);
-  Serial.println(exists);
+  //Serial.println(exists);
   if (exists && data.isNull()) {
-    Serial.println(F("eliminando paquete"));
+    //Serial.println(F("eliminando paquete"));
     removePackageById(id);
   } else if (exists && !data.isNull()) {
-    Serial.println(F("actualizando paquete"));
+    //Serial.println(F("actualizando paquete"));
     updatePackage(id, data);
   } else if (!exists && !data.isNull()) {
-    Serial.println(F("creando paquete"));
+    //Serial.println(F("creando paquete"));
     createPackage(id, data);
   }
 }

@@ -56,10 +56,10 @@ void setup() {
   ssl_clientKeys.setBufferSizes(1024, 512);
   //ssl_clientKeys.setTimeout(150);
 
-  Serial.print(F("conectando con credenciales: "));
-  Serial.print(fireuser);
-  Serial.print(F(" "));
-  Serial.println(firepass);
+  //Serial.print(F("conectando con credenciales: "));
+  //Serial.print(fireuser);
+  //Serial.print(F(" "));
+  //Serial.println(firepass);
   UserAuth user_auth(FIREBASE_WEB_KEY, fireuser, firepass);
   initializeApp(aClientGeneral, app, getAuth(user_auth), asyncCB, "authTask");
   app.getApp<RealtimeDatabase>(Database);
@@ -74,7 +74,7 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
   DynamicJsonDocument doc(1024);
   DeserializationError error = deserializeJson(doc, firebaseData);
   if (error) {
-    Serial.println(F("Error al deserializar el JSON: "));
+    //Serial.println(F("Error al deserializar el JSON: "));
     //Serial.println(error.c_str());
     return DynamicJsonDocument(0);
   }
@@ -91,22 +91,20 @@ void loop() {
   timeClient.update();
   app.loop();
   Database.loop();
-  if(!conectado){
-  Serial.println(app.ready());
-  }
+  
   if (app.ready()) {
 
     if (!onetimeTest) {
-      Serial.println(F("subscripcion"));
+      //Serial.println(F("subscripcion"));
       Database.get(aClientStreamKeys, "mailbox/" + ARDUINO_ID, asyncCB, true, TASK_AUTH_KEYS);
-      Serial.println(F("suscrito"));
+      //Serial.println(F("suscrito"));
       onetimeTest = true;
     }
     
     if (resetOpen) {
-      Serial.println(F("resetResult: "));
+      //Serial.println(F("resetResult: "));
       bool result = Database.set<bool>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/instructions/open", false);
-      Serial.println(result);
+      //Serial.println(result);
       resetOpen = !result;
     }
     if (conectado && sendConnectedNotif) {
@@ -123,34 +121,14 @@ void asyncCB(AsyncResult &aResult) {
 }
 
 void handleAsyncResult(AsyncResult &aResult) {
-  if (aResult.isEvent()) {
-    Firebase.printf("Event task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.appEvent().message().c_str(), aResult.appEvent().code());
-    Serial.println();
-  }
-
-  if (aResult.isDebug()) {
-    Firebase.printf("Debug task: %s, msg: %s\n", aResult.uid().c_str(), aResult.debug().c_str());
-    Serial.println();
-  }
-
-  if (aResult.isError()) {
-    if (TASK_AUTH_KEYS == aResult.uid().c_str()) {
-      //Database.get(aClient, "mailbox/" + ARDUINO_ID + "/authorizedkeys", asyncCB, false, TASK_AUTH_KEYS);
-    } else if (TASK_OFFSET == aResult.uid().c_str()) {
-      //Database.get(aClient, "mailbox/" + ARDUINO_ID + "/instructions/offset", asyncCB, true, TASK_OFFSET);
-    }
-    Firebase.printf("Error task: %s, msg: %s, code: %d\n", aResult.uid().c_str(), aResult.error().message().c_str(), aResult.error().code());
-    Serial.println();
-  }
-
-  if (aResult.available()) {
+    if (aResult.available()) {
     RealtimeDatabaseResult &RTDB = aResult.to<RealtimeDatabaseResult>();
-    Firebase.printf("task: %s, payload5: %s\n", aResult.uid().c_str(), aResult.c_str());
-    Serial.println();
+    // Firebase.printf("task: %s, payload5: %s\n", aResult.uid().c_str(), aResult.c_str());
+    //Serial.println();
 
     if (RTDB.isStream()) {
       String eventType = RTDB.event();  // "put", "patch", o "keep-alive"
-      Serial.println(eventType);
+      //Serial.println(eventType);
       if (eventType != "put" && eventType != "patch") {
         // Ignora eventos de keep-alive
         return;
@@ -179,18 +157,17 @@ void handleAsyncResult(AsyncResult &aResult) {
           }
 
           conectado = true;
-          Serial.println(app.getUid().c_str());
 
         } else if (path == "/instructions/open") {
           onInstructionOpen(RTDB.to<bool>());
         } else if (path.startsWith("/authorizedkeys/")) {
           JsonObject root = doc.as<JsonObject>();
           String id = path.substring(strlen("/authorizedkeys/"));
-          Serial.println(id);
+          //Serial.println(id);
           if (id.indexOf('/') != -1) {
             return;
           }
-          Serial.println("registrando");
+          //Serial.println("registrando");
           handleKeyEvent(id, root);
         } else if (path.startsWith("/authorizedPackages/")) {
           JsonObject root = doc.as<JsonObject>();

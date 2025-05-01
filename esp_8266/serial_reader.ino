@@ -40,8 +40,8 @@ void processInstruction(char* message) {
       firepass = pass;
     }
   } else {
-    Serial.print(F("Validando instruccion: "));
-    Serial.println(instructions);
+    //Serial.print(F("Validando instruccion: "));
+    //Serial.println(instructions);
     if (instructions.startsWith("DOOR_OPENED")) {
       updateDoorStatus(1);
     }

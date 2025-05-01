@@ -11,8 +11,8 @@ void initAuthorizedKeys(JsonObject data) {
     JsonObject keyData = kv.value().as<JsonObject>();
 
     AuthorizedKey k = AuthorizedKey(id, keyData);
-    Serial.println(id);
-    Serial.println(k.getValue());
+    //Serial.println(id);
+    //Serial.println(k.getValue());
     authorizedKeys.push_back(k);
   }
 }
@@ -44,15 +44,15 @@ int checkKeyboardAccess(String clave) {
 }
 void handleKeyEvent(String id, JsonObject data) {
   bool exists = existsById(id);
-  Serial.println(exists);
+  //Serial.println(exists);
   if (exists && data.isNull()) {
-    Serial.println(F("eliminando"));
+    //Serial.println(F("eliminando"));
     removeKeyById(id);
   }else if(exists && !data.isNull()){
-    Serial.println(F("actualizando"));
+    //Serial.println(F("actualizando"));
     updateKey(id,data);
   }else if (!exists && !data.isNull()){
-    Serial.println(F("creando"));
+    //Serial.println(F("creando"));
     createKey(id, data);
   }
 }
@@ -106,10 +106,10 @@ String getAuthKeyId(int validKeyIndex){
 }
 
 void updateDoorStatus(int status){
-    Serial.print(F("doorstatus: "));
-    Serial.println(status);
+    //Serial.print(F("doorstatus: "));
+    //Serial.println(status);
     bool result = Database.set<int>(aClientGeneral, "mailbox/" + ARDUINO_ID + "/doorStatus", status);
-    Serial.println(result);
+    //Serial.println(result);
     resetOpen = !result;
     
 }

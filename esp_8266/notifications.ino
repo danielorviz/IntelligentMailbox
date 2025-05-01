@@ -12,7 +12,7 @@ void sendNotification(String titulo,String mensaje, int type, String typeInfo){
 
   unsigned long currentTime = timeClient.getEpochTime();
   int intentos = 5;
-  Serial.println(F("Enviando notificacion"));
+  //Serial.println(F("Enviando notificacion"));
   Notification notificacion(ARDUINO_ID,titulo,mensaje,currentTime,type, typeInfo);
   String jsonMensaje = notificacion.toJsonObject();
   String result = "";

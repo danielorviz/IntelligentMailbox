@@ -7,7 +7,7 @@ IPAddress subnet(255, 255, 255, 0);
 
 void setupWiFiModule() {
 
-  Serial.println(F("SETUP WIFI"));
+  //Serial.println(F("SETUP WIFI"));
   //WiFi.disconnect(true);
 
   if (WiFi.SSID().length() > 0) {
@@ -21,7 +21,7 @@ void setupWiFiModule() {
     if (fireuser != "break;" && firepass != "break;") {
       WiFi.mode(WIFI_STA);
       WiFi.begin();
-      Serial.println(WiFi.SSID());
+      //Serial.println(WiFi.SSID());
 
       bool conected = connectToWiFi();
       if (conected) {
@@ -34,17 +34,17 @@ void setupWiFiModule() {
   WiFi.mode(WIFI_AP);
   WiFi.begin();
   // Si no están guardadas, iniciar el servidor web para recibir credenciales
-  Serial.println(F("Esperando credenciales..."));
+  //Serial.println(F("Esperando credenciales..."));
   if (!WiFi.softAPConfig(local_IP, gateway, subnet)) {
-    Serial.println(F("Configuración de IP estática fallida"));
+    //Serial.println(F("Configuración de IP estática fallida"));
   } else {
-    Serial.println(F("Configuración de IP estática exitosa"));
+    //Serial.println(F("Configuración de IP estática exitosa"));
   }
 
   WiFi.softAP(ARDUINO_ID, WIFI_MANAGER_PASSW);
 
-  Serial.print(F("IP del AP: "));
-  Serial.println(WiFi.softAPIP());
+  //Serial.print(F("IP del AP: "));
+  //Serial.println(WiFi.softAPIP());
 
   server.on("/wifi", HTTP_POST, handleConfigure);
   server.on("/firebase", HTTP_POST, handleFirebase);
@@ -62,24 +62,24 @@ bool connectToWiFi() {
   while (WiFi.status() != WL_CONNECTED && intentos > 0) {
     delay(2000);
     intentos--;
-    Serial.println(F("Conectando a WiFi..."));
+    //Serial.println(F("Conectando a WiFi..."));
   }
   if (intentos <= 0) {
     return false;
   }
-  Serial.println(F("Conexión WiFi exitosa"));
+  //Serial.println(F("Conexión WiFi exitosa"));
   return true;
 }
 
 void handleConfigure() {
-  Serial.println(F("comprobando"));
+  //Serial.println(F("comprobando"));
   if (server.hasArg("ssid") && server.hasArg("password")) {
     String ssid = server.arg("ssid");
     String password = server.arg("password");
 
-    Serial.println(F("Credenciales recibidas:"));
-    Serial.println("SSID: " + ssid);
-    Serial.println("Contraseña WiFi: " + password);
+    //Serial.println(F("Credenciales recibidas:"));
+    //Serial.println("SSID: " + ssid);
+    //Serial.println("Contraseña WiFi: " + password);
     WiFi.begin(ssid, password);
     if (connectToWiFi()) {
 
@@ -99,7 +99,7 @@ void handleConfigure() {
 }
 
 void handleFirebase() {
-  Serial.println("comprobando");
+  //Serial.println("comprobando");
   if (server.hasArg("user") && server.hasArg("password")) {
 
     fireuser = server.arg("user");
@@ -109,9 +109,9 @@ void handleFirebase() {
     delay(1000);
     Serial.println("FIRE_WRITE_P_"+firepass);
     delay(500);
-    Serial.println(F("Credenciales recibidas:"));
-    Serial.println("user: " + fireuser);
-    Serial.println("Contraseña firebase: " + firepass);
+    //Serial.println(F("Credenciales recibidas:"));
+    //Serial.println("user: " + fireuser);
+    //Serial.println("Contraseña firebase: " + firepass);
 
 
     server.send(200, "text/plain", "Credenciales recibidas. Intentando conectar...");
