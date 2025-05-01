@@ -179,7 +179,6 @@ void handleAsyncResult(AsyncResult &aResult) {
           }
 
           conectado = true;
-          Serial.println(app.getUid().c_str());
 
         } else if (path == "/instructions/open") {
           onInstructionOpen(RTDB.to<bool>());
