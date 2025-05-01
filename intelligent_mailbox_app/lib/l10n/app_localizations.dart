@@ -857,6 +857,12 @@ abstract class AppLocalizations {
   /// **'To add a mailbox, access the mobile app'**
   String get addMailboxFromApp;
 
+  /// No description provided for @chooseMailboxName.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a name for your mailbox'**
+  String get chooseMailboxName;
+
   /// No description provided for @nfcError.
   ///
   /// In en, this message translates to:
@@ -886,6 +892,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NFC not available'**
   String get nfcNotAvailable;
+
+  /// No description provided for @nfcOnlyInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'To scan, use the mobile app'**
+  String get nfcOnlyInApp;
 
   /// No description provided for @door.
   ///

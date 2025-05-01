@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/edit_auth_key.dart';
@@ -14,7 +15,7 @@ class AuthorizedKeysTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(!context.mounted) return const SizedBox.shrink();
+    if (!context.mounted) return const SizedBox.shrink();
     final mailboxProvider = Provider.of<MailboxProvider>(context);
     final mailbox = mailboxProvider.selectedMailbox;
 
@@ -36,10 +37,7 @@ class AuthorizedKeysTab extends StatelessWidget {
           ),
         ),
         floatingActionButton: CustomFloatingActionButton(
-          pageBuilder:
-              (context) => EditAuthKeyScreen(
-                mailboxId: mailbox.id,
-              ),
+          pageBuilder: (context) => EditAuthKeyScreen(mailboxId: mailbox.id),
         ),
       );
     }
@@ -47,11 +45,36 @@ class AuthorizedKeysTab extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          if (kIsWeb) ...[
+            SliverAppBar(
+              floating: false,
+              elevation: 0,
+              flexibleSpace: Container(color: AppTheme.scaffoldBackgroundColor),
+              pinned: true,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.add, color: Colors.white,),
+                    label: Text(AppLocalizations.of(context)!.newKey),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  EditAuthKeyScreen(mailboxId: mailbox.id),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               final key = mailbox.authorizedKeys[index];
-              final bool isExpired =
-                  key.permanent ? false : key.isExpired();
+              final bool isExpired = key.permanent ? false : key.isExpired();
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
@@ -65,12 +88,12 @@ class AuthorizedKeysTab extends StatelessWidget {
                   );
                 },
                 child: Card(
-                  color:key.permanent? Colors.white:
-                      isExpired
-                          ? (
-                              AppTheme.cardExpiredLight)
-                          : (
-                               AppTheme.cardActiveLight),
+                  color:
+                      key.permanent
+                          ? Colors.white
+                          : isExpired
+                          ? (AppTheme.cardExpiredLight)
+                          : (AppTheme.cardActiveLight),
                   margin: const EdgeInsets.symmetric(
                     vertical: 8.0,
                     horizontal: 16.0,
@@ -94,9 +117,17 @@ class AuthorizedKeysTab extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Icon(
-                                  key.permanent? Icons.key:
-                                  isExpired ? Icons.timer_off_sharp : Icons.timer_sharp,
-                                  color:key.permanent? Colors.black: isExpired ? Colors.red : Colors.green,
+                                  key.permanent
+                                      ? Icons.key
+                                      : isExpired
+                                      ? Icons.timer_off_sharp
+                                      : Icons.timer_sharp,
+                                  color:
+                                      key.permanent
+                                          ? Colors.black
+                                          : isExpired
+                                          ? Colors.red
+                                          : Colors.green,
                                 ),
                                 IconButton(
                                   icon: const Icon(
@@ -170,8 +201,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                                     children: [
                                       Text(
                                         DateTimeUtils.formatDate(
-                                          key.getInitDateWithOffset(
-                                          ),
+                                          key.getInitDateWithOffset(),
                                         ),
                                         style:
                                             Theme.of(
@@ -180,8 +210,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                                       ),
                                       Text(
                                         DateTimeUtils.formatTime(
-                                          key.getInitDateWithOffset(
-                                          ),
+                                          key.getInitDateWithOffset(),
                                         ),
                                         style:
                                             Theme.of(
@@ -202,8 +231,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                                     children: [
                                       Text(
                                         DateTimeUtils.formatDate(
-                                          key.getFinishDateWithOffset(
-                                          ),
+                                          key.getFinishDateWithOffset(),
                                         ),
                                         style:
                                             Theme.of(
@@ -212,8 +240,7 @@ class AuthorizedKeysTab extends StatelessWidget {
                                       ),
                                       Text(
                                         DateTimeUtils.formatTime(
-                                          key.getFinishDateWithOffset(
-                                          ),
+                                          key.getFinishDateWithOffset(),
                                         ),
                                         style:
                                             Theme.of(
@@ -249,11 +276,8 @@ class AuthorizedKeysTab extends StatelessWidget {
           SliverPadding(padding: const EdgeInsets.only(bottom: 80)),
         ],
       ),
-      floatingActionButton: CustomFloatingActionButton(
-        pageBuilder:
-            (context) => EditAuthKeyScreen(
-              mailboxId: mailbox.id,
-            ),
+      floatingActionButton: kIsWeb ? null: CustomFloatingActionButton(
+        pageBuilder: (context) => EditAuthKeyScreen(mailboxId: mailbox.id),
       ),
     );
   }

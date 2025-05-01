@@ -127,16 +127,16 @@ class MailboxService {
   Future<void> createMailbox(
     String mailboxId,
     String userId,
-    int offset,
+    String mailboxName,
+    String language,
   ) async {
     try {
       await FirebaseDatabase.instance.ref("mailbox/$mailboxId").update({
-        "name": mailboxId,
+        "name": mailboxName,
         "id": mailboxId,
-        "instructions/offset": offset,
+        "language": language,
         "instructions/open": false,
         "users": {userId: true},
-        "language": Constants.languageDefault,
         "doorStatus": Constants.doorClosed,
       });
       await FirebaseDatabase.instance

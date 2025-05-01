@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/mailbox_initial_config.dart';
@@ -36,11 +37,14 @@ class _NewMailboxConfigurationScreenState
   bool _accountVerified = false;
 
   //Step 1
+  final _formStep1 = GlobalKey<FormState>();
   bool _isWiFiEnabled = false;
   bool isMailboxIdValid = false;
   bool isMailboxConnected = false;
   final TextEditingController mailboxIdController = TextEditingController();
   final TextEditingController mailboxKeyController = TextEditingController();
+  final TextEditingController mailboxNameController = TextEditingController();
+  String _selectedLanguage = PlatformDispatcher.instance.locale.languageCode;
   MailboxInitialConfig? _mailboxInitialConfig;
 
   // Step 2
@@ -136,7 +140,7 @@ class _NewMailboxConfigurationScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text( AppLocalizations.of(context)!.connectionError),
+          title: Text(AppLocalizations.of(context)!.connectionError),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,6 +227,9 @@ class _NewMailboxConfigurationScreenState
         isLoadingPrincipal = true;
         _mailboxInitialConfig = null;
       });
+      if (!_formStep1.currentState!.validate()) {
+        return;
+      }
       final initialConfig = await _mailboxService.getMailboxInitializer(
         mailboxIdController.text,
         mailboxKeyController.text,
@@ -352,7 +359,8 @@ class _NewMailboxConfigurationScreenState
       await _mailboxService.createMailbox(
         mailboxIdController.text,
         _userProvider.user!.uid,
-        DateTime.now().timeZoneOffset.inSeconds,
+        _selectedLanguage,
+        mailboxNameController.text,
       );
     } else if (_currentStep == 4) {
       Navigator.of(context).pop();
@@ -378,7 +386,9 @@ class _NewMailboxConfigurationScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.connectNewMailbox)),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.connectNewMailbox),
+      ),
       body: Stack(
         children: [
           Stepper(
@@ -466,44 +476,93 @@ class _NewMailboxConfigurationScreenState
                 ),
               ),
               Step(
-                title: Text(AppLocalizations.of(context)!.mailboxDetails,
+                title: Text(
+                  AppLocalizations.of(context)!.mailboxDetails,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppLocalizations.of(context)!.enterMailboxDetails,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: mailboxIdController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.mailboxId,
-                        border: OutlineInputBorder(),
+                content: Form(
+                  key: _formStep1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.enterMailboxDetails,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: mailboxKeyController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.mailboxKey
-,
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: mailboxIdController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.mailboxId,
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: mailboxKeyController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.mailboxKey,
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: mailboxNameController,
+                        maxLength: 10,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.chooseMailboxName,
+                          border: OutlineInputBorder(),
+                        ),
+                        validator:
+                            (value) =>
+                                value == null || value.isEmpty
+                                    ? AppLocalizations.of(
+                                      context,
+                                    )!.mailboxNameHint
+                                    : null,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: _selectedLanguage,
+                        decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.notificationLanguageLabel,
+                          border: OutlineInputBorder(),
+                        ),
+                        items:
+                            AppLocalizations.supportedLocales.map((language) {
+                              return DropdownMenuItem<String>(
+                                value: language.languageCode,
+                                child: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.language(language.languageCode),
+                                ),
+                              );
+                            }).toList(),
+                        onChanged: (value) {;
+                          setState(() {
+                            _selectedLanguage = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Step(
-                title: Text(AppLocalizations.of(context)!.connectToMailbox,
+                title: Text(
+                  AppLocalizations.of(context)!.connectToMailbox,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.pleaseConnectManually,
+                    Text(
+                      AppLocalizations.of(context)!.pleaseConnectManually,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     SizedBox(height: 8),
@@ -543,7 +602,9 @@ class _NewMailboxConfigurationScreenState
                                 text: _mailboxInitialConfig!.wifiPass,
                               ),
                             );
-                            _showMessage(_getAppLocalizations()?.passwordCopied ?? '');
+                            _showMessage(
+                              _getAppLocalizations()?.passwordCopied ?? '',
+                            );
                           },
                         ),
                       ],
@@ -552,12 +613,14 @@ class _NewMailboxConfigurationScreenState
                 ),
               ),
               Step(
-                title: Text(AppLocalizations.of(context)!.connectMailboxToWiFi,
+                title: Text(
+                  AppLocalizations.of(context)!.connectMailboxToWiFi,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 content: Column(
                   children: [
-                    Text(AppLocalizations.of(context)!.selectWiFiNetwork,
+                    Text(
+                      AppLocalizations.of(context)!.selectWiFiNetwork,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     SizedBox(
@@ -607,7 +670,10 @@ class _NewMailboxConfigurationScreenState
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(AppLocalizations.of(context)!.congratulationsSetupCompleted,
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.congratulationsSetupCompleted,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     SizedBox(height: 8),
@@ -637,7 +703,9 @@ class _NewMailboxConfigurationScreenState
             children: [
               TextField(
                 controller: ssidPasswordController,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.password),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.password,
+                ),
                 obscureText: true,
               ),
             ],

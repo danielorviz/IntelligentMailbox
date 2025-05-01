@@ -392,6 +392,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addMailboxFromApp => 'Para añadir un buzón, acceda a la app móvil';
 
   @override
+  String get chooseMailboxName => 'Elija un nombre para su buzón';
+
+  @override
   String get nfcError => 'Error escaneando';
 
   @override
@@ -405,6 +408,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get nfcNotAvailable => 'NFC no está activo';
+
+  @override
+  String get nfcOnlyInApp => 'Para escanear use la app móvil';
 
   @override
   String get door => 'Puerta';

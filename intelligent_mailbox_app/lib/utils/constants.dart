@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
+
 class Constants {
   static const String connectionChecking = 'CHECKING';
   static const String connectionFailed = 'FAILED';
@@ -6,12 +9,10 @@ class Constants {
   static const int doorClosed = 0;
   static const int doorOpened = 1;
 
-
-  static const String languageSpanish= 'es';
-  static const String languageEnglish = 'en';
-  static const String languageDefault = languageEnglish;
-  static const List<String> supportedLanguages = [
-    languageSpanish,
-    languageEnglish,
-  ];
+  static String getDefaultLocale() {
+    String languageCode = PlatformDispatcher.instance.locale.languageCode;
+    return AppLocalizations.supportedLocales.contains(languageCode)
+        ? languageCode
+        : AppLocalizations.supportedLocales.first.languageCode;
+  }
 }

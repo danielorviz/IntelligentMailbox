@@ -23,7 +23,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
   final TextEditingController _nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _notificationsEnabled = false;
-  String _selectedLanguage = Constants.languageDefault;
+  String _selectedLanguage = Constants.getDefaultLocale();
   final MailboxService mailboxService = MailboxService();
   final NotificationService notificationService = NotificationService();
   String? _mailboxId;
@@ -123,6 +123,7 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
                     controller: _nameController,
                     decoration: InputDecoration(
                       labelText: AppLocalizations.of(context)!.mailboxNameLabel,
@@ -174,13 +175,13 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
                       DropdownButton<String>(
                         value: _selectedLanguage,
                         items:
-                            Constants.supportedLanguages.map((language) {
+                            AppLocalizations.supportedLocales.map((language) {
                               return DropdownMenuItem<String>(
-                                value: language,
+                                value: language.languageCode,
                                 child: Text(
                                   AppLocalizations.of(
                                     context,
-                                  )!.language(language),
+                                  )!.language(language.languageCode),
                                 ),
                               );
                             }).toList(),

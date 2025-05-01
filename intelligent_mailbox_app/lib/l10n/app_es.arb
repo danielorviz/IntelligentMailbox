@@ -148,13 +148,14 @@
   "mailboxes": "Buzones",
   "addMailbox":"Añadir buzón",
   "addMailboxFromApp":"Para añadir un buzón, acceda a la app móvil",
-
+  "chooseMailboxName":"Elija un nombre para su buzón",
 
   "nfcError":"Error escaneando",
   "nfcNotDetected":"No se ha detectado ninguna etiqueta NFC",
   "scanNfc":"Escanear NFC",
   "scanning": "Escaneando ...",
   "nfcNotAvailable":"NFC no está activo",
+  "nfcOnlyInApp":"Para escanear use la app móvil",
   
   "door": "Puerta",
   "openDoor": "Abrir puerta",

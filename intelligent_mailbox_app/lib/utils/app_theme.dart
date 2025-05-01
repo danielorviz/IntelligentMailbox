@@ -14,6 +14,7 @@ class AppTheme {
   static const Color textOnLightBlue = Color(0xFF054A91); 
   static const Color textOnBackgroundLight = Color(0xFF054A91); 
   static const Color textOnAccentOrange = Color(0xFFFFFFFF); 
+  static const Color scaffoldBackgroundColor = Color.fromARGB(255, 234, 240, 247);
 
 // Colores adaptados para tema oscuro
   static const Color backgroundDark = Color(0xFF012A4A); 
@@ -134,7 +135,7 @@ class AppTheme {
  
   static ThemeData lightTheme = ThemeData(
     primaryColor: primaryBlue,
-    scaffoldBackgroundColor: const Color.fromARGB(255, 234, 240, 247),
+    scaffoldBackgroundColor: scaffoldBackgroundColor,
     appBarTheme: AppBarTheme(
       backgroundColor: primaryBlue,
       iconTheme: const IconThemeData(color: textOnPrimaryBlue),

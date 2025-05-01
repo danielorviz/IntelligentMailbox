@@ -24,7 +24,7 @@ class Mailbox {
     this.wifiStatus = Constants.connectionFailed,
     this.lastWifiStatusCheck = 0,
     this.doorStatus = Constants.doorClosed,
-    this.language = Constants.languageDefault,
+    this.language = "en",
   });
 
   factory Mailbox.fromMap(Map<String, dynamic> data, String documentId) {
@@ -39,9 +39,9 @@ class Mailbox {
             entry.key.toString(),
           );
         }).toList();
-        keys.sort(
-          (a, b) => a.permanent == b.permanent ? 0 : (a.permanent ? -1 : 1),
-        );
+    keys.sort(
+      (a, b) => a.permanent == b.permanent ? 0 : (a.permanent ? -1 : 1),
+    );
 
     final authorizedPackagesData =
         (data['authorizedPackages'] as Map<dynamic, dynamic>?) ?? {};
@@ -54,9 +54,7 @@ class Mailbox {
             entry.key.toString(),
           );
         }).toList();
-        packages.sort(
-          (a, b) => a.isKey == b.isKey ? 0 : (a.isKey ? -1 : 1),
-        );
+    packages.sort((a, b) => a.isKey == b.isKey ? 0 : (a.isKey ? -1 : 1));
 
     return Mailbox(
       id: documentId,
@@ -67,7 +65,7 @@ class Mailbox {
       wifiStatus: data['wifiStatus'] ?? Constants.connectionFailed,
       lastWifiStatusCheck: data['lastWifiStatusCheck'] ?? 0,
       doorStatus: data['doorStatus'] ?? Constants.doorClosed,
-      language: data['language'] ?? Constants.languageDefault,
+      language: data['language'] ?? Constants.getDefaultLocale(),
     );
   }
 
@@ -82,9 +80,7 @@ class Mailbox {
               DateTime.now(),
             )
             : lastWifiStatusCheck;
-    return DateTimeUtils.getDateTimeFromSecondsAndOffset(
-      lastDate,
-    );
+    return DateTimeUtils.getDateTimeFromSecondsAndOffset(lastDate);
   }
 
   bool getDoorStatusBool() {

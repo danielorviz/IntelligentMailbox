@@ -38,6 +38,14 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
   }
 
   Future<void> _scanNFC() async {
+    if(kIsWeb){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.nfcOnlyInApp),
+        ),
+      );
+      return;
+    }
     if (_isScanning) return;
 
     try {

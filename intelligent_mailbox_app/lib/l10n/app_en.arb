@@ -138,12 +138,14 @@
   "mailboxes": "Mailboxes",
   "addMailbox": "Add mailbox",
   "addMailboxFromApp": "To add a mailbox, access the mobile app",
+  "chooseMailboxName":"Choose a name for your mailbox",
 
   "nfcError":"Error scaning",
   "nfcNotDetected":"No NFC tag detected",
   "scanNfc":"Scan NFC",
   "scanning": "Scanning ...",
   "nfcNotAvailable":"NFC not available",
+  "nfcOnlyInApp": "To scan, use the mobile app",
 
   "door": "Door",
   "openDoor": "Open door",

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/pages/edit_package.dart';
@@ -50,6 +51,32 @@ class PackagesTab extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          if (kIsWeb) ...[
+            SliverAppBar(
+              floating: false,
+              elevation: 0,
+              flexibleSpace: Container(color: AppTheme.scaffoldBackgroundColor),
+              pinned: true,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.add, color: Colors.white,),
+                    label: Text(AppLocalizations.of(context)!.newPackage),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  EditPackageScreen(mailboxId: mailbox.id),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               final key = mailbox.authorizedPackages[index];
@@ -197,7 +224,7 @@ class PackagesTab extends StatelessWidget {
           SliverPadding(padding: const EdgeInsets.only(bottom: 80)),
         ],
       ),
-      floatingActionButton: CustomFloatingActionButton(
+      floatingActionButton: kIsWeb? null: CustomFloatingActionButton(
         pageBuilder: (context) => EditPackageScreen(mailboxId: mailbox.id),
       ),
     );
