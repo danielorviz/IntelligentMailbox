@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Mi Aplicación';
+  String get appTitle => 'Intelligent Mailbox';
 
   @override
   String get helloWorld => '¡Hola Mundo!';
