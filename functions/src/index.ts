@@ -28,9 +28,13 @@ export const sendNotification = onValueCreated('/notifications/{idbuzon}/{idnoti
     logger.log('Notificación recibida para buzón:', idbuzon);
     logger.log('Contenido de la notificación:', notificacion);
 	
-	if(notificacion.type == 1 && !notificacion.isKey){
+	if(notificacion.type == 1){
 		const typeInfoUuid = notificacion.typeInfo.split(".;.")[0];
-		admin.database().ref('mailbox').child(idbuzon).child('authorizedPackages').child(typeInfoUuid).child('received').set(true);
+		
+		const iskeySnapshot = await admin.database().ref('mailbox').child(idbuzon).child('authorizedPackages').child(typeInfoUuid).child('isKey').once('value');
+		if(!iskeySnapshot.val()){
+			admin.database().ref('mailbox').child(idbuzon).child('authorizedPackages').child(typeInfoUuid).update({received:true});
+		}
 	}
 
 	const nameSnapshot = await admin.database().ref('mailbox').child(idbuzon).child('name').once('value');
@@ -41,7 +45,7 @@ export const sendNotification = onValueCreated('/notifications/{idbuzon}/{idnoti
 	
 	const langTranslations = mailboxLanguage == "es" ? translationsEs : translationsEn;
 	const newNotification = langTranslations["newNotification"];
-	const bodyMessage = langTranslations[notificacion.mensaje] + ( (notificacion.type ==1 || notificacion.type == 0) ? notificacion.typeInfo.split(".;.")[1] : "");
+	const bodyMessage = langTranslations[notificacion.mensaje] + " " + ( (notificacion.type ==1 || notificacion.type == 0) ? notificacion.typeInfo.split(".;.")[1] : "");
     const message = {
       notification: {
         title: `${newNotification} ${mailboxName}`,
