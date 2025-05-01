@@ -168,6 +168,7 @@ class NotificationService {
   }
 
   Future<void> initFirebaseMessaging() async {
+    if (kIsWeb) return;
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print(
         "Message received while in foreground: ${message.notification?.title}",

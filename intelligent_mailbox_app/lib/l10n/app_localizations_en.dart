@@ -23,7 +23,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home => 'Home';
 
   @override
-  String get packages => 'Packages';
+  String get packages => 'Accesses';
 
   @override
   String get keys => 'Keys';
@@ -104,22 +104,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDeleteAuthPackage => 'Are you sure you want to delete this authorized code?';
 
   @override
-  String get authPackageDeleted => 'Authorized code removed';
+  String get authPackageDeleted => 'Authorized access removed';
 
   @override
-  String get editPackage => 'Edit code';
+  String get editPackage => 'Edit access';
 
   @override
-  String get newPackage => 'New code';
+  String get newPackage => 'New access';
 
   @override
   String get packageName => 'Name';
 
   @override
-  String get packageCode => 'Code';
+  String get packageCode => 'Access code';
 
   @override
-  String get enterPackageCode => 'Please enter a code code';
+  String get enterPackageCode => 'Please enter a access code';
 
   @override
   String get permanentAccess => 'Permanent access';

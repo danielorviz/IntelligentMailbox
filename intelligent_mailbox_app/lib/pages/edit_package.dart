@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_package.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
+import 'package:intelligent_mailbox_app/widgets/save_actions_buttons.dart';
 
 class EditPackageScreen extends StatefulWidget {
   final AuthorizedPackage? keyData;
@@ -143,10 +145,22 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: kIsWeb,
+        automaticallyImplyLeading: !kIsWeb,
         title:
             widget.keyData != null
                 ? Text(AppLocalizations.of(context)!.editPackage)
                 : Text(AppLocalizations.of(context)!.newPackage),
+                actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0), 
+            child: Icon(
+              Icons.nfc,
+              size: 25,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -223,7 +237,7 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.permanentAccess,
-                    style: TextStyle(fontSize: 16),
+                    style:  Theme.of(context).textTheme.headlineSmall,
                   ),
                   Switch(
                     value: _isPermanent,
@@ -236,16 +250,10 @@ class _EditPackageScreenState extends State<EditPackageScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _saveKey,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.save,
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
+              SaveActionsButtons(
+                    onSave: _saveKey,
+                    saveText: AppLocalizations.of(context)!.save,
+                  ),
             ],
           ),
         ),

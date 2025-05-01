@@ -8,6 +8,7 @@ import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/services/notification_service.dart';
 import 'package:intelligent_mailbox_app/utils/constants.dart';
 import 'package:intelligent_mailbox_app/widgets/responsive_wrapper.dart';
+import 'package:intelligent_mailbox_app/widgets/save_actions_buttons.dart';
 import 'package:provider/provider.dart';
 
 class MailboxSettingsScreen extends StatefulWidget {
@@ -74,10 +75,12 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
     );
 
     try {
-      await notificationService.activateDeactivateMailboxNotifications(
-        _mailboxId!,
-        _notificationsEnabled,
-      );
+      if (!kIsWeb) {
+        await notificationService.activateDeactivateMailboxNotifications(
+          _mailboxId!,
+          _notificationsEnabled,
+        );
+      }
       await mailboxService.saveSettings(
         _mailboxId!,
         _nameController.text,
@@ -111,121 +114,94 @@ class _MailboxSettingsScreenState extends State<MailboxSettingsScreen> {
         title: Text(AppLocalizations.of(context)!.mailboxSettingsTitle),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0), 
+        padding: const EdgeInsets.all(16.0),
         child: ResponsiveWrapper(
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.mailboxNameLabel,
-                    border: const OutlineInputBorder(),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.mailboxNameLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    maxLength: 10,
+                    validator:
+                        (value) =>
+                            value == null || value.isEmpty
+                                ? AppLocalizations.of(context)!.mailboxNameHint
+                                : null,
                   ),
-                  maxLength: 10,
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? AppLocalizations.of(context)!.mailboxNameHint
-                              : null,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.notifications),
-                    const SizedBox(width: 8),
-                    Text(
-                      AppLocalizations.of(context)!.notificationsEnabledLabel,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(width: 24),
-                    Switch(
-                      value: _notificationsEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _notificationsEnabled = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.language),
-                    const SizedBox(width: 8),
-                    Text(
-                      AppLocalizations.of(context)!.notificationLanguageLabel,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(width: 24),
-                    DropdownButton<String>(
-                      value: _selectedLanguage,
-                      items:
-                          Constants.supportedLanguages.map((language) {
-                            return DropdownMenuItem<String>(
-                              value: language,
-                              child: Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.language(language),
-                              ),
-                            );
-                          }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedLanguage = value!;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
+                  const SizedBox(height: 16),
+                  if (!kIsWeb) ...{
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.notifications),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.notificationsEnabledLabel,
+                          style:  Theme.of(context).textTheme.headlineSmall,
                         ),
-                        textStyle: const TextStyle(fontSize: 16),
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.cancel,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    ElevatedButton(
-                      onPressed: _saveSettings,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
+                        const SizedBox(width: 24),
+                        Switch(
+                          value: _notificationsEnabled,
+                          onChanged: (value) {
+                            setState(() {
+                              _notificationsEnabled = value;
+                            });
+                          },
                         ),
-                        textStyle: const TextStyle(fontSize: 16),
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.saveSettingsButton,
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                    const SizedBox(height: 16),
+                  },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.language),
+                      const SizedBox(width: 8),
+                      Text(
+                        AppLocalizations.of(context)!.notificationLanguageLabel,
+                        style:  Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(width: 24),
+                      DropdownButton<String>(
+                        value: _selectedLanguage,
+                        items:
+                            Constants.supportedLanguages.map((language) {
+                              return DropdownMenuItem<String>(
+                                value: language,
+                                child: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.language(language),
+                                ),
+                              );
+                            }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedLanguage = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SaveActionsButtons(
+                    onSave: _saveSettings,
+                    saveText: AppLocalizations.of(context)!.saveSettingsButton,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
       ),
     );
   }

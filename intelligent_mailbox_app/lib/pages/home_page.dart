@@ -131,10 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
             _widgetOptions.map((page) {
               return Center(
                 child: ResponsiveWrapper(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: page,
-                  ),
                 ),
               );
             }).toList(),

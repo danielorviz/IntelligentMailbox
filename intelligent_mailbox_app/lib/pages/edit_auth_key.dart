@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
 import 'package:intelligent_mailbox_app/models/authorized_key.dart';
 import 'package:intelligent_mailbox_app/services/mailbox_service.dart';
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
+import 'package:intelligent_mailbox_app/widgets/save_actions_buttons.dart';
 
 class EditAuthKeyScreen extends StatefulWidget {
   final AuthorizedKey? keyData;
@@ -24,7 +26,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
   DateTime? _finishDate;
   bool _isPermanent = false;
   bool _isObscured = true;
-  bool _hasDifferentTimezone = false;
 
   @override
   void initState() {
@@ -187,10 +188,18 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: kIsWeb,
+        automaticallyImplyLeading: !kIsWeb,
         title:
             widget.keyData != null
                 ? Text(AppLocalizations.of(context)!.editKey)
                 : Text(AppLocalizations.of(context)!.newKey),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Icon(Icons.dialpad, size: 25, color: Colors.white),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -200,16 +209,14 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                maxLength: 20,
+                maxLength: 15,
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.keyName,
                   border: OutlineInputBorder(),
                 ),
                 inputFormatters: [
-                  FilteringTextInputFormatter.deny(
-                    RegExp(r'[.;]'),
-                  ),
+                  FilteringTextInputFormatter.deny(RegExp(r'[.;]')),
                 ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -250,7 +257,7 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.permanentKey,
-                    style: TextStyle(fontSize: 16),
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   Switch(
                     value: _isPermanent,
@@ -276,11 +283,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          if (_hasDifferentTimezone) ...{
-                            Icon(Icons.smartphone),
-                            const SizedBox(width: 8),
-                          },
-
                           Text(
                             _initDate != null
                                 ? (" ${DateTimeUtils.formatDate(_initDate!)}   ${DateTimeUtils.formatTime(_initDate!)}")
@@ -289,19 +291,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                           ),
                         ],
                       ),
-                      if (_hasDifferentTimezone && _initDate != null) ...{
-                        Row(
-                          children: [
-                            Icon(Icons.markunread_mailbox),
-                            const SizedBox(width: 8),
-                            Text(
-                              (" ${DateTimeUtils.formatDate(_initDate!.toUtc())}   ${DateTimeUtils.formatTime(_initDate!.toUtc())}"),
-                              style: Theme.of(context).textTheme.bodyLarge!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      },
                     ],
                   ),
                   trailing: const Icon(Icons.event),
@@ -319,11 +308,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          if (_hasDifferentTimezone) ...{
-                            Icon(Icons.smartphone),
-                            const SizedBox(width: 8),
-                          },
-
                           Text(
                             _finishDate != null
                                 ? (" ${DateTimeUtils.formatDate(_finishDate!)}   ${DateTimeUtils.formatTime(_finishDate!)}")
@@ -332,19 +316,6 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                           ),
                         ],
                       ),
-                      if (_hasDifferentTimezone && _finishDate != null) ...{
-                        Row(
-                          children: [
-                            Icon(Icons.markunread_mailbox),
-                            const SizedBox(width: 8),
-                            Text(
-                              (" ${DateTimeUtils.formatDate(_finishDate!.toUtc())}   ${DateTimeUtils.formatTime(_finishDate!.toUtc())}"),
-                              style: Theme.of(context).textTheme.bodyLarge!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      },
                     ],
                   ),
                   trailing: const Icon(Icons.event_available),
@@ -353,15 +324,9 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
                 ),
               ],
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _saveKey,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.save,
-                  style: TextStyle(fontSize: 18),
-                ),
+              SaveActionsButtons(
+                onSave: _saveKey,
+                saveText: AppLocalizations.of(context)!.save,
               ),
             ],
           ),

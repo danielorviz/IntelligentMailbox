@@ -23,7 +23,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get home => 'Inicio';
 
   @override
-  String get packages => 'Paquetes';
+  String get packages => 'Accesos';
 
   @override
   String get keys => 'Claves';
@@ -98,28 +98,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get haveNoAuthKeys => 'No tiene claves autorizadas';
 
   @override
-  String get haveNoPackages => 'No tiene códigos autorizados';
+  String get haveNoPackages => 'No tiene accesos autorizados';
 
   @override
-  String get confirmDeleteAuthPackage => '¿Estás seguro de que deseas eliminar este código autorizado?';
+  String get confirmDeleteAuthPackage => '¿Estás seguro de que deseas eliminar este acceso?';
 
   @override
-  String get authPackageDeleted => 'Paquete código eliminado';
+  String get authPackageDeleted => 'Acceso eliminado';
 
   @override
-  String get editPackage => 'Editar código';
+  String get editPackage => 'Editar acceso';
 
   @override
-  String get newPackage => 'Nuevo código';
+  String get newPackage => 'Nuevo Acceso';
 
   @override
   String get packageName => 'Nombre';
 
   @override
-  String get packageCode => 'Código';
+  String get packageCode => 'Código acceso';
 
   @override
-  String get enterPackageCode => 'Por favor, introduzca un código';
+  String get enterPackageCode => 'Por favor, introduzca un código de acceso';
 
   @override
   String get permanentAccess => 'Acceso permanente';

@@ -122,7 +122,7 @@ abstract class AppLocalizations {
   /// No description provided for @packages.
   ///
   /// In en, this message translates to:
-  /// **'Packages'**
+  /// **'Accesses'**
   String get packages;
 
   /// No description provided for @keys.
@@ -284,19 +284,19 @@ abstract class AppLocalizations {
   /// No description provided for @authPackageDeleted.
   ///
   /// In en, this message translates to:
-  /// **'Authorized code removed'**
+  /// **'Authorized access removed'**
   String get authPackageDeleted;
 
   /// No description provided for @editPackage.
   ///
   /// In en, this message translates to:
-  /// **'Edit code'**
+  /// **'Edit access'**
   String get editPackage;
 
   /// No description provided for @newPackage.
   ///
   /// In en, this message translates to:
-  /// **'New code'**
+  /// **'New access'**
   String get newPackage;
 
   /// No description provided for @packageName.
@@ -308,13 +308,13 @@ abstract class AppLocalizations {
   /// No description provided for @packageCode.
   ///
   /// In en, this message translates to:
-  /// **'Code'**
+  /// **'Access code'**
   String get packageCode;
 
   /// No description provided for @enterPackageCode.
   ///
   /// In en, this message translates to:
-  /// **'Please enter a code code'**
+  /// **'Please enter a access code'**
   String get enterPackageCode;
 
   /// No description provided for @permanentAccess.
