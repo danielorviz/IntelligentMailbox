@@ -33,10 +33,10 @@ class NotificationsTabState extends State<NotificationsTab>
   }
 
   Icon _getIconForType(int type) {
-    if (type == MailboxNotification.typeKey) {
+    if (type == MailboxNotification.typeKey || type == MailboxNotification.typeKeyFailed) {
       return const Icon(Icons.dialpad, size: 25);
     }
-    if (type == MailboxNotification.typePackage) {
+    if (type == MailboxNotification.typePackage || type == MailboxNotification.typePackageFailed) {
       return const Icon(Icons.nfc, size: 25);
     }
     if (type == MailboxNotification.typeLetter) {
@@ -70,7 +70,9 @@ class NotificationsTabState extends State<NotificationsTab>
     final mailbox = mailboxProvider.selectedMailbox;
 
     if (mailbox == null) {
-      return const Center(child: Text('No mailbox selected'));
+      return Center(child: Text(AppLocalizations.of(context)!.noMailboxSelected,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),);
     }
     _updateAnimationState(mailboxProvider.unreadNotifications > 0);
     return StreamBuilder<List<MailboxNotification>>(
@@ -80,11 +82,12 @@ class NotificationsTabState extends State<NotificationsTab>
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           print('snapshot error: ${snapshot.error}');
-          return const Center(child: Text('Error loading notifications'));
+          return Center(child: Text(AppLocalizations.of(context)!.noNotificationsFound,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),);
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
-            child: Text(
-              'No notifications found',
+            child: Text(AppLocalizations.of(context)!.noNotificationsFound,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           );

@@ -29,7 +29,8 @@
   "keys":"Claves",
   "mail": "Correo",
   "delete":"Eliminar",
-  "noMailboxSelected":"No hay un buzón seleccionado",
+  "noMailboxSelected":"Añada un buzón para comenzar a gestionarlo",
+  "noNotificationsFound":"Aún no tiene notificaciones",
   "confirmDeleteAuthKey": "¿Seguro que desea eliminar la clave autorizada?",
   "authKeyDeleted": "Clave autorizada eliminada",
   "permanentKey": "Acceso permanente",
@@ -145,6 +146,9 @@
   "lastNotificationReceived": "Última notificación recibida",
   "noRecentInfo": "Sin información reciente",
   "mailboxes": "Buzones",
+  "addMailbox":"Añadir buzón",
+  "addMailboxFromApp":"Para añadir un buzón, acceda a la app móvil",
+
 
   "nfcError":"Error escaneando",
   "nfcNotDetected":"No se ha detectado ninguna etiqueta NFC",

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intelligent_mailbox_app/l10n/app_localizations.dart';
+import 'package:intelligent_mailbox_app/models/mailbox.dart';
 import 'package:intelligent_mailbox_app/providers/mailbox_provider.dart';
+import 'package:intelligent_mailbox_app/utils/custom_colors.dart';
 import 'package:intelligent_mailbox_app/widgets/confirm_dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -8,13 +10,11 @@ class TopNavigation extends StatelessWidget {
   final VoidCallback onSignOut;
   final int selectedIndex;
   final Function(int) onItemTapped;
-  final Widget titleWidget;
 
   const TopNavigation({
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,
-    required this.titleWidget,
     required this.onSignOut,
   });
 
@@ -23,7 +23,66 @@ class TopNavigation extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        titleWidget,
+        Consumer<MailboxProvider>(
+          builder: (context, mailboxProvider, child) {
+            return mailboxProvider.mailboxes.isEmpty
+                ? TextButton.icon(
+                  onPressed:
+                      () => {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!.addMailboxFromApp,
+                            ),
+                          ),
+                        ),
+                      },
+                  icon: const Icon(Icons.add, color: Colors.white, size: 30),
+                  label: Text(AppLocalizations.of(context)!.addMailbox,
+                      style: Theme.of(context).textTheme.titleLarge!
+                          .copyWith(color: Colors.white)),
+                )
+                : DropdownButton<String>(
+                  value:
+                      mailboxProvider.mailboxes.any(
+                            (mailbox) =>
+                                mailbox.id ==
+                                mailboxProvider.selectedMailbox?.id,
+                          )
+                          ? mailboxProvider.selectedMailbox?.id
+                          : null,
+                  icon: const Icon(Icons.arrow_downward, color: Colors.white),
+                  elevation: 16,
+                  style: Theme.of(context).textTheme.titleLarge!,
+                  underline: Container(
+                    height: 2,
+                    color: CustomColors.primaryBlue,
+                  ),
+                  dropdownColor: CustomColors.secondaryBlue,
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      final newMailbox = mailboxProvider.mailboxes.firstWhere(
+                        (mailbox) => mailbox.id == newValue,
+                      );
+                      mailboxProvider.selectMailbox(newMailbox);
+                    }
+                  },
+                  items:
+                      mailboxProvider.mailboxes.map<DropdownMenuItem<String>>((
+                        Mailbox mailbox,
+                      ) {
+                        return DropdownMenuItem<String>(
+                          value: mailbox.id,
+                          child: Text(
+                            mailbox.name,
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                );
+          },
+        ),
         buildNavItem(
           context: context,
           index: 0,
@@ -94,7 +153,7 @@ class TopNavigation extends StatelessWidget {
               onSignOut();
             }
           },
-          icon: const Icon(Icons.exit_to_app, color: Colors.white, size: 30),
+          icon: const Icon(Icons.exit_to_app, color: Colors.red, size: 30),
           label: Text(
             AppLocalizations.of(context)!.signout,
             style: Theme.of(

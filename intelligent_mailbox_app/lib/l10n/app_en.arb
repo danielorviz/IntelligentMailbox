@@ -19,7 +19,8 @@
   "keys":"Keys",
   "mail": "Mail",
   "delete":"Delete",
-  "noMailboxSelected":"No mailbox selected",
+  "noMailboxSelected":"Add a mailbox to start managing it",
+  "noNotificationsFound":"You don't have any notifications yet",
   "confirmDeleteAuthKey": "Are you sure you want to delete this authorized key?",
   "authKeyDeleted": "Authorized key removed",
   "permanentKey": "Permanent access",
@@ -135,6 +136,8 @@
   "lastNotificationReceived": "Last notification received",
   "noRecentInfo": "No recent information",
   "mailboxes": "Mailboxes",
+  "addMailbox": "Add mailbox",
+  "addMailboxFromApp": "To add a mailbox, access the mobile app",
 
   "nfcError":"Error scaning",
   "nfcNotDetected":"No NFC tag detected",

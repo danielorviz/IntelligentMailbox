@@ -39,7 +39,6 @@ class HomeTabState extends State<HomeTab> {
     });
     try {
       await _mailboxService.checkMailboxConnection(mailboxId);
-      
     } finally {
       setState(() {
         checkingConnection = false;
@@ -69,6 +68,17 @@ class HomeTabState extends State<HomeTab> {
     }
   }
 
+  String getInfoMessage(MailboxNotification notification, int type) {
+    if (type == MailboxNotification.typeKey ||
+        type == MailboxNotification.typePackage) {
+      return notification.getTypeInfoName();
+    } else {
+      return AppLocalizations.of(
+        context,
+      )!.notificationMessage(notification.message);
+    }
+  }
+
   @override
   void dispose() {
     _streamSubscription?.cancel();
@@ -84,7 +94,9 @@ class HomeTabState extends State<HomeTab> {
         final mailbox = mailboxProvider.selectedMailbox;
         if (mailbox == null) {
           return Center(
-            child: Text(AppLocalizations.of(context)!.noMailboxSelected),
+            child: Text(AppLocalizations.of(context)!.noMailboxSelected,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
           );
         }
         final userUid =
@@ -359,7 +371,9 @@ class HomeTabState extends State<HomeTab> {
                                   children: [
                                     ElevatedButton.icon(
                                       onPressed: () async {
-                                        if (isOpening || mailbox.getDoorStatusBool()) return;
+                                        if (isOpening ||
+                                            mailbox.getDoorStatusBool())
+                                          return;
                                         final bool? confirm =
                                             await showDialog<bool>(
                                               context: context,
@@ -550,10 +564,7 @@ class HomeTabState extends State<HomeTab> {
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                     TextSpan(
-                      text:
-                          type != null
-                              ? notification.getTypeInfoName()
-                              : notification.title,
+                      text: getInfoMessage(notification, type ?? -1),
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],

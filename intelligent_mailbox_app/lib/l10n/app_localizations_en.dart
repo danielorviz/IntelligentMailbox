@@ -35,7 +35,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
-  String get noMailboxSelected => 'No mailbox selected';
+  String get noMailboxSelected => 'Add a mailbox to start managing it';
+
+  @override
+  String get noNotificationsFound => 'You don\'t have any notifications yet';
 
   @override
   String get confirmDeleteAuthKey => 'Are you sure you want to delete this authorized key?';
@@ -381,6 +384,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mailboxes => 'Mailboxes';
+
+  @override
+  String get addMailbox => 'Add mailbox';
+
+  @override
+  String get addMailboxFromApp => 'To add a mailbox, access the mobile app';
 
   @override
   String get nfcError => 'Error scaning';

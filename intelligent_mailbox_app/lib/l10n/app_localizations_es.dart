@@ -35,7 +35,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get delete => 'Eliminar';
 
   @override
-  String get noMailboxSelected => 'No hay un buzón seleccionado';
+  String get noMailboxSelected => 'Añada un buzón para comenzar a gestionarlo';
+
+  @override
+  String get noNotificationsFound => 'Aún no tiene notificaciones';
 
   @override
   String get confirmDeleteAuthKey => '¿Seguro que desea eliminar la clave autorizada?';
@@ -381,6 +384,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get mailboxes => 'Buzones';
+
+  @override
+  String get addMailbox => 'Añadir buzón';
+
+  @override
+  String get addMailboxFromApp => 'Para añadir un buzón, acceda a la app móvil';
 
   @override
   String get nfcError => 'Error escaneando';

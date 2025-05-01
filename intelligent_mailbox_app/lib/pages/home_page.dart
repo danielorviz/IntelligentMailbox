@@ -110,15 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   mailboxProvider.selectedMailbox?.name ??
                       AppLocalizations.of(context)!.appTitle,
                 )
-                :TopNavigation(
-                onSignOut: ()=> _signOut(context),
-                selectedIndex: _selectedIndex,
-                onItemTapped: _onItemTapped,
-                titleWidget: Text(
-                  mailboxProvider.selectedMailbox?.name ??
-                      AppLocalizations.of(context)!.appTitle,
-                ),
-              );
+                : TopNavigation(
+                  onSignOut: () => _signOut(context),
+                  selectedIndex: _selectedIndex,
+                  onItemTapped: _onItemTapped,
+                );
           },
         ),
         iconTheme: const IconThemeData(color: CustomColors.unselectedItem),

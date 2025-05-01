@@ -21,8 +21,8 @@ class AuthLoginScreen extends StatefulWidget {
 class AuthLoginScreenState extends State<AuthLoginScreen> {
   final AuthService _authService = AuthService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController( text: "danielosgi@hotmail.com");
+  final TextEditingController _passwordController = TextEditingController(text: "pruebaparaarduino");
   bool _isPasswordVisible = false;
   bool _isLoadingPrincipal = false;
 

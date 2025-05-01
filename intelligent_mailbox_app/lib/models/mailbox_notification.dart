@@ -6,6 +6,8 @@ class MailboxNotification {
   static const int typePackage = 1;//'PACKAGE';
   static const int typeLetter = 2;//'LETTER';
   static const int typeMailbox = 3;//'MAILBOX';
+  static const int typeKeyFailed = 4;//'KEY_FAILED';
+  static const int typePackageFailed = 5;//'PACKAGE_FAILED';
 
   final String title;
   final String message;

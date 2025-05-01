@@ -146,8 +146,14 @@ abstract class AppLocalizations {
   /// No description provided for @noMailboxSelected.
   ///
   /// In en, this message translates to:
-  /// **'No mailbox selected'**
+  /// **'Add a mailbox to start managing it'**
   String get noMailboxSelected;
+
+  /// No description provided for @noNotificationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have any notifications yet'**
+  String get noNotificationsFound;
 
   /// No description provided for @confirmDeleteAuthKey.
   ///
@@ -838,6 +844,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mailboxes'**
   String get mailboxes;
+
+  /// No description provided for @addMailbox.
+  ///
+  /// In en, this message translates to:
+  /// **'Add mailbox'**
+  String get addMailbox;
+
+  /// No description provided for @addMailboxFromApp.
+  ///
+  /// In en, this message translates to:
+  /// **'To add a mailbox, access the mobile app'**
+  String get addMailboxFromApp;
 
   /// No description provided for @nfcError.
   ///
