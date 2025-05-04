@@ -81,11 +81,6 @@ DynamicJsonDocument deserializeFirebaseData(String firebaseData) {
   return doc;
 }
 
-void updateTimeOffset(int offset) {
-  //timeClient.setTimeOffset(offset);
-  timeClient.update();
-}
-
 void loop() {
   readSerial();
   timeClient.update();
