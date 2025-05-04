@@ -84,7 +84,7 @@
   "verifyYourAccount": "Verifique su cuenta",
   "email": "Correo electrónico",
   "mailboxDetails": "Datos del buzón",
-  "enterMailboxDetails": "Ingrese los datos del buzón",
+  "enterMailboxDetails": "Ingrese los datos del buzón proporcionados en el manual de instalación",
   "mailboxId": "ID del buzón",
   "mailboxKey": "Clave del buzón",
   "connectToMailbox": "Conectar al buzón",

@@ -50,6 +50,7 @@ void controlarTeclado() {
       Serial.println(PUERTA_ABIERTA);
       keypadKey += tecla;
     } else if (tecla == '#' && !PUERTA_ABIERTA) {
+      emitSound(1000, 400);
       Serial.print("Enviando: ");
       String instruction = "DOOR_" + keypadKey;
       Serial.println(instruction);
