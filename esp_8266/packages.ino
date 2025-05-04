@@ -47,10 +47,12 @@ int checkPackageAccess(String code) {
   for (int i = 0; i < authorizedPackages.size(); i++) {
     AuthorizedPackage& key = authorizedPackages[i];
 
-    if (!key.isReceived() && key.getValue().equals(code)) {
+    if (key.isKey() && key.getValue().equals(code)) {
+      return i;
+    } else if (!key.isKey() && !key.isReceived() && key.getValue().equals(code)) {
       //Serial.println("Package valida:" + key.getValue());
       return i;
-    } 
+    }
   }
   return -1;
 }
@@ -92,8 +94,8 @@ void removePackageById(String id) {
   }
 }
 
-String getPackageKeyId(int validPackageIndex){
-  if(validPackageIndex>= 0 && validPackageIndex < authorizedPackages.size()){
+String getPackageKeyId(int validPackageIndex) {
+  if (validPackageIndex >= 0 && validPackageIndex < authorizedPackages.size()) {
     String result = authorizedPackages[validPackageIndex].getId();
     result.concat(TYPE_SEPARATOR);
     result.concat(authorizedPackages[validPackageIndex].getName());
@@ -101,8 +103,8 @@ String getPackageKeyId(int validPackageIndex){
   }
   return "";
 }
-bool getPackageIsKey(int validPackageIndex){
-  if(validPackageIndex>= 0 && validPackageIndex < authorizedPackages.size()){
+bool getPackageIsKey(int validPackageIndex) {
+  if (validPackageIndex >= 0 && validPackageIndex < authorizedPackages.size()) {
     return authorizedPackages[validPackageIndex].isKey();
   }
   return false;
