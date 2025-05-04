@@ -200,7 +200,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mailboxDetails => 'Datos del buzón';
 
   @override
-  String get enterMailboxDetails => 'Ingrese los datos del buzón';
+  String get enterMailboxDetails => 'Ingrese los datos del buzón proporcionados en el manual de instalación';
 
   @override
   String get mailboxId => 'ID del buzón';

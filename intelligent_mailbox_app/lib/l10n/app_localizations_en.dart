@@ -200,7 +200,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mailboxDetails => 'Mailbox details';
 
   @override
-  String get enterMailboxDetails => 'Enter mailbox details';
+  String get enterMailboxDetails => 'Enter the mailbox data provided in the installation manual';
 
   @override
   String get mailboxId => 'Mailbox ID';

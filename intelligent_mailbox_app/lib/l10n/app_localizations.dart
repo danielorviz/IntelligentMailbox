@@ -476,7 +476,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterMailboxDetails.
   ///
   /// In en, this message translates to:
-  /// **'Enter mailbox details'**
+  /// **'Enter the mailbox data provided in the installation manual'**
   String get enterMailboxDetails;
 
   /// No description provided for @mailboxId.

@@ -74,7 +74,7 @@
   "verifyYourAccount": "Verify your account",
   "email": "Email",
   "mailboxDetails": "Mailbox details",
-  "enterMailboxDetails": "Enter mailbox details",
+  "enterMailboxDetails": "Enter the mailbox data provided in the installation manual",
   "mailboxId": "Mailbox ID",
   "mailboxKey": "Mailbox key",
   "connectToMailbox": "Connect to mailbox",
