@@ -24,7 +24,7 @@ void checkCloseDoor(){
   if (PUERTA_ABIERTA) {
     delay(300);
     int colisionado = analogRead(colision);
-    Serial.println(colisionado);
+    //Serial.println(colisionado);
     if (colisionado < 100) {
       cerrarPuerta();
       resetKeypad();
