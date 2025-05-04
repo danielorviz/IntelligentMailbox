@@ -8,8 +8,6 @@ private:
   String id_;
   String name_;
   String value_;
-  unsigned long initDate_;
-  unsigned long finishDate_;
   bool isKey_;
   bool isReceived_;
 
@@ -25,22 +23,14 @@ public:
 
   String getValue();
 
-  unsigned long getInitDate();
-
-  unsigned long getFinishDate();
-
   bool isKey();
 
   bool isReceived();
-
-  bool checkDateInRange(unsigned long date);
 
   // Setters
   void setId(const String& id);
   void setName(const String& name);
   void setValue(const String& value);
-  void setInitDate(unsigned long initDate);
-  void setFinishDate(unsigned long finishDate);
   void setIsKey(bool isKey);
   void setIsReceived(bool isReceived);
 };
@@ -50,10 +40,8 @@ AuthorizedPackage::AuthorizedPackage(String& idSt, JsonObject& json) {
   id_ = idSt;
   name_ = json["name"].as<String>();
   value_ = json["value"].as<String>();
-  initDate_ = json["initDate"].as<unsigned long>();
   isKey_ = json["isKey"].as<bool>();
   isReceived_ = json["received"].as<bool>();
-  finishDate_ = json["finishDate"].as<unsigned long>();
 }
 
 String AuthorizedPackage::getId() {
@@ -68,14 +56,6 @@ String AuthorizedPackage::getValue() {
   return (value_);
 }
 
-
-unsigned long AuthorizedPackage::getInitDate() {
-  return (initDate_);
-}
-
-unsigned long AuthorizedPackage::getFinishDate() {
-  return (finishDate_);
-}
 bool AuthorizedPackage::isKey() {
   return (isKey_);
 }
@@ -92,26 +72,11 @@ void AuthorizedPackage::setValue(const String& value) {
   value_ = value;
 }
 
-void AuthorizedPackage::setInitDate(unsigned long initDate) {
-  initDate_ = initDate;
-}
-
-void AuthorizedPackage::setFinishDate(unsigned long finishDate) {
-  finishDate_ = finishDate;
-}
-
 void AuthorizedPackage::setIsKey(bool isKey) {
   isKey_ = isKey;
 }
 
 void AuthorizedPackage::setIsReceived(bool isReceived) {
   isReceived_ = isReceived;
-}
-
-bool AuthorizedPackage::checkDateInRange(unsigned long date) {
-  if (date >= initDate_ && date <= finishDate_) {
-    return true;
-  }
-  return false;
 }
 #endif

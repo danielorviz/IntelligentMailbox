@@ -62,14 +62,11 @@ void updatePackage(String id, JsonObject data) {
       if (data.containsKey("value")) {
         package.setValue(data["value"].as<String>());
       }
-      if (data.containsKey("finishDate")) {
-        package.setFinishDate(data["finishDate"].as<unsigned long>());
+      if (data.containsKey("received")) {
+        package.setIsReceived(data["received"].as<bool>());
       }
-      if (data.containsKey("initDate")) {
-        package.setInitDate(data["initDate"].as<unsigned long>());
-      }
-      if (data.containsKey("permanent")) {
-        package.setIsKey(data["permanent"].as<bool>());
+      if (data.containsKey("isKey")) {
+        package.setIsKey(data["isKey"].as<bool>());
       }
       if (data.containsKey("name")) {
         package.setName(data["name"].as<String>());
