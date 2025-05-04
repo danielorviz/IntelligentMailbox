@@ -63,7 +63,7 @@ void processInstruction(char* message) {
       String notification = instructions.substring(6);
       notification.trim();
       if (notification == "OPENKO") {
-        sendNotificationDoorOpenKO(TYPE_KEY);
+        sendNotificationDoorOpenKO(TYPE_KEY_FAILED);
       } else if (notification == "PACKAGE_PERM") {
         sendNotification(NOTIFICACION_APERTURA_CORRECTA, F("Puerta abierta con su llave de acceso"), TYPE_PACKAGE);
       } else if (notification == "LETTER") {
