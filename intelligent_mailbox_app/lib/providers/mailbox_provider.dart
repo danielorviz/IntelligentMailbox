@@ -52,13 +52,17 @@ class MailboxProvider with ChangeNotifier {
               _mailboxes = mailboxes.whereType<Mailbox>().toList();
               print('Cargando mailboxes: $mailboxes');
               if (_mailboxes.isNotEmpty) {
-                if(selectedMailbox == null) {
-                  selectMailbox(_mailboxes.first);
-                }
+                    final mailbox = _mailboxes.firstWhere(
+                    (mailbox) => mailbox.id == _selectedMailbox?.id,
+                    orElse: () => _mailboxes.first,
+                  );
+                    selectMailbox(mailbox);
+                  
+                
               } else if (_mailboxes.isEmpty) {
                 _selectedMailbox = null;
               }
-              _safeNotifyListeners();
+              notifyListeners();
             });
 
             _subscriptions.add(combinedSubscription);
