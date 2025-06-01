@@ -49,6 +49,8 @@
   "packageCode": "Access code",
   "enterPackageCode": "Please enter a access code",
   "permanentAccess": "Permanent access",
+  "accessExpired": "Access expired",
+  "accessActive": "Access active",
   "received": "Received",
   "packageAlreadyReceived":"The package has already been received",
   "pending": "Pending reception",

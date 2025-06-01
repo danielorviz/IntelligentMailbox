@@ -125,6 +125,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permanentAccess => 'Permanent access';
 
   @override
+  String get accessExpired => 'Access expired';
+
+  @override
+  String get accessActive => 'Access active';
+
+  @override
   String get received => 'Received';
 
   @override

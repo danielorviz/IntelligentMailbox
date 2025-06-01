@@ -323,6 +323,18 @@ abstract class AppLocalizations {
   /// **'Permanent access'**
   String get permanentAccess;
 
+  /// No description provided for @accessExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Access expired'**
+  String get accessExpired;
+
+  /// No description provided for @accessActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Access active'**
+  String get accessActive;
+
   /// No description provided for @received.
   ///
   /// In en, this message translates to:

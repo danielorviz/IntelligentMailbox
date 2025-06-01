@@ -251,10 +251,22 @@ class AuthorizedKeysTab extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                              
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(width: 8),
+                              Text(isExpired ? 
+                                AppLocalizations.of(context)!.accessExpired
+                                : AppLocalizations.of(context)!.accessActive,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
                             ],
                           ),
 
-                          const SizedBox(height: 4),
                         } else ...{
                           Row(
                             children: [

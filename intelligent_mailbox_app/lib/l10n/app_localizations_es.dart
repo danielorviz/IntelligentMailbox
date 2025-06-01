@@ -125,6 +125,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get permanentAccess => 'Acceso permanente';
 
   @override
+  String get accessExpired => 'Acceso caducado';
+
+  @override
+  String get accessActive => 'Acceso activo';
+
+  @override
   String get received => 'Recibido';
 
   @override

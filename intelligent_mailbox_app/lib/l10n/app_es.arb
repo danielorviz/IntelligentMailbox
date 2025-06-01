@@ -34,6 +34,8 @@
   "confirmDeleteAuthKey": "¿Seguro que desea eliminar la clave autorizada?",
   "authKeyDeleted": "Clave autorizada eliminada",
   "permanentKey": "Acceso permanente",
+  "accessExpired": "Acceso caducado",
+  "accessActive": "Acceso activo",
   "mustSelectStartDate": "Debes seleccionar una fecha de inicio primero",
   "endDateAfterStartDate": "La fecha de finalización debe ser posterior a la fecha de inicio",
   "endDateAndStartDateMandatory": "Las fechas de inicio y finalización son obligatorias",
