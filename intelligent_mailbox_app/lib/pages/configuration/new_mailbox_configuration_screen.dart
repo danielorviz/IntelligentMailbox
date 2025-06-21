@@ -60,7 +60,6 @@ class _NewMailboxConfigurationScreenState
   @override
   void initState() {
     super.initState();
-    _startScan();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _userProvider = Provider.of<UserProvider>(context, listen: false);
       setState(() {
@@ -348,6 +347,7 @@ class _NewMailboxConfigurationScreenState
       }
     } else if (_currentStep == 1) {
       await _loadMailboxInitialConfig();
+      _startScan();
       if (_mailboxInitialConfig == null) {
         return;
       }

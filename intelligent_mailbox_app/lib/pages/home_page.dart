@@ -44,13 +44,13 @@ class _MyHomePageState extends State<MyHomePage> {
       context,
       listen: false,
     );
-    if (index != 1 && markNotificationsAsRead) {
+    if (mailboxProvider.selectedMailbox!=null && index != 1 && markNotificationsAsRead) {
       NotificationService().markAllAsRead(mailboxProvider.selectedMailbox!.id);
       setState(() {
         markNotificationsAsRead = false;
         _selectedIndex = index;
       });
-    } else if (mailboxProvider.unreadNotifications > 0 && index == 1) {
+    } else if (mailboxProvider.selectedMailbox!=null &&  mailboxProvider.unreadNotifications > 0 && index == 1) {
       setState(() {
         markNotificationsAsRead = true;
         _selectedIndex = index;
