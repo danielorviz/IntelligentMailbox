@@ -6,6 +6,7 @@ use_modular_headers!
 install! 'cocoapods', :disable_input_output_paths => true
 
 target 'Runner' do
+    pod 'SharedPreferences'
     pod 'Firebase/Core'
     pod 'Firebase/Auth'
     pod 'Firebase/Database'
