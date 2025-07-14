@@ -200,6 +200,10 @@ class MailboxService {
     AuthorizedKey authorizedKey,
   ) async {
     try {
+      if(authorizedKey.permanent) {
+        authorizedKey.finishDate = 0;
+        authorizedKey.initDate = 0;
+      }
       await FirebaseDatabase.instance
           .ref("mailbox/$mailboxId/authorizedkeys/${authorizedKey.id}")
           .update(authorizedKey.toMap());

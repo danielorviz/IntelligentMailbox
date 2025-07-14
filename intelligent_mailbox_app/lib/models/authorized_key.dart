@@ -1,12 +1,12 @@
 import 'package:intelligent_mailbox_app/utils/date_time_utils.dart';
 
 class AuthorizedKey {
-  final int initDate;
-  final bool permanent;
-  final String name;
-  final int finishDate;
+  int initDate;
+  bool permanent;
+  String name;
+  int finishDate;
   final String id;
-  final String value;
+  String value;
 
   AuthorizedKey({
     required this.initDate,

@@ -34,13 +34,13 @@ class _EditKeyScreenState extends State<EditAuthKeyScreen> {
     _nameController = TextEditingController(text: widget.keyData?.name ?? '');
     _valueController = TextEditingController(text: widget.keyData?.value ?? '');
     _initDate =
-        widget.keyData != null
+        widget.keyData != null && widget.keyData!.initDate != 0
             ? DateTime.fromMillisecondsSinceEpoch(
               widget.keyData!.initDate * 1000,
             )
             : null;
     _finishDate =
-        widget.keyData != null
+        widget.keyData != null && widget.keyData!.finishDate != 0
             ? DateTime.fromMillisecondsSinceEpoch(
               widget.keyData!.finishDate * 1000,
             )
