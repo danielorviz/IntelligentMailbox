@@ -1,5 +1,6 @@
 platform :ios, '13.0'
 
+workspace 'Runner.xcworkspace'
 
 use_frameworks!
 use_modular_headers!
