@@ -3,5 +3,24 @@ platform :ios, '13.0'
 use_frameworks!
 use_modular_headers!
 
-# Opcional: desactiva la instalación de pods duplicados
-install! 'cocoapods', :disable_input_output_paths => true
+install! 'cocoapods',
+  :disable_input_output_paths => true
+
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_installation
+  copied_flutter_dir = File.expand_path('Flutter', __dir__)
+  pod 'Flutter', :path => "#{copied_flutter_dir}"
+end
+
+target 'Runner' do
+  flutter_installation
+
+  flutter_install_plugins
+end
