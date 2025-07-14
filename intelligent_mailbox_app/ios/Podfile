@@ -1,17 +1,30 @@
-# Podfile
-
 platform :ios, '13.0'
 
-ENV['COCOAPODS_DISABLE_STATS'] = 'true'
-
-require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), __dir__)
+use_frameworks!
+use_modular_headers!
 
 install! 'cocoapods',
   :disable_input_output_paths => true
 
-target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_installation
+  copied_flutter_dir = File.expand_path('Flutter', __dir__)
+  pod 'Flutter', :path => "#{copied_flutter_dir}"
+end
+
+target 'Runner' do
+  flutter_installation
+
+  # Flutter insertará los plugins aquí automáticamente
+  generated_plugin_registrant = File.expand_path(File.join('..', '.flutter-plugins-dependencies'), __dir__)
+  if File.exist?(generated_plugin_registrant)
+    eval(File.read(generated_plugin_registrant), binding)
+  end
 end
