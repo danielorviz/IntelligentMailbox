@@ -1,1 +1,7 @@
 platform :ios, '13.0'
+
+use_frameworks!
+use_modular_headers!
+
+# Opcional: desactiva la instalación de pods duplicados
+install! 'cocoapods', :disable_input_output_paths => true
