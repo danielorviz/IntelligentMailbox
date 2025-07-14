@@ -11,8 +11,8 @@ workflows:
         PROJECT_DIR: "intelligent_mailbox_app"
     scripts:
       - name: Restore firebase_options.dart
-      script: |
-        echo "$FIREBASE_OPTIONS_DART" > lib/firebase_options.dart
+        script: |
+          echo "$FIREBASE_OPTIONS_DART" > intelligent_mailbox_app/lib/firebase_options.dart
       - name: Install dependencies
         script: |
           cd $PROJECT_DIR
