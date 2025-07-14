@@ -6,18 +6,12 @@ use_modular_headers!
 install! 'cocoapods', :disable_input_output_paths => true
 
 target 'Runner' do
-    pod 'SharedPreferences'
     pod 'Firebase/Core'
     pod 'Firebase/Auth'
     pod 'Firebase/Database'
     pod 'Firebase/Messaging'
     pod 'GoogleSignIn'
-    pod 'SharedPreferences'
-    pod 'wifi_scan'
-    pod 'wifi_iot'
-    pod 'qr_code_scanner_plus'
-    pod 'fl_chart'
-    pod 'flutter_nfc_kit'
+
 end
 
 post_install do |installer|
