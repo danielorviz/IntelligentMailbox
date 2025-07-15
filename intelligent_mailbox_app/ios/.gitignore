@@ -1,33 +1,46 @@
-**/dgph
-*.mode1v3
-*.mode2v3
-*.moved-aside
-*.pbxuser
-*.perspectivev3
+# iOS build artifacts and derived data
+**/DerivedData/
+**/Build/
+**/*.pbxuser
+**/*.mode1v3
+**/*.mode2v3
+**/*.perspectivev3
+**/*.xcworkspace
+**/xcuserdata/
+**/.generated/
+**/.vagrant/
 **/*sync/
+**/.symlinks/
+**/Pods/
+**/.DS_Store
+
+# IntelliJ / Android Studio
+*.iml
+
+# Flutter iOS artifacts
+ios/Flutter/ephemeral/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/flutter_assets/
+ios/Flutter/flutter_export_environment.sh
+
+# Flutter auto-generated plugin registry
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Codemagic / build logs
+profile
+*.log
+
+# Misc
 .sconsign.dblite
 .tags*
-**/.vagrant/
-**/DerivedData/
 Icon?
-**/Pods/
-**/.symlinks/
-profile
-xcuserdata
-**/.generated/
-Flutter/App.framework
-Flutter/Flutter.framework
-Flutter/Flutter.podspec
-Flutter/Generated.xcconfig
-Flutter/ephemeral/
-Flutter/app.flx
-Flutter/app.zip
-Flutter/flutter_assets/
-Flutter/flutter_export_environment.sh
-ServiceDefinitions.json
-Runner/GeneratedPluginRegistrant.*
 
-# Exceptions to above rules.
+# Optional: keep default user settings if needed
 !default.mode1v3
 !default.mode2v3
 !default.pbxuser
