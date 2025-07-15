@@ -124,7 +124,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: Colors.white,
       margin: EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
@@ -242,7 +242,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: Colors.white,
       margin: EdgeInsets.all(8),
       elevation: 4,
